@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Solar Trader Dashboard</title>
-  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <style>
     body {
       font-family: sans-serif;
@@ -35,8 +35,11 @@
 
   <script>
     const socket = io();
+    console.log("Socket.io client loaded");
 
     socket.on('mqttData', ({ latest, history }) => {
+      console.log("Received mqttData:", latest);
+
       const latestOutput = `
 Temperature: ${latest.temperature}
 Humidity: ${latest.humidity}
