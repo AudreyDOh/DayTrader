@@ -1,20 +1,63 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Solar Sensor Dashboard</title>
-        <link rel="stylesheet" href="style.css">
-    </head>
-    <body>
-        <h1> Live Sensor Data </h1>
-        <pre id="output">Waiting for data...</pre>
-        <script>
-            const socket = io();
-            socket.on('mqttData', data => {
-                // Show data as formatted JSON
-                document.getElementById('output').innerText = JSON.stringify(data, null, 2);
-            });
-        </script>
-    </body>
+<head>
+  <meta charset="UTF-8" />
+  <title>Solar Trader Dashboard</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      background: #f8f9fa;
+    }
+    h1 {
+      margin-bottom: 1rem;
+    }
+    .timestamp {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+    pre {
+      background: #eee;
+      padding: 1rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌞 Solar Trader Dashboard</h1>
+  <div class="timestamp" id="timestamp">Waiting for sensor data...</div>
+  <pre id="output">—</pre>
+
+  <h2>📜 Last 5 Messages</h2>
+  <div id="history"></div>
+
+  <script>
+    const socket = io();
+    const history = [];
+
+    socket.on('mqttData', data => {
+      const now = new Date().toLocaleString();
+
+      // Update main display
+      document.getElementById('timestamp').innerText = `Last sensor logged at ${now}`;
+      document.getElementById('output').innerText = JSON.stringify(data, null, 2);
+
+      // Save to history (add new at top)
+      history.unshift({ time: now, data });
+
+      // Keep only the last 5 messages
+      if (history.length > 5) history.pop();
+
+      // Display history
+      const historyContainer = document.getElementById('history');
+      historyContainer.innerHTML = history
+        .map(entry => {
+          return `<pre><strong>${entry.time}</strong>\n${JSON.stringify(entry.data, null, 2)}</pre>`;
+        })
+        .join('');
+    });
+  </script>
+</body>
 </html>
