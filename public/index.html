@@ -15,7 +15,7 @@
     }
     .timestamp {
       font-size: 1.2rem;
-      margin-bottom: 0.5rem;
+      margin-bottom: 1rem;
     }
     pre {
       background: #eee;
@@ -26,35 +26,33 @@
   </style>
 </head>
 <body>
-  <h1>🌞 Solar Trader Dashboard</h1>
+  <h1>Solar Trader Dashboard</h1>
   <div class="timestamp" id="timestamp">Waiting for sensor data...</div>
   <pre id="output">—</pre>
 
-  <h2>📜 Last 5 Messages</h2>
+  <h2>Last 5 Messages</h2>
   <div id="history"></div>
 
   <script>
     const socket = io();
-    const history = [];
 
-    socket.on('mqttData', data => {
-      const now = new Date().toLocaleString();
+    socket.on('mqttData', ({ latest, history }) => {
+      const latestOutput = `
+Temperature: ${latest.temperature}
+Humidity: ${latest.humidity}
+Lux: ${latest.lux}
+Current: ${latest.current}
+Power: ${latest.power}
+Battery: ${latest.battery}
+      `.trim();
 
-      // Update main display
-      document.getElementById('timestamp').innerText = `Last sensor logged at ${now}`;
-      document.getElementById('output').innerText = JSON.stringify(data, null, 2);
+      document.getElementById('timestamp').innerText = `Last sensor logged at ${latest.time}`;
+      document.getElementById('output').innerText = latestOutput;
 
-      // Save to history (add new at top)
-      history.unshift({ time: now, data });
-
-      // Keep only the last 5 messages
-      if (history.length > 5) history.pop();
-
-      // Display history
       const historyContainer = document.getElementById('history');
       historyContainer.innerHTML = history
         .map(entry => {
-          return `<pre><strong>${entry.time}</strong>\n${JSON.stringify(entry.data, null, 2)}</pre>`;
+          return `<pre><strong>${entry.time}</strong>\nTemp: ${entry.temperature}, Lux: ${entry.lux}, Power: ${entry.power}</pre>`;
         })
         .join('');
     });
