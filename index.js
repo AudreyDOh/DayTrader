@@ -23,24 +23,20 @@ const ENERGY_DATA_URL = 'https://tigoe.net/energy-data.json';
 let lastReading = null;
 const sensorHistory = [];
 
-axios.get(ENERGY_DATA_URL)
+axios.get(ENERGY_DATA_URL, { responseType: 'text' })
   .then(response => {
-    // Parse response if it's raw text
-    const rawData = typeof response.data === 'string'
-      ? JSON.parse(response.data)
-      : response.data;
+    const lines = response.data.trim().split('\n');
+    const parsed = lines
+      .map(line => {
+        try {
+          return JSON.parse(line);
+        } catch (e) {
+          return null;
+        }
+      })
+      .filter(entry => entry && entry.creator === 'audrey' && entry.lux !== undefined);
 
-    // Ensure it's an array before filtering
-    if (!Array.isArray(rawData)) {
-      throw new Error('Data is not an array');
-    }
-    
-    console.log('Type of response.data:', typeof response.data);
-    console.log('First few chars:', JSON.stringify(response.data).slice(0, 100));
-    
-    const audreyData = rawData.filter(entry => entry.creator === 'audrey' && entry.lux !== undefined);
-
-    sensorHistory.push(...audreyData.map(entry => ({
+    sensorHistory.push(...parsed.map(entry => ({
       time: new Date(entry.timeStamp).toLocaleString('en-US', {
         timeZone: 'America/New_York'
       }),
@@ -53,7 +49,7 @@ axios.get(ENERGY_DATA_URL)
       mood: 'Unknown'
     })));
 
-    console.log(`📥 Loaded ${sensorHistory.length} entries from Audrey’s history.`);
+    console.log(`📥 Loaded ${sensorHistory.length} Audrey entries from history.`);
   })
   .catch(err => {
     console.error('❌ Failed to fetch Audrey data history:', err.message);
