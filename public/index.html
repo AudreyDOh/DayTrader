@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8" />
-  <title>Solar Trader Dashboard</title>
+  <title>Day Trader Dashboard</title>
   <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <style>
     body {
@@ -37,7 +37,7 @@
   <pre id="output">—</pre>
   <h2 id="mood">Today's Mood: Unknown</h2>
 
-  <h2>Last 5 Messages</h2>
+  <h2>Sensor Reading History</h2>
   <div id="history"></div>
 
 
@@ -50,16 +50,15 @@
       
 
       const latestOutput = `
+Lux: ${latest.lux}
 Temperature: ${latest.temperature}
 Humidity: ${latest.humidity}
-Lux: ${latest.lux}
-Current: ${latest.current}
 Power: ${latest.power}
 Battery: ${latest.battery}
       `.trim();
       
       // Display the latest data
-      document.getElementById('timestamp').innerText = `Last sensor logged at ${latest.time}`;
+      document.getElementById('timestamp').innerText = `Last data logged at ${latest.time}`;
       document.getElementById('output').innerText = latestOutput;
       document.getElementById('mood').innerText = `Today's Mood: ${latest.mood || 'Not Set'}`;
 
@@ -67,8 +66,12 @@ Battery: ${latest.battery}
       const historyContainer = document.getElementById('history');
       historyContainer.innerHTML = history
         .map(entry => {
-          return `<pre><strong>${entry.time}</strong>\nTemp: ${entry.temperature}, Lux: ${entry.lux}, Power: ${entry.power}</pre>`;
-        })
+          return `<pre><strong>${entry.time}</strong>
+            Lux: ${entry.lux}
+            Temperature: ${entry.temperature}
+            Humidity: ${entry.humidity}
+            Power: ${entry.power}</pre>`;
+                    })
         .join('');
     });
 
