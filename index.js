@@ -18,8 +18,35 @@ const mqttClient = mqtt.connect('mqtt://tigoe.net', {
 const topic = 'energy/audrey';
 
 // State: last reading and history
+const ENERGY_DATA_URL = 'https://tigoe.net/energy-data.json';
+
 let lastReading = null;
 const sensorHistory = [];
+
+axios.get(ENERGY_DATA_URL)
+  .then(response => {
+    const fullData = response.data;
+    const audreyData = fullData.filter(entry => entry.creator === 'audrey' && entry.lux !== undefined);
+
+    // Convert timestamps and format
+    sensorHistory.push(...audreyData.map(entry => ({
+      time: new Date(entry.timeStamp).toLocaleString('en-US', {
+        timeZone: 'America/New_York'
+      }),
+      temperature: entry.temperature ?? '—',
+      humidity: entry.humidity ?? '—',
+      lux: entry.lux ?? '—',
+      current: entry.current ?? '—',
+      power: entry.power ?? '—',
+      battery: entry.battery ?? '—',
+      mood: 'Unknown'
+    })));
+
+    console.log(`📥 Loaded ${sensorHistory.length} entries from Audrey’s history.`);
+  })
+  .catch(err => {
+    console.error('❌ Failed to fetch Audrey data history:', err.message);
+  });
 
 let currentDay = null;
 let dailyMood = null;
@@ -121,9 +148,9 @@ mqttClient.on('message', (topic, message) => {
 
 io.on('connection', socket => {
   console.log('🔌 New frontend connected');
-  if (lastReading) {
+  if (lastReading || sensorHistory.length > 0) {
     socket.emit('mqttData', {
-      latest: lastReading,
+      latest: lastReading ?? sensorHistory[0],
       history: sensorHistory
     });
   }
