@@ -190,7 +190,8 @@ mqttClient.on('message', (topic, message) => {
       const today = getTodayDateString();
 
       // Set daily mood once per day at first valid solar reading
-      if (data.power > 0 && today !== currentDay) {
+      if (data.power > 0) {
+        {
       
         const tradeMood = determineMood(data); 
 const suggestedStocks = moodStockMap[tradeMood] || [];
