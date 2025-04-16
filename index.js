@@ -37,6 +37,7 @@ axios.get(ENERGY_DATA_URL, { responseType: 'text' })
       .filter(entry => entry && entry.creator === 'audrey' && entry.lux !== undefined);
 
     sensorHistory.push(...parsed.map(entry => ({
+      // Convert UTC timestamp to EST
       time: new Date(entry.timeStamp).toLocaleString('en-US', {
         timeZone: 'America/New_York'
       }),
@@ -48,6 +49,7 @@ axios.get(ENERGY_DATA_URL, { responseType: 'text' })
       battery: entry.battery ?? '—',
       mood: 'Unknown'
     })));
+    sensorHistory.splice(5); // Keep only the most recent 5 entries
 
     console.log(`📥 Loaded ${sensorHistory.length} Audrey entries from history.`);
   })
