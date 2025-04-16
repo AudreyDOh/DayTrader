@@ -37,20 +37,6 @@ const moodStockMap = {
   "Hot & Dry": ["AI", "UPST", "HOOD"],           // volatile, gappers
 };
 
-const sampleSensorData = {
-  lux: 52000,
-  temperature: 30,
-  humidity: 32
-};
-
-const mood = determineMood(sampleSensorData);
-const stockOptions = moodStockMap[mood] || [];
-
-console.log("Weather mood:", mood);
-console.log("Suggested stocks:", stockOptions);
-
-
-
 //                      * * * * * * * * * * * * * * * * * * * * * * * * 
 
 
