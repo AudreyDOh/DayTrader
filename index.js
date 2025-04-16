@@ -98,6 +98,9 @@ mqttClient.on('message', (topic, message) => {
         mood: dailyMood ?? 'Not Set'
       };
 
+      console.log('Sensor reading:', formatted);
+
+
       lastReading = formatted;
       sensorHistory.unshift(formatted);
       if (sensorHistory.length > 5) sensorHistory.pop();

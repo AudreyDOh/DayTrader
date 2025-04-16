@@ -39,12 +39,17 @@
 
   <h2>Last 5 Messages</h2>
   <div id="history"></div>
+  <h3>Raw Data</h3>
+<pre id="raw">Waiting for raw data...</pre>
 
   <script>
     const socket = io();
 
     // Update the dashboard when sensor data is received
     socket.on('mqttData', ({ latest, history }) => {
+      console.log('Received mqttData:', { latest, history });
+      
+
       const latestOutput = `
 Temperature: ${latest.temperature}
 Humidity: ${latest.humidity}
@@ -56,6 +61,7 @@ Battery: ${latest.battery}
 
       document.getElementById('timestamp').innerText = `Last sensor logged at ${latest.time}`;
       document.getElementById('output').innerText = latestOutput;
+      document.getElementById('raw').innerText = JSON.stringify({ latest, history }, null, 2);
       document.getElementById('mood').innerText = `Today's Mood: ${latest.mood || 'Not Set'}`;
 
       const historyContainer = document.getElementById('history');
