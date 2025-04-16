@@ -31,11 +31,17 @@
   </style>
 </head>
 <body>
-  <h1>Solar Trader Dashboard</h1>
+  <h1>Day Trader Dashboard</h1>
   <div class="clock" id="clock">Loading current time...</div>
   <div class="timestamp" id="timestamp">Waiting for sensor data...</div>
   <pre id="output">—</pre>
-  <h2 id="mood">Today's Mood: Unknown</h2>
+  <h2 id="mood">Today's Mood: </h2>
+  <p id="weatherMood">Waiting for mood...</p>
+
+  <h2>Suggested Stocks:</h2>
+<ul id="suggestedStocks">
+  <li>Waiting for stock suggestions...</li>
+</ul>
 
   <h2>Sensor Reading History</h2>
   <div id="history"></div>
@@ -97,5 +103,15 @@ Battery: ${latest.battery}
     setInterval(updateClock, 1000);
     updateClock();
   </script>
+
+
+<!-- Load socket.io from server -->
+<script src="/socket.io/socket.io.js"></script>
+
+<!-- Load your custom frontend script -->
+<script src="script.js"></script>
+
+
+
 </body>
 </html>
