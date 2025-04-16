@@ -36,20 +36,26 @@ axios.get(ENERGY_DATA_URL, { responseType: 'text' })
       })
       .filter(entry => entry && entry.creator === 'audrey' && entry.lux !== undefined);
 
-    sensorHistory.push(...parsed.map(entry => ({
-      // Convert UTC timestamp to EST
-      time: new Date(entry.timeStamp).toLocaleString('en-US', {
-        timeZone: 'America/New_York'
-      }),
-      temperature: entry.temperature ?? '—',
-      humidity: entry.humidity ?? '—',
-      lux: entry.lux ?? '—',
-      current: entry.current ?? '—',
-      power: entry.power ?? '—',
-      battery: entry.battery ?? '—',
-      mood: 'Unknown'
-    })));
-    sensorHistory.splice(5); // Keep only the most recent 5 entries
+      const formattedData = parsed.map(entry => ({
+        timeStamp: entry.timeStamp, // for sorting
+        time: new Date(entry.timeStamp).toLocaleString('en-US', {
+          timeZone: 'America/New_York'
+        }),
+        temperature: entry.temperature ?? '—',
+        humidity: entry.humidity ?? '—',
+        lux: entry.lux ?? '—',
+        current: entry.current ?? '—',
+        power: entry.power ?? '—',
+        battery: entry.battery ?? '—',
+        mood: 'Unknown'
+      }));
+      
+      // Sort by timestamp descending (most recent first)
+      formattedData.sort((a, b) => new Date(b.timeStamp) - new Date(a.timeStamp));
+      
+      // Save the 5 most recent
+      sensorHistory.push(...formattedData.slice(0, 5));
+      
 
     console.log(`📥 Loaded ${sensorHistory.length} Audrey entries from history.`);
   })
