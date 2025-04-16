@@ -66,11 +66,14 @@ Battery: ${latest.battery}
       const historyContainer = document.getElementById('history');
       historyContainer.innerHTML = history
         .map(entry => {
-          return `<pre><strong>${entry.time}</strong>
-            Lux: ${entry.lux}
-            Temperature: ${entry.temperature}
-            Humidity: ${entry.humidity}
-            Power: ${entry.power}</pre>`;
+          return `<pre><strong>${entry.time}</strong>\n${[
+            `Temperature: ${entry.temperature}`,
+            `Humidity: ${entry.humidity}`,
+            `Lux: ${entry.lux}`,
+            `Power: ${entry.power}`,
+            `Battery: ${entry.battery}`
+          ].join(', ')}</pre>`;
+          
                     })
         .join('');
     });
