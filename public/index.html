@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Solar Trader Dashboard</title>
-  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <style>
     body {
       font-family: sans-serif;
@@ -11,6 +11,11 @@
       background: #f8f9fa;
     }
     h1 {
+      margin-bottom: 0.5rem;
+    }
+    .clock {
+      font-size: 1.1rem;
+      color: #555;
       margin-bottom: 1rem;
     }
     .timestamp {
@@ -27,19 +32,19 @@
 </head>
 <body>
   <h1>Solar Trader Dashboard</h1>
+  <div class="clock" id="clock">Loading current time...</div>
   <div class="timestamp" id="timestamp">Waiting for sensor data...</div>
   <pre id="output">—</pre>
+  <h2 id="mood">Today's Mood: Unknown</h2>
 
   <h2>Last 5 Messages</h2>
   <div id="history"></div>
 
   <script>
     const socket = io();
-    console.log("Socket.io client loaded");
 
+    // Update the dashboard when sensor data is received
     socket.on('mqttData', ({ latest, history }) => {
-      console.log("Received mqttData:", latest);
-
       const latestOutput = `
 Temperature: ${latest.temperature}
 Humidity: ${latest.humidity}
@@ -51,6 +56,7 @@ Battery: ${latest.battery}
 
       document.getElementById('timestamp').innerText = `Last sensor logged at ${latest.time}`;
       document.getElementById('output').innerText = latestOutput;
+      document.getElementById('mood').innerText = `Today's Mood: ${latest.mood || 'Not Set'}`;
 
       const historyContainer = document.getElementById('history');
       historyContainer.innerHTML = history
@@ -59,6 +65,25 @@ Battery: ${latest.battery}
         })
         .join('');
     });
+
+    // Display live clock in EST
+    function updateClock() {
+      const now = new Date().toLocaleString('en-US', {
+        timeZone: 'America/New_York',
+        weekday: 'short',
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      });
+      document.getElementById('clock').innerText = `Current EST Time: ${now}`;
+    }
+
+    setInterval(updateClock, 1000);
+    updateClock();
   </script>
 </body>
 </html>
