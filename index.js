@@ -25,10 +25,21 @@ const sensorHistory = [];
 
 axios.get(ENERGY_DATA_URL)
   .then(response => {
-    const fullData = response.data;
-    const audreyData = fullData.filter(entry => entry.creator === 'audrey' && entry.lux !== undefined);
+    // Parse response if it's raw text
+    const rawData = typeof response.data === 'string'
+      ? JSON.parse(response.data)
+      : response.data;
 
-    // Convert timestamps and format
+    // Ensure it's an array before filtering
+    if (!Array.isArray(rawData)) {
+      throw new Error('Data is not an array');
+    }
+    
+    console.log('Type of response.data:', typeof response.data);
+    console.log('First few chars:', JSON.stringify(response.data).slice(0, 100));
+    
+    const audreyData = rawData.filter(entry => entry.creator === 'audrey' && entry.lux !== undefined);
+
     sensorHistory.push(...audreyData.map(entry => ({
       time: new Date(entry.timeStamp).toLocaleString('en-US', {
         timeZone: 'America/New_York'
@@ -47,6 +58,7 @@ axios.get(ENERGY_DATA_URL)
   .catch(err => {
     console.error('❌ Failed to fetch Audrey data history:', err.message);
   });
+
 
 let currentDay = null;
 let dailyMood = null;
