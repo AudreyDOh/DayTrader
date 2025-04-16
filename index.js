@@ -45,12 +45,12 @@ const moodStockMap = {
 
 // Determine what stocks to buy/sell based on the mood at start of day
 function determineMood({ lux, temperature, humidity }) {
-  const isBright = lux > 40000;
-  const isDark = lux < 10000;
-  const isHot = temperature > 28;
+  const isBright = lux > 1000;
+  const isDark = lux <= 1000;
+  const isHot = temperature > 15;
   const isCold = temperature < 15;
-  const isDry = humidity < 40;
-  const isWet = humidity > 65;
+  const isDry = humidity < 50;
+  const isWet = humidity > 50;
 
   if (isBright && isDry && isHot) return "Hot & Dry";
   if (isBright && isDry && isCold) return "Cold & Bright";
@@ -63,18 +63,6 @@ function determineMood({ lux, temperature, humidity }) {
 
   return "Unknown";
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // ======= EVERYTHING SENSOR RELATED =======
