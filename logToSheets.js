@@ -4,10 +4,12 @@ const { google } = require('googleapis');
 let sheetsClient; // reused after auth
 
 async function authorizeGoogleSheets() {
-  const auth = new google.auth.GoogleAuth({
-    keyFile: 'credentials.json',
-    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-  });
+  const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
+  
+const auth = new google.auth.GoogleAuth({
+  credentials,
+  scopes: ['https://www.googleapis.com/auth/spreadsheets']
+});
 
   const authClient = await auth.getClient();
   sheetsClient = google.sheets({ version: 'v4', auth: authClient });
