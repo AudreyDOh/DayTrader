@@ -1,4 +1,3 @@
-require('dotenv').config(); // Load .env variables
 
 // (1) ===== VARIABLES FOR SETUP =====
 const mqtt = require('mqtt');       // MQTT client

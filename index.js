@@ -1,4 +1,6 @@
 require('dotenv').config(); // Load .env variables
+const { authorizeGoogleSheets, logToSheet } = require('./logToSheets'); // Google Sheets integration for MQTT Data logging
+
 
 // (1) ===== VARIABLES FOR SETUP =====
 const mqtt = require('mqtt');       // MQTT client
@@ -17,6 +19,8 @@ const mqttClient = mqtt.connect('mqtt://tigoe.net', {
   password: process.env.MQTT_PASSWORD
 });
 const topic = 'energy/audrey';
+
+authorizeGoogleSheets(); // Authenticate once on startup
 
 // (2) ===== VARIABLES FOR MQTT Sensor Data =====
 
@@ -185,6 +189,19 @@ console.log(`📈 Suggested Stocks:`, suggestedStocks);
         });
       }
 
+      logToSheet([
+        new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }),
+        data.lux,
+        data.temperature,
+        data.humidity,
+        data.current,
+        data.power,
+        data.battery,
+        dailyMood ?? 'Not Set',
+        suggestedStocks?.join(', ') ?? ''
+      ]);
+      
+
       // Convert UTC timestamp to EST or use current time
       const estTime = new Date(data.timeStamp ?? Date.now()).toLocaleString('en-US', {
         timeZone: 'America/New_York'
@@ -224,13 +241,24 @@ console.log(`📈 Suggested Stocks:`, suggestedStocks);
 
 io.on('connection', socket => {
   console.log('🔌 New frontend connected');
+
+  // Emit latest sensor data
   if (lastReading || sensorHistory.length > 0) {
     socket.emit('mqttData', {
       latest: lastReading ?? sensorHistory[0],
       history: sensorHistory
     });
   }
+
+  // 👇 Emit mood and suggested stocks on every frontend connection
+  if (dailyMood) {
+    socket.emit('weatherMood', { mood: dailyMood });
+  }
+  if (currentDay && moodStockMap[dailyMood]) {
+    socket.emit('suggestedStocks', { stocks: moodStockMap[dailyMood] });
+  }
 });
+
 
 // ===== Serve Static Frontend =====
 
