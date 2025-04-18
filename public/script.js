@@ -1,3 +1,7 @@
+/* 
+Front-end dashboard to receive real-time sensor data (web) and display as HTML element.
+*/
+
 
 // (1) ===== VARIABLES FOR SETUP =====
 const mqtt = require('mqtt');       // MQTT client

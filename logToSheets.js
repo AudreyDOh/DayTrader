@@ -1,10 +1,15 @@
+
+/* 
+Logs all data here to Google Sheets
+*/
+
 const fs = require('fs');
 const { google } = require('googleapis');
 
 let sheetsClient; // reused after auth
 
 async function authorizeGoogleSheets() {
-  const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
+  const credentials = require('./credentials.json');
   
 const auth = new google.auth.GoogleAuth({
   credentials,

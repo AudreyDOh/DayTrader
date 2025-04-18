@@ -1,3 +1,7 @@
+/* 
+Executes paper trading using solar data through Alpaca Paper Trading API
+*/
+
 require('dotenv').config();
 const Alpaca = require('@alpacahq/alpaca-trade-api');
 

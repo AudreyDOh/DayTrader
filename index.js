@@ -1,3 +1,7 @@
+/* 
+Received data from MQTT Broker and forwards data via Websocket to Frontend 
+*/
+
 require('dotenv').config(); // Load .env variables
 const { authorizeGoogleSheets, logToSheet } = require('./logToSheets'); // Google Sheets integration for MQTT Data logging
 
