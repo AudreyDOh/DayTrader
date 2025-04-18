@@ -104,6 +104,14 @@ mqttClient.on('message', async (topic, message) => {
     const today = getTodayDateString();
     const now = Date.now();
 
+    console.log('🧪 MQTT received:', {
+      power: data.power,
+      powerZeroCount,
+      powerPositiveCount,
+      marketOpen,
+      cooldownMinsSinceClose: ((Date.now() - lastMarketCloseTime) / 60000).toFixed(2)
+    });
+
     if (data.power === 0) {
       powerZeroCount++;
       powerPositiveCount = 0;
@@ -116,11 +124,16 @@ mqttClient.on('message', async (topic, message) => {
 
     if (powerPositiveCount >= 5 && !marketOpen && timeSinceLastClose >= MARKET_COOLDOWN_MINUTES) {
       marketOpen = true;
+      io.emit('marketStatus', { open: true });
+
       tradeMood = determineTradeMood(data);
       const suggestedStocks = moodStockMap[tradeMood] || [];
 
       console.log('🧠 Trade Mood:', tradeMood);
       console.log('📈 Suggested Stocks:', suggestedStocks);
+
+      io.emit('weatherMood', { mood: moodNameMap[tradeMood] ?? tradeMood });
+      io.emit('suggestedStocks', { stocks: suggestedStocks });
 
       if (tradeMood === "Cold & Wet" || suggestedStocks.length === 0) {
         console.log("⛔ Skipping trades due to mood or empty stock list.");
@@ -145,16 +158,17 @@ mqttClient.on('message', async (topic, message) => {
     }
 
     console.log('🔍 Power check — zeroCount:', powerZeroCount, 'marketOpen:', marketOpen);
-   if (powerZeroCount >= 5 && marketOpen) {
-  console.log('🌙 Power off sustained — force closing all trades.');
-  marketOpen = false;
-  powerZeroCount = 0;
-  powerPositiveCount = 0;
-  lastMarketCloseTime = now;
-  if (tradeManager) {
-    await tradeManager.forceCloseAll();
-  }
-}
+    if (powerZeroCount >= 5 && marketOpen) {
+      console.log('🌙 Power off sustained — force closing all trades.');
+      io.emit('marketStatus', { open: false });
+      marketOpen = false;
+      powerZeroCount = 0;
+      powerPositiveCount = 0;
+      lastMarketCloseTime = now;
+      if (tradeManager) {
+        await tradeManager.forceCloseAll();
+      }
+    }
 
     prevPower = data.power;
     currentDay = today;
@@ -183,10 +197,9 @@ mqttClient.on('message', async (topic, message) => {
     });
     io.emit('weatherMood', { mood: formatted.mood });
 
- // ✅ this should always emit as long as tradeMood is set
-if (tradeMood && moodStockMap[tradeMood]) {
-  io.emit('suggestedStocks', { stocks: moodStockMap[tradeMood] });
-}
+    if (tradeMood && moodStockMap[tradeMood]) {
+      io.emit('suggestedStocks', { stocks: moodStockMap[tradeMood] });
+    }
 
     const values = [
       formatted.time,

@@ -43,6 +43,9 @@
   <li>Waiting for stock suggestions...</li>
 </ul>
 
+<h2>Market Status:</h2>
+<p id="marketStatus">Waiting for market signal...</p>
+
   <h2>Sensor Reading History</h2>
   <div id="history"></div>
 
@@ -84,6 +87,14 @@ Battery: ${latest.battery}
         .join('');
     });
 
+    // Listen for market open/close updates from backend
+socket.on('marketStatus', ({ open }) => {
+  const el = document.getElementById('marketStatus');
+  el.innerText = open ? "Market status: OPEN" : "Market status: CLOSED";
+  el.style.color = open ? "green" : "red";
+});
+
+
     // Display live clock in EST
     function updateClock() {
       const now = new Date().toLocaleString('en-US', {
@@ -99,6 +110,8 @@ Battery: ${latest.battery}
       });
       document.getElementById('clock').innerText = `Current EST Time: ${now}`;
     }
+
+
 
     setInterval(updateClock, 1000);
     updateClock();
