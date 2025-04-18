@@ -43,6 +43,8 @@ class TradeManager {
       time_in_force: 'day'
     };
 
+    console.log('📦 ORDER PAYLOAD:', JSON.stringify(order, null, 2));
+
     console.log('📤 [evaluateTradeEntry] DEBUG TEST ORDER PAYLOAD:');
     console.log(`   Symbol: ${testOrder.symbol}`);
     console.log(`   Qty (type: ${typeof testOrder.qty}): ${testOrder.qty}`);
@@ -181,6 +183,9 @@ class TradeManager {
         const qty = Math.floor(Number(pos.qty));
         const symbol = pos.symbol;
 
+
+
+        
         console.log(`🔄 [forceCloseAll] Closing ${side.toUpperCase()} position in ${symbol} (Qty: ${qty})`);
         await alpaca.createOrder({
           symbol,
