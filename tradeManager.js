@@ -75,11 +75,12 @@ class TradeManager {
 
       return { executed: true, side: 'buy', price: 'manual test' };
     } catch (err) {
-      console.error(`🚨 [evaluateTradeEntry] Order FAILED for ${symbol}`);
       const errData = err.response?.data || err.message || err;
+      console.error(`🚨 [evaluateTradeEntry] Order FAILED for ${symbol}`);
       console.error('🚨 FULL ERROR RESPONSE:\n', JSON.stringify(errData, null, 2));
       return { executed: false, reason: `Order failed: ${JSON.stringify(errData)}` };
     }
+    
 
     // === UNREACHABLE FOR NOW ===
     /*
