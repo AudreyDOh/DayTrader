@@ -16,6 +16,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
+
 const mqttClient = mqtt.connect('mqtt://tigoe.net', {
   username: process.env.MQTT_USERNAME,
   password: process.env.MQTT_PASSWORD
@@ -37,19 +38,35 @@ let powerPositiveCount = 0;
 let tradeManager = null;
 let lastMarketCloseTime = 0;
 const MARKET_COOLDOWN_MINUTES = 15;
+let tradingInterval = null;
 
 // (3) ===== TRADE LOGIC CONFIG =====
 
 const moodStockMap = {
-  "Bright & Dry": ["TSLA", "NVDA", "META"],
-  "Dark & Wet": ["SPY", "JNJ", "PG"],
-  "Cold & Bright": ["AMD", "PLTR", "UBER"],
-  "Hot & Humid": ["GME", "MARA", "COIN"],
-  "Cold & Wet": [],
-  "Hot & Dry": ["AI", "UPST", "HOOD"],
-  "Dry & Cloudy": ["TLT", "XLU", "GLD"],
-  "Bright & Wet": ["DIS", "SQ", "SOFI"]
+  "Bright & Dry": [ // Golden Clarity (아지랑이)
+    "TSLA", "NVDA", "META", "SHOP", "AAPL", "MSFT", "AMZN", "GOOGL"
+  ],
+  "Cold & Bright": [ // Crispy Breeze (여름이었ㄷr..)
+    "PLTR", "UBER", "ABNB", "NET", "ROKU", "SNOW", "DKNG"
+  ],
+  "Hot & Dry": [ // Rising Sun (TVXQ)
+    "AI", "UPST", "HOOD", "COIN", "AFRM", "SOFI", "LCID", "RIVN", "FSLY", "BB"
+  ],
+  "Hot & Humid": [ // Hazy Surge (눈 찌르는 무더위)
+    "GME", "MARA", "RIOT", "BBBY", "CVNA", "AMC", "OSTK", "SPCE", "BBIG", "DWAC"
+  ],
+  "Dark & Wet": [ // Black Rain (그런 날도 있는거다)
+    "SPY", "JNJ", "PG", "KO", "PEP", "VZ", "WMT", "XLP", "XLU"
+  ],
+  "Dry & Cloudy": [ // Wind Cries Mary (장미꽃 향기는 바람에 날리고)
+    "TLT", "XLU", "GLD", "XLF", "XLE", "USO", "BND"
+  ],
+  "Bright & Wet": [ // Sunshower (여우비)
+    "DIS", "SQ", "SOFI", "PYPL", "ZM", "LYFT", "WISH"
+  ],
+  "Cold & Wet": [] // Still Waters (이슬비가 내리는 날이면) → ⛔ No trades on rainy days
 };
+
 
 const moodNameMap = {
   "Bright & Dry": "Golden Clarity (아지랑이)",
@@ -119,6 +136,7 @@ mqttClient.on('message', async (topic, message) => {
       powerPositiveCount++;
     }
 
+
     // === Market open ===
     const timeSinceLastClose = (now - lastMarketCloseTime) / 60000;
     if (powerPositiveCount >= 5 && !marketOpen && timeSinceLastClose >= MARKET_COOLDOWN_MINUTES) {
@@ -139,15 +157,34 @@ mqttClient.on('message', async (topic, message) => {
           const account = await alpaca.getAccount();
           const equity = parseFloat(account.equity);
           tradeManager = new TradeManager(equity);
-          for (const symbol of suggestedStocks) {
-            await tradeManager.evaluateTradeEntry(
-              symbol,
-              tradeMood,
-              data.lux,
-              data.temperature,
-              data.humidity
-            );
-          }
+          tradingInterval = setInterval(async () => {
+            for (const symbol of suggestedStocks) {
+              const result = await tradeManager.evaluateTradeEntry(
+                symbol,
+                tradeMood,
+                data.lux,
+                data.temperature,
+                data.humidity
+              );
+          
+              if (!result?.executed && result?.reason) {
+                const timeNow = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
+                await logToSheet([
+                  timeNow,
+                  symbol,
+                  "Skipped",
+                  result.reason,
+                  data.lux,
+                  data.temperature,
+                  data.humidity,
+                  tradeMood,
+                  "—"
+                ], 'Skipped Trades');
+              }
+            }
+          }, 60_000); // every 60 seconds
+          
+      
         } catch (err) {
           console.error('❌ Alpaca error:', err.message);
         }
@@ -161,6 +198,10 @@ mqttClient.on('message', async (topic, message) => {
       console.log('🌙 Power off sustained — force closing all trades.');
       io.emit('marketStatus', { open: false });
 
+      if (tradingInterval) {
+        clearInterval(tradingInterval);
+        tradingInterval = null;
+      }
       marketOpen = false;
       powerZeroCount = 0;
       powerPositiveCount = 0;

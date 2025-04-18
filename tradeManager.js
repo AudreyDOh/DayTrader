@@ -19,20 +19,18 @@ class TradeManager {
   // === Public ===
 
   async evaluateTradeEntry(symbol, mood, lux, temp, humidity) {
-    const signal = await this.getEntrySignal(symbol);
-    if (!signal) return;
-
-    // Trade parameters from solar sensors
+    const signal = await this.getEntrySignal(symbol, true); // loosened entry
+    if (!signal) return { executed: false, reason: 'No breakout or low volume' };
+  
     const { takeProfit, stopLoss } = require('./solarStrategy').getRiskProfile(lux);
     const maxHoldMinutes = require('./solarStrategy').getMaxHoldMinutes(humidity);
-
+  
     const quote = await alpaca.getLastQuote(symbol);
     const entryPrice = quote.askPrice;
-
-    // Volatility estimation (optional)
+  
     const volatility = await alpaca.getVolatility(symbol);
-    const volatilityFactor = Math.min(volatility / 0.03, 1); // 3% volatility = scale down to 0
-
+    const volatilityFactor = Math.min(volatility / 0.03, 1);
+  
     const positionSize = require('./solarStrategy').getPositionSize(
       temp,
       this.accountBalance,
@@ -40,14 +38,14 @@ class TradeManager {
       stopLoss,
       volatilityFactor
     );
-
+  
     const { takeProfit: tpPrice, stopLoss: slPrice } = getTPandSL(
       entryPrice,
       signal.side,
       takeProfit,
       stopLoss
     );
-
+  
     await this.openTrade({
       symbol,
       side: signal.side,
@@ -59,7 +57,10 @@ class TradeManager {
       maxHoldMinutes,
       mood
     });
+  
+    return { executed: true }; // ✅ Successful trade
   }
+  
 
   async updateOpenTrades() {
     const now = Date.now();
@@ -138,24 +139,27 @@ class TradeManager {
     }
   }
 
-  async getEntrySignal(symbol) {
+  async getEntrySignal(symbol, loose = false) {
     const bars = await alpaca.getPreviousBars(symbol, 5);
     const current = await alpaca.getLastQuote(symbol);
-
+  
     const prevHigh = Math.max(...bars.map(b => b.high));
     const prevLow = Math.min(...bars.map(b => b.low));
     const avgVolume = bars.reduce((acc, b) => acc + b.volume, 0) / bars.length;
     const currentVolume = bars[bars.length - 1].volume;
-
-    if (current.askPrice > prevHigh && currentVolume > 2 * avgVolume) {
+  
+    const volumeThreshold = loose ? 1.5 : 2.0;
+  
+    if (current.askPrice > prevHigh && currentVolume > volumeThreshold * avgVolume) {
       return { side: 'long' };
     }
-    if (current.bidPrice < prevLow && currentVolume > 2 * avgVolume) {
+    if (current.bidPrice < prevLow && currentVolume > volumeThreshold * avgVolume) {
       return { side: 'short' };
     }
-
+  
     return null;
   }
+  
 }
 
 module.exports = TradeManager;
