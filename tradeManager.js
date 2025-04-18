@@ -45,7 +45,7 @@ class TradeManager {
       time_in_force: 'day'
     };
 
-    console.log('📦 ORDER PAYLOAD:', JSON.stringify(order, null, 2));
+    console.log('📦 ORDER PAYLOAD:', JSON.stringify(testOrder, null, 2));
 
     console.log('📤 [evaluateTradeEntry] DEBUG TEST ORDER PAYLOAD:');
     console.log(`   Symbol: ${testOrder.symbol}`);
