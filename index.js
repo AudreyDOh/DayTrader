@@ -139,10 +139,18 @@ mqttClient.on('message', async (topic, message) => {
           const account = await alpaca.getAccount();
           const equity = parseFloat(account.equity);
           tradeManager = new TradeManager(equity);
+          console.log('✅ [INDEX] TradeManager initialized with equity:', equity);
+
+          console.log('🔁 [INDEX] Starting trading loop for stocks:', suggestedStocks);
+
           tradingInterval = setInterval(async () => {
+            console.log(`⏱️ [INTERVAL] Scanning stocks under mood: ${tradeMood}`);
+
             console.log('🔁 Starting trading scan interval...');
 
             for (const symbol of suggestedStocks) {
+              console.log(`🔍 [LOOP] Attempting trade for: ${symbol}`);
+
               console.log(`⏱️ Running 60s trade scan for ${symbol} under mood ${tradeMood}`);
               const result = await tradeManager.evaluateTradeEntry(
                 symbol,

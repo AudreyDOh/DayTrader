@@ -6,6 +6,8 @@ Uses the Alpaca API to execute trades based on the signals generated from the so
 const { getTPandSL } = require('./solarStrategy');
 const { logToSheet } = require('./logToSheets');
 const { alpaca } = require('./alpaca');
+console.log('[🔧] Alpaca client loaded. Base URL:', alpaca.configuration.baseUrl);
+
 
 const TRADE_LOG_SHEET = 'Alpaca Trades';
 
@@ -75,11 +77,25 @@ class TradeManager {
 
       return { executed: true, side: 'buy', price: 'manual test' };
     } catch (err) {
-      const errData = err.response?.data || err.message || err;
       console.error(`🚨 [evaluateTradeEntry] Order FAILED for ${symbol}`);
-      console.error('🚨 FULL ERROR RESPONSE:\n', JSON.stringify(errData, null, 2));
-      return { executed: false, reason: `Order failed: ${JSON.stringify(errData)}` };
+    
+      // Print everything about the error
+      console.error('🧨 Full raw error object:', err);
+    
+      if (err?.response) {
+        console.error('🚨 Alpaca Response Status:', err.response.status);
+        console.error('🚨 Alpaca Response Headers:', JSON.stringify(err.response.headers, null, 2));
+        console.error('🚨 Alpaca Response Body:', JSON.stringify(err.response.data, null, 2));
+      } else {
+        console.error('🚨 No response from Alpaca. Raw message:', err.message);
+      }
+    
+      return {
+        executed: false,
+        reason: `Order failed: ${JSON.stringify(err?.response?.data || err.message || err)}`
+      };
     }
+    
     
 
     // === UNREACHABLE FOR NOW ===
