@@ -4,6 +4,8 @@ Received data from MQTT Broker and forwards data via Websocket to Frontend
 
 require('dotenv').config(); // Load .env variables
 const { authorizeGoogleSheets, logToSheet } = require('./logToSheets'); // Google Sheets integration for MQTT Data logging
+const TradeManager = require('./tradeManager'); // TradeManager for executing trades
+const Alpaca = require('@alpacahq/alpaca-trade-api'); // Alpaca API client
 
 // (1) ===== VARIABLES FOR SETUP =====
 const mqtt = require('mqtt');       // MQTT client
@@ -27,29 +29,50 @@ authorizeGoogleSheets(); // Authenticate once on startup
 
 // (2) ===== VARIABLES FOR MQTT Sensor Data =====
 
-// State: last reading and history
 const ENERGY_DATA_URL = 'https://tigoe.net/energy-data.json';
 let lastReading = null;
 const sensorHistory = [];
+let currentDay = null;
+let tradeMood = null;
+let prevPower = 0;
+let marketOpen = false;
+let powerZeroCount = 0;
+let powerPositiveCount = 0;
+let tradeManager = null;
+let lastMarketCloseTime = 0; // for cooldown tracking
+const MARKET_COOLDOWN_MINUTES = 15;
 
 // (3) ===== VARIABLES FOR TRADING =====
 
-// Daily Mood for what stocks to buy
 const moodStockMap = {
-  "Bright & Dry": ["TSLA", "NVDA", "META"],      // momentum, high-beta
-  "Dark & Wet": ["SPY", "JNJ", "PG"],            // stable, dividend
-  "Cold & Bright": ["AMD", "PLTR", "UBER"],      // mid-cap growth
-  "Hot & Humid": ["GME", "MARA", "COIN"],        // meme, speculative
-  "Cold & Wet": ["TLT", "XLU", "GLD"],           // defensive
-  "Hot & Dry": ["AI", "UPST", "HOOD"],           // volatile, gappers
+  "Bright & Dry": ["TSLA", "NVDA", "META"],
+  "Dark & Wet": ["SPY", "JNJ", "PG"],
+  "Cold & Bright": ["AMD", "PLTR", "UBER"],
+  "Hot & Humid": ["GME", "MARA", "COIN"],
+  "Cold & Wet": [],
+  "Hot & Dry": ["AI", "UPST", "HOOD"],
+  "Dry & Cloudy": ["TLT", "XLU", "GLD"],
+  "Bright & Wet": ["DIS", "SQ", "SOFI"]
 };
 
-//                      * * * * * * * * * * * * * * * * * * * * * * * * 
+const moodNameMap = {
+  "Bright & Dry": "Golden Clarity (아지랑이)",
+  "Dark & Wet": "Black Rain (그런 날도 있는거다)",
+  "Cold & Bright": "Crispy Breeze (여름이었ㄷr..)",
+  "Hot & Humid": "Hazy Surge (눈 찌르는 무더위)",
+  "Cold & Wet": "Still Waters (이슬비가 내리는 날이면)",
+  "Hot & Dry": "Rising Sun (TVXQ)",
+  "Dry & Cloudy": "Wind Cries Mary (장미꽃 향기는 바람에 날리고)",
+  "Bright & Wet": "Sunshower (여우비)"
+};
 
-//===== EVERYTHING TRADING RELATED =====
+const alpaca = new Alpaca({
+  keyId: process.env.ALPACA_API_KEY,
+  secretKey: process.env.ALPACA_SECRET_KEY,
+  paper: true
+});
 
-// Determine what stocks to buy/sell based on the mood at start of day
-function determineMood({ lux, temperature, humidity }) {
+function determineTradeMood({ lux, temperature, humidity }) {
   const isBright = lux > 1000;
   const isDark = lux <= 1000;
   const isHot = temperature > 15;
@@ -61,208 +84,145 @@ function determineMood({ lux, temperature, humidity }) {
   if (isBright && isDry && isCold) return "Cold & Bright";
   if (isDark && isWet && isCold) return "Cold & Wet";
   if (isDark && isWet && isHot) return "Hot & Humid";
-  if (isBright && isWet && isCold) return "Bright & Wet"; // optional
-  if (isDark && isDry) return "Dry & Cloudy"; // optional
+  if (isBright && isWet && isCold) return "Bright & Wet";
+  if (isDark && isDry) return "Dry & Cloudy";
   if (isBright && isDry) return "Bright & Dry";
   if (isDark && isWet) return "Dark & Wet";
 
   return 'Unknown';
 }
 
-// ======= EVERYTHING SENSOR RELATED =======
-// ===== Fetch Historical Data from MQTT =====
-axios.get(ENERGY_DATA_URL, { responseType: 'text' })
-  .then(response => {
-    const lines = response.data.trim().split('\n');
-    const parsed = lines
-      .map(line => {
-        try {
-          return JSON.parse(line);
-        } catch (e) {
-          return null;
-        }
-      })
-      .filter(entry => entry && entry.creator === 'audrey' && entry.lux !== undefined);
-
-    const formattedData = parsed.map(entry => ({
-      timeStamp: entry.timeStamp, // for sorting
-      time: new Date(entry.timeStamp).toLocaleString('en-US', {
-        timeZone: 'America/New_York'
-      }),
-      temperature: entry.temperature ?? '—',
-      humidity: entry.humidity ?? '—',
-      lux: entry.lux ?? '—',
-      current: entry.current ?? '—',
-      power: entry.power ?? '—',
-      battery: entry.battery ?? '—',
-      mood: 'Unknown'
-    }));
-
-    // Sort by timestamp descending (most recent first)
-    formattedData.sort((a, b) => new Date(b.timeStamp) - new Date(a.timeStamp));
-
-    // Save the 5 most recent
-    sensorHistory.push(...formattedData.slice(0, 5));
-
-    console.log(`📥 Loaded ${sensorHistory.length} Audrey entries from history.`);
-  })
-  .catch(err => {
-    console.error('❌ Failed to fetch Audrey data history:', err.message);
-  });
-
-let currentDay = null;
-let dailyMood = null;
-
-// ===== Utilities =====
-
-// Convert to YYYY-MM-DD in New York time
-function getTodayDateString() {
-  const estDate = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'America/New_York',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
-  }).format(new Date());
-
-  const [month, day, year] = estDate.split('/');
-  return `${year}-${month}-${day}`;
-}
-
-// Classify weather mood based on brightness, temperature, and humidity
-function classifyWeatherMood({ lux, temperature, humidity }) {
-  const brightness = lux > 10000 ? 'High' : 'Low';
-  const temp = temperature > 22 ? 'High' : 'Low';
-  const humid = humidity > 50 ? 'High' : 'Low';
-
-  if (brightness === 'High' && temp === 'High' && humid === 'Low') return 'Sunny Bold';
-  if (brightness === 'High' && temp === 'Low' && humid === 'Low') return 'Cool Clear';
-  if (brightness === 'High' && temp === 'High' && humid === 'High') return 'Hot & Sticky';
-  if (brightness === 'High' && temp === 'Low' && humid === 'High') return 'Bright & Damp';
-  if (brightness === 'Low' && temp === 'High' && humid === 'High') return 'Humid Haze';
-  if (brightness === 'Low' && temp === 'Low' && humid === 'High') return 'Foggy Chill';
-  if (brightness === 'Low' && temp === 'Low' && humid === 'Low') return 'Dry Shade';
-  if (brightness === 'Low' && temp === 'High' && humid === 'Low') return 'Warm Gloom';
-
-  return "Unknown";
-}
-
-// ===== MQTT Connect =====
-
 mqttClient.on('connect', () => {
   console.log('✅ Connected to MQTT broker');
   mqttClient.subscribe(topic);
 });
 
-// ===== Handle Incoming MQTT Messages =====
-
-mqttClient.on('message', (topic, message) => {
+mqttClient.on('message', async (topic, message) => {
   const msg = message.toString();
-
   try {
     const data = JSON.parse(msg);
+    const today = getTodayDateString();
+    const now = Date.now();
 
-    if ('lux' in data || 'temperature' in data || 'humidity' in data || 'power' in data || 'current' in data || 'battery' in data) {
-      const today = getTodayDateString();
-      let suggestedStocks = []; // ✅ FIXED: define it outside the if-block
-
-      // Set daily mood once per day at first valid solar reading
-      if (data.power > 0 && today !== currentDay) {
-        const tradeMood = determineMood(data);
-        suggestedStocks = moodStockMap[tradeMood] || [];
-
-        console.log(`🪐 Trade Mood: ${tradeMood}`);
-        console.log(`📈 Suggested Stocks:`, suggestedStocks);
-
-        dailyMood = classifyWeatherMood(data);
-        currentDay = today;
-        console.log(`📅 New day: ${today}, Mood: ${dailyMood}`);
-        // Emit the mood to the frontend: emit means sending data to frontend
-        io.emit('weatherMood', {
-          mood: dailyMood
-        });
-        // Emit the suggested stocks to the frontend
-        io.emit('suggestedStocks', {
-          stocks: suggestedStocks
-        });
-      }
-
-      // ✅ logToSheet now safely includes suggestedStocks
-      const values = [
-        new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }),
-        data.lux,
-        data.temperature,
-        data.humidity,
-        data.current,
-        data.power,
-        data.battery,
-        dailyMood ?? 'Not Set',
-        suggestedStocks.join(', ')
-      ];
-
-      console.log('📨 logToSheet called with:', values);
-      logToSheet(values);
-
-      // Convert UTC timestamp to EST or use current time
-      const estTime = new Date(data.timeStamp ?? Date.now()).toLocaleString('en-US', {
-        timeZone: 'America/New_York'
-      });
-
-      const formatted = {
-        time: estTime,
-        temperature: data.temperature ?? '—',
-        humidity: data.humidity ?? '—',
-        lux: data.lux ?? '—',
-        current: data.current ?? '—',
-        power: data.power ?? '—',
-        battery: data.battery ?? '—',
-        mood: dailyMood ?? 'Not Set'
-      };
-
-      console.log('Sensor reading:', formatted);
-
-      lastReading = formatted;
-      sensorHistory.unshift(formatted);
-      if (sensorHistory.length > 5) sensorHistory.pop();
-
-      io.emit('mqttData', {
-        latest: lastReading,
-        history: sensorHistory
-      });
+    if (data.power === 0) {
+      powerZeroCount++;
+      powerPositiveCount = 0;
     } else {
-      console.log('⚠️ Ignored non-sensor message:', msg);
+      powerZeroCount = 0;
+      powerPositiveCount++;
     }
+
+    const timeSinceLastClose = (now - lastMarketCloseTime) / 60000;
+
+    if (powerPositiveCount >= 5 && !marketOpen && timeSinceLastClose >= MARKET_COOLDOWN_MINUTES) {
+      marketOpen = true;
+      tradeMood = determineTradeMood(data);
+      const suggestedStocks = moodStockMap[tradeMood] || [];
+
+      console.log('🧠 Trade Mood:', tradeMood);
+      console.log('📈 Suggested Stocks:', suggestedStocks);
+
+      if (tradeMood === "Cold & Wet" || suggestedStocks.length === 0) {
+        console.log("⛔ Skipping trades due to mood or empty stock list.");
+      } else {
+        try {
+          const account = await alpaca.getAccount();
+          const equity = parseFloat(account.equity);
+          tradeManager = new TradeManager(equity);
+          for (const symbol of suggestedStocks) {
+            await tradeManager.evaluateTradeEntry(
+              symbol,
+              tradeMood,
+              data.lux,
+              data.temperature,
+              data.humidity
+            );
+          }
+        } catch (err) {
+          console.error('❌ Alpaca error:', err.message);
+        }
+      }
+    }
+
+    console.log('🔍 Power check — zeroCount:', powerZeroCount, 'marketOpen:', marketOpen);
+   if (powerZeroCount >= 5 && marketOpen) {
+  console.log('🌙 Power off sustained — force closing all trades.');
+  marketOpen = false;
+  powerZeroCount = 0;
+  powerPositiveCount = 0;
+  lastMarketCloseTime = now;
+  if (tradeManager) {
+    await tradeManager.forceCloseAll();
+  }
+}
+
+    prevPower = data.power;
+    currentDay = today;
+
+    const formatted = {
+      time: new Date(data.timeStamp ?? Date.now()).toLocaleString('en-US', {
+        timeZone: 'America/New_York'
+      }),
+      temperature: data.temperature ?? '—',
+      humidity: data.humidity ?? '—',
+      lux: data.lux ?? '—',
+      current: data.current ?? '—',
+      power: data.power ?? '—',
+      battery: data.battery ?? '—',
+      mood: moodNameMap[tradeMood] ?? tradeMood
+    };
+
+    console.log('Sensor reading:', formatted);
+    lastReading = formatted;
+    sensorHistory.unshift(formatted);
+    if (sensorHistory.length > 5) sensorHistory.pop();
+
+    io.emit('mqttData', {
+      latest: lastReading,
+      history: sensorHistory
+    });
+    io.emit('weatherMood', { mood: formatted.mood });
+
+ // ✅ this should always emit as long as tradeMood is set
+if (tradeMood && moodStockMap[tradeMood]) {
+  io.emit('suggestedStocks', { stocks: moodStockMap[tradeMood] });
+}
+
+    const values = [
+      formatted.time,
+      data.lux,
+      data.temperature,
+      data.humidity,
+      data.current,
+      data.power,
+      data.battery,
+      formatted.mood,
+      (moodStockMap[tradeMood] || []).join(', ')
+    ];
+
+    logToSheet(values);
   } catch (err) {
     console.log('❌ Invalid JSON:', msg);
   }
 });
 
-// ===== Frontend Connection =====
-
 io.on('connection', socket => {
   console.log('🔌 New frontend connected');
-
-  // Emit latest sensor data
   if (lastReading || sensorHistory.length > 0) {
     socket.emit('mqttData', {
       latest: lastReading ?? sensorHistory[0],
       history: sensorHistory
     });
   }
-
-  // 👇 Emit mood and suggested stocks on every frontend connection
-  if (dailyMood) {
-    socket.emit('weatherMood', { mood: dailyMood });
+  if (tradeMood) {
+    socket.emit('weatherMood', { mood: moodNameMap[tradeMood] ?? tradeMood });
   }
-  if (currentDay && moodStockMap[dailyMood]) {
-    socket.emit('suggestedStocks', { stocks: moodStockMap[dailyMood] });
+  if (moodStockMap[tradeMood]) {
+    socket.emit('suggestedStocks', { stocks: moodStockMap[tradeMood] });
   }
 });
 
-// ===== Serve Static Frontend =====
-
 app.use(express.static('public'));
-
-// ===== Start Server =====
 
 server.listen(3000, () => {
   console.log('🌐 Server running at http://localhost:3000');
