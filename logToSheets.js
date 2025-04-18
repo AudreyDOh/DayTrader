@@ -8,10 +8,9 @@ const { google } = require('googleapis');
 let sheetsClient; // reused after auth
 
 async function authorizeGoogleSheets() {
-  const credentials = process.env.GOOGLE_CREDENTIALS
-    ? JSON.parse(process.env.GOOGLE_CREDENTIALS) // Render.com
-    : require('./credentials.json');             // Local dev
-
+  const decoded = Buffer.from(process.env.GOOGLE_CREDENTIALS, 'base64').toString('utf-8');
+  const credentials = JSON.parse(decoded);
+  
   const auth = new google.auth.GoogleAuth({
     credentials,
     scopes: ['https://www.googleapis.com/auth/spreadsheets'],
