@@ -140,6 +140,8 @@ mqttClient.on('message', async (topic, message) => {
           const equity = parseFloat(account.equity);
           tradeManager = new TradeManager(equity);
           tradingInterval = setInterval(async () => {
+            console.log('🔁 Starting trading scan interval...');
+
             for (const symbol of suggestedStocks) {
               console.log(`⏱️ Running 60s trade scan for ${symbol} under mood ${tradeMood}`);
               const result = await tradeManager.evaluateTradeEntry(
