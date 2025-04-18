@@ -3,33 +3,29 @@ Received data from MQTT Broker and forwards data via Websocket to Frontend
 */
 
 require('dotenv').config(); // Load .env variables
-const { authorizeGoogleSheets, logToSheet } = require('./logToSheets'); // Google Sheets integration for MQTT Data logging
-const TradeManager = require('./tradeManager'); // TradeManager for executing trades
+const { authorizeGoogleSheets, logToSheet } = require('./logToSheets'); // Google Sheets integration
+const TradeManager = require('./tradeManager'); // Executes trades
 const Alpaca = require('@alpacahq/alpaca-trade-api'); // Alpaca API client
 
-// (1) ===== VARIABLES FOR SETUP =====
-const mqtt = require('mqtt');       // MQTT client
-const express = require('express'); // Web server
-const http = require('http');       // Needed for socket.io
-const socketIo = require('socket.io'); // Real-time frontend updates
-const axios = require('axios');     // For future Alpaca integration
-
+// (1) ===== SETUP =====
+const mqtt = require('mqtt');
+const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
-// MQTT broker config
 const mqttClient = mqtt.connect('mqtt://tigoe.net', {
   username: process.env.MQTT_USERNAME,
   password: process.env.MQTT_PASSWORD
 });
 const topic = 'energy/audrey';
 
-authorizeGoogleSheets(); // Authenticate once on startup
+authorizeGoogleSheets();
 
-// (2) ===== VARIABLES FOR MQTT Sensor Data =====
+// (2) ===== STATE =====
 
-const ENERGY_DATA_URL = 'https://tigoe.net/energy-data.json';
 let lastReading = null;
 const sensorHistory = [];
 let currentDay = null;
@@ -39,10 +35,10 @@ let marketOpen = false;
 let powerZeroCount = 0;
 let powerPositiveCount = 0;
 let tradeManager = null;
-let lastMarketCloseTime = 0; // for cooldown tracking
+let lastMarketCloseTime = 0;
 const MARKET_COOLDOWN_MINUTES = 15;
 
-// (3) ===== VARIABLES FOR TRADING =====
+// (3) ===== TRADE LOGIC CONFIG =====
 
 const moodStockMap = {
   "Bright & Dry": ["TSLA", "NVDA", "META"],
@@ -89,8 +85,10 @@ function determineTradeMood({ lux, temperature, humidity }) {
   if (isBright && isDry) return "Bright & Dry";
   if (isDark && isWet) return "Dark & Wet";
 
-  return 'Unknown';
+  return "Unknown";
 }
+
+// (4) ===== MQTT LISTENER =====
 
 mqttClient.on('connect', () => {
   console.log('✅ Connected to MQTT broker');
@@ -101,7 +99,7 @@ mqttClient.on('message', async (topic, message) => {
   const msg = message.toString();
   try {
     const data = JSON.parse(msg);
-    const today = getTodayDateString();
+    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
     const now = Date.now();
 
     console.log('🧪 MQTT received:', {
@@ -109,9 +107,10 @@ mqttClient.on('message', async (topic, message) => {
       powerZeroCount,
       powerPositiveCount,
       marketOpen,
-      cooldownMinsSinceClose: ((Date.now() - lastMarketCloseTime) / 60000).toFixed(2)
+      cooldownMinsSinceClose: ((now - lastMarketCloseTime) / 60000).toFixed(2)
     });
 
+    // Track power trend
     if (data.power === 0) {
       powerZeroCount++;
       powerPositiveCount = 0;
@@ -120,8 +119,8 @@ mqttClient.on('message', async (topic, message) => {
       powerPositiveCount++;
     }
 
+    // === Market open ===
     const timeSinceLastClose = (now - lastMarketCloseTime) / 60000;
-
     if (powerPositiveCount >= 5 && !marketOpen && timeSinceLastClose >= MARKET_COOLDOWN_MINUTES) {
       marketOpen = true;
       io.emit('marketStatus', { open: true });
@@ -135,9 +134,7 @@ mqttClient.on('message', async (topic, message) => {
       io.emit('weatherMood', { mood: moodNameMap[tradeMood] ?? tradeMood });
       io.emit('suggestedStocks', { stocks: suggestedStocks });
 
-      if (tradeMood === "Cold & Wet" || suggestedStocks.length === 0) {
-        console.log("⛔ Skipping trades due to mood or empty stock list.");
-      } else {
+      if (tradeMood !== "Cold & Wet" && suggestedStocks.length > 0) {
         try {
           const account = await alpaca.getAccount();
           const equity = parseFloat(account.equity);
@@ -154,25 +151,27 @@ mqttClient.on('message', async (topic, message) => {
         } catch (err) {
           console.error('❌ Alpaca error:', err.message);
         }
+      } else {
+        console.log("⛔ Skipping trades due to mood or empty stock list.");
       }
     }
 
-    console.log('🔍 Power check — zeroCount:', powerZeroCount, 'marketOpen:', marketOpen);
+    // === Market close ===
     if (powerZeroCount >= 5 && marketOpen) {
       console.log('🌙 Power off sustained — force closing all trades.');
       io.emit('marketStatus', { open: false });
+
       marketOpen = false;
       powerZeroCount = 0;
       powerPositiveCount = 0;
       lastMarketCloseTime = now;
+
       if (tradeManager) {
         await tradeManager.forceCloseAll();
       }
     }
 
-    prevPower = data.power;
-    currentDay = today;
-
+    // === Emit data & log ===
     const formatted = {
       time: new Date(data.timeStamp ?? Date.now()).toLocaleString('en-US', {
         timeZone: 'America/New_York'
@@ -186,7 +185,7 @@ mqttClient.on('message', async (topic, message) => {
       mood: moodNameMap[tradeMood] ?? tradeMood
     };
 
-    console.log('Sensor reading:', formatted);
+    console.log('📡 Sensor reading:', formatted);
     lastReading = formatted;
     sensorHistory.unshift(formatted);
     if (sensorHistory.length > 5) sensorHistory.pop();
@@ -195,11 +194,6 @@ mqttClient.on('message', async (topic, message) => {
       latest: lastReading,
       history: sensorHistory
     });
-    io.emit('weatherMood', { mood: formatted.mood });
-
-    if (tradeMood && moodStockMap[tradeMood]) {
-      io.emit('suggestedStocks', { stocks: moodStockMap[tradeMood] });
-    }
 
     const values = [
       formatted.time,
@@ -219,21 +213,27 @@ mqttClient.on('message', async (topic, message) => {
   }
 });
 
+// (5) ===== SOCKET CONNECTION TO FRONTEND =====
+
 io.on('connection', socket => {
   console.log('🔌 New frontend connected');
+
   if (lastReading || sensorHistory.length > 0) {
     socket.emit('mqttData', {
       latest: lastReading ?? sensorHistory[0],
       history: sensorHistory
     });
   }
+
   if (tradeMood) {
     socket.emit('weatherMood', { mood: moodNameMap[tradeMood] ?? tradeMood });
+    socket.emit('suggestedStocks', { stocks: moodStockMap[tradeMood] || [] });
   }
-  if (moodStockMap[tradeMood]) {
-    socket.emit('suggestedStocks', { stocks: moodStockMap[tradeMood] });
-  }
+
+  socket.emit('marketStatus', { open: marketOpen });
 });
+
+// (6) ===== SERVER START =====
 
 app.use(express.static('public'));
 
