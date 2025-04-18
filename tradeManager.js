@@ -1,171 +1,153 @@
-/* 
+/*
 Manage trading operations, including entry and exit signals, position sizing, and risk management.
 Uses the Alpaca API to execute trades based on the signals generated from the solar sensors.
 */
 
 const { getTPandSL } = require('./solarStrategy');
 const { logToSheet } = require('./logToSheets');
-const alpaca = require('./alpaca'); 
+const alpaca = require('./alpaca');
 
 const TRADE_LOG_SHEET = 'Alpaca Trades';
 
 class TradeManager {
   constructor(accountBalance) {
     this.accountBalance = accountBalance;
-    this.openTrades = []; // multiple trades per symbol
+    this.openTrades = [];
     this.closedTrades = [];
   }
 
   // === Public ===
 
   async evaluateTradeEntry(symbol, mood, lux, temp, humidity) {
+    console.log(`🔍 [evaluateTradeEntry] Evaluating: ${symbol} | Mood: ${mood} | Lux: ${lux} | Temp: ${temp} | Humidity: ${humidity}`);
+    
     const signal = await this.getEntrySignal(symbol, true); // loosened entry
-    if (!signal) return { executed: false, reason: 'No breakout or low volume' };
-  
-    const { takeProfit, stopLoss } = require('./solarStrategy').getRiskProfile(lux);
-    const maxHoldMinutes = require('./solarStrategy').getMaxHoldMinutes(humidity);
-  
-    const quote = await alpaca.getLastQuote(symbol);
-    const entryPrice = quote.askPrice;
-  
-    const volatility = await alpaca.getVolatility(symbol);
-    const volatilityFactor = Math.min(volatility / 0.03, 1);
-  
-    const positionSize = require('./solarStrategy').getPositionSize(
-      temp,
-      this.accountBalance,
-      entryPrice,
-      stopLoss,
-      volatilityFactor
-    );
-  
-    const { takeProfit: tpPrice, stopLoss: slPrice } = getTPandSL(
-      entryPrice,
-      signal.side,
-      takeProfit,
-      stopLoss
-    );
-  
-    await this.openTrade({
+    if (!signal) {
+      console.log(`❌ [evaluateTradeEntry] No valid entry signal for ${symbol}`);
+      return { executed: false, reason: 'No breakout or low volume' };
+    }
+
+    const { takeProfit, stopLoss } = getTPandSL(symbol, lux, mood);
+
+    const positionSize = Math.min(1, this.accountBalance * 0.01); // cap at 1% of account
+    const qty = Math.floor(positionSize / signal.price);
+    if (qty < 1) {
+      console.log(`⚠️ [evaluateTradeEntry] Quantity too low to trade ${symbol}`);
+      return { executed: false, reason: 'Position size too small' };
+    }
+
+    const order = {
       symbol,
-      side: signal.side,
-      entryPrice,
-      shares: positionSize,
-      tpPrice,
-      slPrice,
-      entryTime: Date.now(),
-      maxHoldMinutes,
-      mood
-    });
-    console.log(`⏭️ Skipping ${symbol} — Reason: No breakout or low volume`);
+      qty,
+      side: 'buy',
+      type: 'market',
+      time_in_force: 'day'
+    };
 
-    return { executed: true }; // ✅ Successful trade
+    try {
+      console.log(`📤 [evaluateTradeEntry] Placing order: ${JSON.stringify(order)}`);
+      const trade = await alpaca.createOrder(order);
+      console.log(`✅ [evaluateTradeEntry] Order placed: ${trade.id}`);
+
+      const timeNow = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
+      await logToSheet([
+        timeNow,
+        symbol,
+        'BUY',
+        `Qty: ${qty}`,
+        lux,
+        temp,
+        humidity,
+        mood,
+        `TP: ${takeProfit}, SL: ${stopLoss}`
+      ], TRADE_LOG_SHEET);
+
+      this.openTrades.push({ symbol, qty, entry: signal.price, mood, time: Date.now() });
+
+      return { executed: true, side: 'buy', price: signal.price };
+    } catch (err) {
+      console.error(`🚨 [evaluateTradeEntry] Order failed for ${symbol}:`, err.message);
+      return { executed: false, reason: `Order failed: ${err.message}` };
+    }
   }
-  
 
-  async updateOpenTrades() {
-    const now = Date.now();
+  async getEntrySignal(symbol, loosened = false) {
+    try {
+      const bars = await alpaca.getBarsV2(symbol, {
+        timeframe: '1Min',
+        limit: 5
+      });
 
-    for (let i = this.openTrades.length - 1; i >= 0; i--) {
-      const trade = this.openTrades[i];
-      const current = await alpaca.getLastQuote(trade.symbol);
-      const price = trade.side === 'long' ? current.bidPrice : current.askPrice;
-
-      // Check TP/SL
-      const hitTP = trade.side === 'long' ? price >= trade.tpPrice : price <= trade.tpPrice;
-      const hitSL = trade.side === 'long' ? price <= trade.slPrice : price >= trade.slPrice;
-      const ageMinutes = (now - trade.entryTime) / (60 * 1000);
-
-      if (hitTP || hitSL || ageMinutes > trade.maxHoldMinutes) {
-        await this.closeTrade(trade, price, hitTP ? 'TP' : hitSL ? 'SL' : 'TIME');
-        this.openTrades.splice(i, 1);
+      const barArray = [];
+      for await (let b of bars) {
+        barArray.push(b);
       }
+
+      if (barArray.length < 2) return false;
+
+      const latest = barArray[barArray.length - 1];
+      const prev = barArray[barArray.length - 2];
+
+      const volume = latest.volume;
+      const avgVolume = (barArray.reduce((sum, b) => sum + b.volume, 0)) / barArray.length;
+
+      const price = latest.close;
+      const prevHigh = Math.max(...barArray.map(b => b.high));
+
+      console.log(`📊 [getEntrySignal] ${symbol} | Price: ${price} | PrevHigh: ${prevHigh} | Volume: ${volume} | AvgVol: ${avgVolume}`);
+
+      if (loosened) {
+        if (volume < avgVolume * 1.2) return false;
+        if (price < prevHigh * 1.001) return false;
+      } else {
+        if (volume < avgVolume * 2) return false;
+        if (price < prevHigh * 1.01) return false;
+      }
+
+      return { price };
+    } catch (err) {
+      console.error(`🚨 [getEntrySignal] Failed to retrieve data for ${symbol}:`, err.message);
+      return false;
     }
   }
 
   async forceCloseAll() {
-    for (let trade of this.openTrades) {
-      const current = await alpaca.getLastQuote(trade.symbol);
-      const price = trade.side === 'long' ? current.bidPrice : current.askPrice;
-      await this.closeTrade(trade, price, 'FORCED');
-    }
-    this.openTrades = [];
-  }
-
-  // === Internal ===
-
-  async openTrade(trade) {
-    console.log(`🚀 Open ${trade.side.toUpperCase()} trade: ${trade.symbol} @ ${trade.entryPrice} x${trade.shares}`);
     try {
-      await alpaca.placeOrder(
-        trade.symbol,
-        trade.shares,
-        trade.side === 'short' ? 'sell' : 'buy'
-      );
-      this.openTrades.push(trade);
+      console.log('🔻 [forceCloseAll] Cancelling all open orders...');
+      await alpaca.cancelAllOrders();
+      const positions = await alpaca.getPositions();
+
+      for (const pos of positions) {
+        const side = pos.side === 'long' ? 'sell' : 'buy';
+        const qty = Math.floor(Number(pos.qty));
+        const symbol = pos.symbol;
+
+        console.log(`🔄 [forceCloseAll] Closing ${side.toUpperCase()} position in ${symbol} (Qty: ${qty})`);
+        await alpaca.createOrder({
+          symbol,
+          qty,
+          side,
+          type: 'market',
+          time_in_force: 'day'
+        });
+
+        const timeNow = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
+        await logToSheet([
+          timeNow,
+          symbol,
+          side.toUpperCase(),
+          `Force close`,
+          '—', '—', '—',
+          'Auto-Close',
+          '—'
+        ], TRADE_LOG_SHEET);
+      }
+
+      console.log('✅ [forceCloseAll] All positions closed.');
     } catch (err) {
-      console.error(`❌ Failed to place ${trade.side} order for ${trade.symbol}:`, err.message);
+      console.error('🚨 [forceCloseAll] Failed to close positions:', err.message);
     }
   }
-
-  async closeTrade(trade, exitPrice, reason) {
-    console.log(`💸 Close ${trade.side.toUpperCase()} trade: ${trade.symbol} @ ${exitPrice} (${reason})`);
-    const closedTrade = { ...trade, exitPrice, reason, exitTime: Date.now() };
-    this.closedTrades.push(closedTrade);
-
-    try {
-      await alpaca.placeOrder(
-        trade.symbol,
-        trade.shares,
-        trade.side === 'short' ? 'buy' : 'sell' // closing a short = buy, long = sell
-      );
-    } catch (err) {
-      console.error(`❌ Failed to close ${trade.side} trade for ${trade.symbol}:`, err.message);
-    }
-
-    try {
-      await logToSheet([
-        new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }),
-        closedTrade.symbol,
-        closedTrade.side,
-        closedTrade.entryPrice,
-        closedTrade.tpPrice,
-        closedTrade.slPrice,
-        exitPrice,
-        reason,
-        closedTrade.mood || 'Unknown'
-      ], TRADE_LOG_SHEET);
-    } catch (err) {
-      console.error('❌ Failed to log trade to Google Sheets:', err.message);
-    }
-  }
-
-  async getEntrySignal(symbol, loose = true) {
-    const bars = await alpaca.getPreviousBars(symbol, 5);
-    const current = await alpaca.getLastQuote(symbol);
-  
-    const prevHigh = Math.max(...bars.map(b => b.high));
-    const prevLow = Math.min(...bars.map(b => b.low));
-    const avgVolume = bars.reduce((acc, b) => acc + b.volume, 0) / bars.length;
-    const currentVolume = bars[bars.length - 1].volume;
-  
-    const price = current.askPrice;
-    const bid = current.bidPrice;
-  
-    const looseBreakoutBuffer = 0.995; // allows entry if price is just 0.5% below previous high
-    const volumeThreshold = 1.1; // just 10% above average
-  
-    // Loosened breakout & volume logic
-    if (price > prevHigh * looseBreakoutBuffer && currentVolume > volumeThreshold * avgVolume) {
-      return { side: 'long' };
-    }
-    if (bid < prevLow * 1.005 && currentVolume > volumeThreshold * avgVolume) {
-      return { side: 'short' };
-    }
-  
-    return null;
-  }
-  
 }
 
 module.exports = TradeManager;
