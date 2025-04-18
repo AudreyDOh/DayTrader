@@ -5,7 +5,6 @@ Received data from MQTT Broker and forwards data via Websocket to Frontend
 require('dotenv').config(); // Load .env variables
 const { authorizeGoogleSheets, logToSheet } = require('./logToSheets'); // Google Sheets integration for MQTT Data logging
 
-
 // (1) ===== VARIABLES FOR SETUP =====
 const mqtt = require('mqtt');       // MQTT client
 const express = require('express'); // Web server
@@ -47,8 +46,6 @@ const moodStockMap = {
 
 //                      * * * * * * * * * * * * * * * * * * * * * * * * 
 
-
-
 //===== EVERYTHING TRADING RELATED =====
 
 // Determine what stocks to buy/sell based on the mood at start of day
@@ -72,7 +69,6 @@ function determineMood({ lux, temperature, humidity }) {
   return "Unknown";
 }
 
-
 // ======= EVERYTHING SENSOR RELATED =======
 // ===== Fetch Historical Data from MQTT =====
 axios.get(ENERGY_DATA_URL, { responseType: 'text' })
@@ -88,33 +84,31 @@ axios.get(ENERGY_DATA_URL, { responseType: 'text' })
       })
       .filter(entry => entry && entry.creator === 'audrey' && entry.lux !== undefined);
 
-      const formattedData = parsed.map(entry => ({
-        timeStamp: entry.timeStamp, // for sorting
-        time: new Date(entry.timeStamp).toLocaleString('en-US', {
-          timeZone: 'America/New_York'
-        }),
-        temperature: entry.temperature ?? '—',
-        humidity: entry.humidity ?? '—',
-        lux: entry.lux ?? '—',
-        current: entry.current ?? '—',
-        power: entry.power ?? '—',
-        battery: entry.battery ?? '—',
-        mood: 'Unknown'
-      }));
-      
-      // Sort by timestamp descending (most recent first)
-      formattedData.sort((a, b) => new Date(b.timeStamp) - new Date(a.timeStamp));
-      
-      // Save the 5 most recent
-      sensorHistory.push(...formattedData.slice(0, 5));
-      
+    const formattedData = parsed.map(entry => ({
+      timeStamp: entry.timeStamp, // for sorting
+      time: new Date(entry.timeStamp).toLocaleString('en-US', {
+        timeZone: 'America/New_York'
+      }),
+      temperature: entry.temperature ?? '—',
+      humidity: entry.humidity ?? '—',
+      lux: entry.lux ?? '—',
+      current: entry.current ?? '—',
+      power: entry.power ?? '—',
+      battery: entry.battery ?? '—',
+      mood: 'Unknown'
+    }));
+
+    // Sort by timestamp descending (most recent first)
+    formattedData.sort((a, b) => new Date(b.timeStamp) - new Date(a.timeStamp));
+
+    // Save the 5 most recent
+    sensorHistory.push(...formattedData.slice(0, 5));
 
     console.log(`📥 Loaded ${sensorHistory.length} Audrey entries from history.`);
   })
   .catch(err => {
     console.error('❌ Failed to fetch Audrey data history:', err.message);
   });
-
 
 let currentDay = null;
 let dailyMood = null;
@@ -149,9 +143,8 @@ function classifyWeatherMood({ lux, temperature, humidity }) {
   if (brightness === 'Low' && temp === 'Low' && humid === 'Low') return 'Dry Shade';
   if (brightness === 'Low' && temp === 'High' && humid === 'Low') return 'Warm Gloom';
 
-  return 'Unknown';
+  return 'Unknown";
 }
-
 
 // ===== MQTT Connect =====
 
@@ -170,15 +163,15 @@ mqttClient.on('message', (topic, message) => {
 
     if ('lux' in data || 'temperature' in data || 'humidity' in data || 'power' in data || 'current' in data || 'battery' in data) {
       const today = getTodayDateString();
+      let suggestedStocks = []; // ✅ FIXED: define it outside the if-block
 
       // Set daily mood once per day at first valid solar reading
       if (data.power > 0 && today !== currentDay) {
-      
-        const tradeMood = determineMood(data); 
-const suggestedStocks = moodStockMap[tradeMood] || [];
+        const tradeMood = determineMood(data);
+        suggestedStocks = moodStockMap[tradeMood] || [];
 
-console.log(`🪐 Trade Mood: ${tradeMood}`);
-console.log(`📈 Suggested Stocks:`, suggestedStocks);
+        console.log(`🪐 Trade Mood: ${tradeMood}`);
+        console.log(`📈 Suggested Stocks:`, suggestedStocks);
 
         dailyMood = classifyWeatherMood(data);
         currentDay = today;
@@ -193,7 +186,8 @@ console.log(`📈 Suggested Stocks:`, suggestedStocks);
         });
       }
 
-      logToSheet([
+      // ✅ logToSheet now safely includes suggestedStocks
+      const values = [
         new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }),
         data.lux,
         data.temperature,
@@ -202,9 +196,11 @@ console.log(`📈 Suggested Stocks:`, suggestedStocks);
         data.power,
         data.battery,
         dailyMood ?? 'Not Set',
-        suggestedStocks?.join(', ') ?? ''
-      ]);
-      
+        suggestedStocks.join(', ')
+      ];
+
+      console.log('📨 logToSheet called with:', values);
+      logToSheet(values);
 
       // Convert UTC timestamp to EST or use current time
       const estTime = new Date(data.timeStamp ?? Date.now()).toLocaleString('en-US', {
@@ -223,7 +219,6 @@ console.log(`📈 Suggested Stocks:`, suggestedStocks);
       };
 
       console.log('Sensor reading:', formatted);
-
 
       lastReading = formatted;
       sensorHistory.unshift(formatted);
@@ -262,7 +257,6 @@ io.on('connection', socket => {
     socket.emit('suggestedStocks', { stocks: moodStockMap[dailyMood] });
   }
 });
-
 
 // ===== Serve Static Frontend =====
 
