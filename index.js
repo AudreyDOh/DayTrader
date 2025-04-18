@@ -66,7 +66,7 @@ function determineMood({ lux, temperature, humidity }) {
   if (isBright && isDry) return "Bright & Dry";
   if (isDark && isWet) return "Dark & Wet";
 
-  return "Unknown";
+  return 'Unknown';
 }
 
 // ======= EVERYTHING SENSOR RELATED =======
@@ -143,7 +143,7 @@ function classifyWeatherMood({ lux, temperature, humidity }) {
   if (brightness === 'Low' && temp === 'Low' && humid === 'Low') return 'Dry Shade';
   if (brightness === 'Low' && temp === 'High' && humid === 'Low') return 'Warm Gloom';
 
-  return 'Unknown";
+  return "Unknown";
 }
 
 // ===== MQTT Connect =====
