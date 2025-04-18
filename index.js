@@ -33,7 +33,7 @@ const ENERGY_DATA_URL = 'https://tigoe.net/energy-data.json';
 let lastReading = null;
 const sensorHistory = [];
 let currentDay = null;
-let dailyMood = null;
+let tradeMood = null;
 let prevPower = 0;
 let marketOpen = false;
 let powerZeroCount = 0;
@@ -55,13 +55,24 @@ const moodStockMap = {
   "Bright & Wet": ["DIS", "SQ", "SOFI"]
 };
 
+const moodNameMap = {
+  "Bright & Dry": "Golden Clarity (아지랑이)",
+  "Dark & Wet": "Black Rain (그런 날도 있는거다)",
+  "Cold & Bright": "Crispy Breeze (여름이었ㄷr..)",
+  "Hot & Humid": "Hazy Surge (눈 찌르는 무더위)",
+  "Cold & Wet": "Still Waters (이슬비가 내리는 날이면)",
+  "Hot & Dry": "Rising Sun (TVXQ)",
+  "Dry & Cloudy": "Wind Cries Mary (장미꽃 향기는 바람에 날리고)",
+  "Bright & Wet": "Sunshower (여우비)"
+};
+
 const alpaca = new Alpaca({
   keyId: process.env.ALPACA_API_KEY,
   secretKey: process.env.ALPACA_SECRET_KEY,
   paper: true
 });
 
-function determineMood({ lux, temperature, humidity }) {
+function determineTradeMood({ lux, temperature, humidity }) {
   const isBright = lux > 1000;
   const isDark = lux <= 1000;
   const isHot = temperature > 15;
@@ -79,23 +90,6 @@ function determineMood({ lux, temperature, humidity }) {
   if (isDark && isWet) return "Dark & Wet";
 
   return 'Unknown';
-}
-
-function classifyWeatherMood({ lux, temperature, humidity }) {
-  const brightness = lux > 10000 ? 'High' : 'Low';
-  const temp = temperature > 22 ? 'High' : 'Low';
-  const humid = humidity > 50 ? 'High' : 'Low';
-
-  if (brightness === 'High' && temp === 'High' && humid === 'Low') return 'Sunny Bold';
-  if (brightness === 'High' && temp === 'Low' && humid === 'Low') return 'Cool Clear';
-  if (brightness === 'High' && temp === 'High' && humid === 'High') return 'Hot & Sticky';
-  if (brightness === 'High' && temp === 'Low' && humid === 'High') return 'Bright & Damp';
-  if (brightness === 'Low' && temp === 'High' && humid === 'High') return 'Humid Haze';
-  if (brightness === 'Low' && temp === 'Low' && humid === 'High') return 'Foggy Chill';
-  if (brightness === 'Low' && temp === 'Low' && humid === 'Low') return 'Dry Shade';
-  if (brightness === 'Low' && temp === 'High' && humid === 'Low') return 'Warm Gloom';
-
-  return "Unknown";
 }
 
 mqttClient.on('connect', () => {
@@ -122,8 +116,11 @@ mqttClient.on('message', async (topic, message) => {
 
     if (powerPositiveCount >= 5 && !marketOpen && timeSinceLastClose >= MARKET_COOLDOWN_MINUTES) {
       marketOpen = true;
-      const tradeMood = determineMood(data);
+      tradeMood = determineTradeMood(data);
       const suggestedStocks = moodStockMap[tradeMood] || [];
+
+      console.log('🧠 Trade Mood:', tradeMood);
+      console.log('📈 Suggested Stocks:', suggestedStocks);
 
       if (tradeMood === "Cold & Wet" || suggestedStocks.length === 0) {
         console.log("⛔ Skipping trades due to mood or empty stock list.");
@@ -159,7 +156,6 @@ mqttClient.on('message', async (topic, message) => {
     }
 
     prevPower = data.power;
-    dailyMood = classifyWeatherMood(data);
     currentDay = today;
 
     const formatted = {
@@ -172,7 +168,7 @@ mqttClient.on('message', async (topic, message) => {
       current: data.current ?? '—',
       power: data.power ?? '—',
       battery: data.battery ?? '—',
-      mood: dailyMood ?? 'Not Set'
+      mood: moodNameMap[tradeMood] ?? tradeMood
     };
 
     console.log('Sensor reading:', formatted);
@@ -184,9 +180,9 @@ mqttClient.on('message', async (topic, message) => {
       latest: lastReading,
       history: sensorHistory
     });
-    io.emit('weatherMood', { mood: dailyMood });
-    if (moodStockMap[dailyMood]) {
-      io.emit('suggestedStocks', { stocks: moodStockMap[dailyMood] });
+    io.emit('weatherMood', { mood: formatted.mood });
+    if (moodStockMap[tradeMood]) {
+      io.emit('suggestedStocks', { stocks: moodStockMap[tradeMood] });
     }
 
     const values = [
@@ -197,8 +193,8 @@ mqttClient.on('message', async (topic, message) => {
       data.current,
       data.power,
       data.battery,
-      dailyMood ?? 'Not Set',
-      (moodStockMap[dailyMood] || []).join(', ')
+      formatted.mood,
+      (moodStockMap[tradeMood] || []).join(', ')
     ];
 
     logToSheet(values);
@@ -215,11 +211,11 @@ io.on('connection', socket => {
       history: sensorHistory
     });
   }
-  if (dailyMood) {
-    socket.emit('weatherMood', { mood: dailyMood });
+  if (tradeMood) {
+    socket.emit('weatherMood', { mood: moodNameMap[tradeMood] ?? tradeMood });
   }
-  if (moodStockMap[dailyMood]) {
-    socket.emit('suggestedStocks', { stocks: moodStockMap[dailyMood] });
+  if (moodStockMap[tradeMood]) {
+    socket.emit('suggestedStocks', { stocks: moodStockMap[tradeMood] });
   }
 });
 
