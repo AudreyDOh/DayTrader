@@ -5,7 +5,7 @@ Uses the Alpaca API to execute trades based on the signals generated from the so
 
 const { getTPandSL } = require('./solarStrategy');
 const { logToSheet } = require('./logToSheets');
-const { alpaca } = require('./alpaca');
+const { alpaca } = require('./alpaca'); // ✅ Correct import of Alpaca instance
 
 const TRADE_LOG_SHEET = 'Alpaca Trades';
 
@@ -21,15 +21,55 @@ class TradeManager {
   async evaluateTradeEntry(symbol, mood, lux, temp, humidity) {
     console.log(`🔍 [evaluateTradeEntry] Evaluating: ${symbol} | Mood: ${mood} | Lux: ${lux} | Temp: ${temp} | Humidity: ${humidity}`);
     
-    const signal = await this.getEntrySignal(symbol, true); // loosened entry
+    const signal = await this.getEntrySignal(symbol, true);
     if (!signal) {
       console.log(`❌ [evaluateTradeEntry] No valid entry signal for ${symbol}`);
       return { executed: false, reason: 'No breakout or low volume' };
     }
 
+    // === TEMP: HARDCODED ORDER FOR DEBUGGING ===
+    const testOrder = {
+      symbol: 'AAPL',
+      qty: 1,
+      side: 'buy',
+      type: 'market',
+      time_in_force: 'day'
+    };
+    console.log('📤 [evaluateTradeEntry] TEST ORDER:', testOrder);
+
+    try {
+      const trade = await alpaca.createOrder(testOrder);
+      console.log(`✅ [evaluateTradeEntry] Order placed: ${trade.id}`);
+
+      const timeNow = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
+      await logToSheet([
+        timeNow,
+        testOrder.symbol,
+        'BUY',
+        `Qty: ${testOrder.qty}`,
+        lux,
+        temp,
+        humidity,
+        mood,
+        `Hardcoded AAPL test`
+      ], TRADE_LOG_SHEET);
+
+      return { executed: true, side: 'buy', price: 'manual test' };
+
+    } catch (err) {
+      const errData = err.response?.data || err.message || err;
+      console.error(`🚨 [evaluateTradeEntry] Order failed for ${symbol}:`, errData);
+      return { executed: false, reason: `Order failed: ${JSON.stringify(errData)}` };
+    }
+
+    // === END TEST ===
+
+    // Unreachable for now due to return above
+    // Uncomment after verifying AAPL works
+    /*
     const { takeProfit, stopLoss } = getTPandSL(symbol, lux, mood);
 
-    const positionSize = Math.min(1, this.accountBalance * 0.01); // cap at 1% of account
+    const positionSize = Math.min(1, this.accountBalance * 0.01);
     const qty = Math.floor(positionSize / signal.price);
     if (qty < 1) {
       console.log(`⚠️ [evaluateTradeEntry] Quantity too low to trade ${symbol}`);
@@ -44,8 +84,9 @@ class TradeManager {
       time_in_force: 'day'
     };
 
+    console.log('📤 [evaluateTradeEntry] Attempting order with:', order);
+
     try {
-      console.log(`📤 [evaluateTradeEntry] Placing order: ${JSON.stringify(order)}`);
       const trade = await alpaca.createOrder(order);
       console.log(`✅ [evaluateTradeEntry] Order placed: ${trade.id}`);
 
@@ -66,9 +107,11 @@ class TradeManager {
 
       return { executed: true, side: 'buy', price: signal.price };
     } catch (err) {
-      console.error(`🚨 [evaluateTradeEntry] Order failed for ${symbol}:`, err.message);
-      return { executed: false, reason: `Order failed: ${err.message}` };
+      const errData = err.response?.data || err.message || err;
+      console.error(`🚨 [evaluateTradeEntry] Order failed for ${symbol}:`, errData);
+      return { executed: false, reason: `Order failed: ${JSON.stringify(errData)}` };
     }
+    */
   }
 
   async getEntrySignal(symbol, loosened = false) {
