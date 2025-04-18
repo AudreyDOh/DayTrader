@@ -43,30 +43,15 @@ let tradingInterval = null;
 // (3) ===== TRADE LOGIC CONFIG =====
 
 const moodStockMap = {
-  "Bright & Dry": [ // Golden Clarity (아지랑이)
-    "TSLA", "NVDA", "META", "SHOP", "AAPL", "MSFT", "AMZN", "GOOGL"
-  ],
-  "Cold & Bright": [ // Crispy Breeze (여름이었ㄷr..)
-    "PLTR", "UBER", "ABNB", "NET", "ROKU", "SNOW", "DKNG"
-  ],
-  "Hot & Dry": [ // Rising Sun (TVXQ)
-    "AI", "UPST", "HOOD", "COIN", "AFRM", "SOFI", "LCID", "RIVN", "FSLY", "BB"
-  ],
-  "Hot & Humid": [ // Hazy Surge (눈 찌르는 무더위)
-    "GME", "MARA", "RIOT", "BBBY", "CVNA", "AMC", "OSTK", "SPCE", "BBIG", "DWAC"
-  ],
-  "Dark & Wet": [ // Black Rain (그런 날도 있는거다)
-    "SPY", "JNJ", "PG", "KO", "PEP", "VZ", "WMT", "XLP", "XLU"
-  ],
-  "Dry & Cloudy": [ // Wind Cries Mary (장미꽃 향기는 바람에 날리고)
-    "TLT", "XLU", "GLD", "XLF", "XLE", "USO", "BND"
-  ],
-  "Bright & Wet": [ // Sunshower (여우비)
-    "DIS", "SQ", "SOFI", "PYPL", "ZM", "LYFT", "WISH"
-  ],
-  "Cold & Wet": [] // Still Waters (이슬비가 내리는 날이면) → ⛔ No trades on rainy days
+  "Bright & Dry": [ "TSLA", "NVDA", "META", "SHOP", "AAPL", "MSFT", "AMZN", "GOOGL" ],
+  "Cold & Bright": [ "PLTR", "UBER", "ABNB", "NET", "ROKU", "SNOW", "DKNG" ],
+  "Hot & Dry": [ "AI", "UPST", "HOOD", "COIN", "AFRM", "SOFI", "LCID", "RIVN", "FSLY", "BB" ],
+  "Hot & Humid": [ "GME", "MARA", "RIOT", "BBBY", "CVNA", "AMC", "OSTK", "SPCE", "BBIG", "DWAC" ],
+  "Dark & Wet": [ "SPY", "JNJ", "PG", "KO", "PEP", "VZ", "WMT", "XLP", "XLU" ],
+  "Dry & Cloudy": [ "TLT", "XLU", "GLD", "XLF", "XLE", "USO", "BND" ],
+  "Bright & Wet": [ "DIS", "SQ", "SOFI", "PYPL", "ZM", "LYFT", "WISH" ],
+  "Cold & Wet": [] // ⛔ No trades on rainy days
 };
-
 
 const moodNameMap = {
   "Bright & Dry": "Golden Clarity (아지랑이)",
@@ -127,7 +112,6 @@ mqttClient.on('message', async (topic, message) => {
       cooldownMinsSinceClose: ((now - lastMarketCloseTime) / 60000).toFixed(2)
     });
 
-    // Track power trend
     if (data.power === 0) {
       powerZeroCount++;
       powerPositiveCount = 0;
@@ -136,8 +120,6 @@ mqttClient.on('message', async (topic, message) => {
       powerPositiveCount++;
     }
 
-
-    // === Market open ===
     const timeSinceLastClose = (now - lastMarketCloseTime) / 60000;
     if (powerPositiveCount >= 5 && !marketOpen && timeSinceLastClose >= MARKET_COOLDOWN_MINUTES) {
       marketOpen = true;
@@ -159,7 +141,7 @@ mqttClient.on('message', async (topic, message) => {
           tradeManager = new TradeManager(equity);
           tradingInterval = setInterval(async () => {
             for (const symbol of suggestedStocks) {
-              console.log(`⏱️ Running 60s trade scan for ${tradeMood}...`);
+              console.log(`⏱️ Running 60s trade scan for ${symbol} under mood ${tradeMood}`);
               const result = await tradeManager.evaluateTradeEntry(
                 symbol,
                 tradeMood,
@@ -184,11 +166,8 @@ mqttClient.on('message', async (topic, message) => {
               } else {
                 console.log(`✅ Executed ${result?.side?.toUpperCase()} trade for ${symbol}`);
               }
-              
             }
-          }, 60_000); // every 60 seconds
-          
-      
+          }, 60_000);
         } catch (err) {
           console.error('❌ Alpaca error:', err.message);
         }
@@ -197,7 +176,6 @@ mqttClient.on('message', async (topic, message) => {
       }
     }
 
-    // === Market close ===
     if (powerZeroCount >= 5 && marketOpen) {
       console.log('🌙 Power off sustained — force closing all trades.');
       io.emit('marketStatus', { open: false });
@@ -216,7 +194,6 @@ mqttClient.on('message', async (topic, message) => {
       }
     }
 
-    // === Emit data & log ===
     const formatted = {
       time: new Date(data.timeStamp ?? Date.now()).toLocaleString('en-US', {
         timeZone: 'America/New_York'
