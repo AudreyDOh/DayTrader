@@ -1,6 +1,5 @@
-
 /* 
-Logs all data here to Google Sheets
+Logs all data to Google Sheets
 */
 
 const fs = require('fs');
@@ -8,23 +7,23 @@ const { google } = require('googleapis');
 
 let sheetsClient; // reused after auth
 
-const credentials = process.env.GOOGLE_CREDENTIALS
-  ? JSON.parse(process.env.GOOGLE_CREDENTIALS) // use env variable for Render.com
-  : require('./credentials.json');             // use local file for local dev
+async function authorizeGoogleSheets() {
+  const credentials = process.env.GOOGLE_CREDENTIALS
+    ? JSON.parse(process.env.GOOGLE_CREDENTIALS) // Render.com
+    : require('./credentials.json');             // Local dev
 
-  
-const auth = new google.auth.GoogleAuth({
-  credentials,
-  scopes: ['https://www.googleapis.com/auth/spreadsheets']
-});
+  const auth = new google.auth.GoogleAuth({
+    credentials,
+    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+  });
 
-  const authClient = await auth.getClient();
+  const authClient = await auth.getClient(); // ✅ moved inside the function
   sheetsClient = google.sheets({ version: 'v4', auth: authClient });
 
   console.log('✅ Google Sheets authorized');
 }
 
-// Change this to match your sheet
+// === Sheet Settings ===
 const SPREADSHEET_ID = '1eQTrdjEqDvpZx28d_Rb01BFQQEB1niOqbF4aBugZHk0';
 const SHEET_NAME = 'DayTrader Log';
 
