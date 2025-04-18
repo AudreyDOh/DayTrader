@@ -57,7 +57,8 @@ class TradeManager {
       maxHoldMinutes,
       mood
     });
-  
+    console.log(`⏭️ Skipping ${symbol} — Reason: No breakout or low volume`);
+
     return { executed: true }; // ✅ Successful trade
   }
   
