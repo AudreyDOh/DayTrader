@@ -11,78 +11,146 @@ const alpaca = new Alpaca({
     secretKey: process.env.ALPACA_SECRET_KEY,
     paper: true,  // ✅ This must be true
   });
-
-// ===== PLACE A TEST ORDER =====
-async function placeTestOrder() {
+  async function placeOrder(symbol, qty, side = 'buy') {
+    try {
+      const order = await alpaca.createOrder({
+        symbol,
+        qty,
+        side,
+        type: 'market',
+        time_in_force: 'day'
+      });
   
-  try {
-    // Create a new order
-    const order = await alpaca.createOrder({ 
-      symbol: 'AAPL', // Apple Inc.
-      qty: 1, // Number of shares
-      side: 'buy', // buy or sell
-      type: 'market', 
-      time_in_force: 'gtc', 
-    });
-
-      // set time zone to New York
-  const submittedAt = new Date(order.submitted_at).toLocaleString('en-US', {
-    timeZone: 'America/New_York',
-    hour12: true
-  });
-
-    console.log(`✅ Order placed:
-      - Symbol: ${order.symbol}
-      - Qty: ${order.qty}
-      - Type: ${order.type}
-      - Side: ${order.side}
-      - Status: ${order.status}
-      - Submitted At (EST): ${submittedAt}
-    `);  } catch (error) {
-    console.error('❌ Error placing order:', error.response?.data || error.message);
+      const submittedAt = new Date(order.submitted_at).toLocaleString('en-US', {
+        timeZone: 'America/New_York',
+        hour12: true
+      });
+  
+      console.log(`✅ Order placed:
+        - Symbol: ${order.symbol}
+        - Qty: ${order.qty}
+        - Side: ${order.side}
+        - Status: ${order.status}
+        - Submitted At: ${submittedAt}`);
+      return order;
+  
+    } catch (error) {
+      console.error('❌ Error placing order:', error.response?.data || error.message);
+      throw error;
+    }
   }
-}
-
-// ===== FETCH CURRENT HOLDINGS =====
-async function getCurrentPositions() {
-  try {
-    const positions = await alpaca.getPositions();
-    if (positions.length === 0) {
-      console.log('📭 No current positions.');
-    } else {
-      console.log('📊 Current Holdings:');
-      positions.forEach(pos => {
-        console.log(`- ${pos.qty} shares of ${pos.symbol} at $${pos.avg_entry_price} avg price`);
+  
+  // ✅ Get current bid/ask
+  async function getLastQuote(symbol) {
+    const quote = await alpaca.getLatestQuote(symbol);
+    return {
+      bidPrice: parseFloat(quote.Bp),
+      askPrice: parseFloat(quote.Ap)
+    };
+  }
+  
+  // ✅ Get recent bars for breakout detection
+  async function getPreviousBars(symbol, limit = 5) {
+    const bars = await alpaca.getBarsV2(
+      symbol,
+      { timeframe: '5Min', limit },
+      alpaca.configuration
+    );
+  
+    const result = [];
+    for await (let bar of bars) {
+      result.push({
+        open: bar.o,
+        high: bar.h,
+        low: bar.l,
+        close: bar.c,
+        volume: bar.v
       });
     }
-  } catch (error) {
-    console.error('❌ Error fetching positions:', error.response?.data || error.message);
+    return result;
   }
-}
-
-// ===== FETCH ACCOUNT INFO =====
-async function getAccountInfo() {
+  
+  // ✅ Estimate volatility based on last 5 closes
+  async function getVolatility(symbol) {
+    const bars = await getPreviousBars(symbol, 5);
+    const prices = bars.map(b => b.close);
+    const avg = prices.reduce((a, b) => a + b) / prices.length;
+    const high = Math.max(...prices);
+    const low = Math.min(...prices);
+    return (high - low) / avg;
+  }
+  
+  // ✅ Account diagnostics
+  async function getAccountInfo() {
     try {
       const account = await alpaca.getAccount();
       console.log(`💰 Account Info:
-  - Cash: $${account.cash}
-  - Equity: $${account.equity}
-  - Buying Power: $${account.buying_power}
-  - Positions Value: $${account.long_market_value}
-  - Last Equity: $${account.last_equity}
-  - Unrealized P/L: $${account.unrealized_pl}
-  - Status: ${account.status}
-      `);
+    - Cash: $${account.cash}
+    - Equity: $${account.equity}
+    - Buying Power: $${account.buying_power}
+    - Positions Value: $${account.long_market_value}
+    - Unrealized P/L: $${account.unrealized_pl}
+    - Status: ${account.status}`);
+      return account;
     } catch (err) {
       console.error('❌ Error fetching account info:', err.message);
     }
   }
   
+  // ✅ Current positions
+  async function getCurrentPositions() {
+    try {
+      const positions = await alpaca.getPositions();
+      if (positions.length === 0) {
+        console.log('📭 No current positions.');
+      } else {
+        console.log('📊 Current Holdings:');
+        positions.forEach(pos => {
+          console.log(`- ${pos.qty} shares of ${pos.symbol} @ $${pos.avg_entry_price}`);
+        });
+      }
+      return positions;
+    } catch (error) {
+      console.error('❌ Error fetching positions:', error.response?.data || error.message);
+    }
+  }
+  
+  module.exports = {
+    placeOrder,
+    getLastQuote,
+    getPreviousBars,
+    getVolatility,
+    getAccountInfo,
+    getCurrentPositions
+  };
 
-// (4) ===== RUN A FUNCTION BELOW =====
-async function runAll() {
-  await placeTestOrder();        // Wait for order to go through
-  await getAccountInfo();        // Then check account
-  await getCurrentPositions();   // Then check positions
-}
-runAll();  // <- Call the wrapper
+// // ===== PLACE A TEST ORDER =====
+// async function placeTestOrder() {
+  
+//   try {
+//     // Create a new order
+//     const order = await alpaca.createOrder({ 
+//       symbol: 'AAPL', // Apple Inc.
+//       qty: 1, // Number of shares
+//       side: 'buy', // buy or sell
+//       type: 'market', 
+//       time_in_force: 'gtc', 
+//     });
+
+//       // set time zone to New York
+//   const submittedAt = new Date(order.submitted_at).toLocaleString('en-US', {
+//     timeZone: 'America/New_York',
+//     hour12: true
+//   });
+
+//     console.log(`✅ Order placed:
+//       - Symbol: ${order.symbol}
+//       - Qty: ${order.qty}
+//       - Type: ${order.type}
+//       - Side: ${order.side}
+//       - Status: ${order.status}
+//       - Submitted At (EST): ${submittedAt}
+//     `);  } catch (error) {
+//     console.error('❌ Error placing order:', error.response?.data || error.message);
+//   }
+// }

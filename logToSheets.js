@@ -24,9 +24,9 @@ async function authorizeGoogleSheets() {
 
 // === Sheet Settings ===
 const SPREADSHEET_ID = '1eQTrdjEqDvpZx28d_Rb01BFQQEB1niOqbF4aBugZHk0';
-const SHEET_NAME = 'DayTrader Log';
 
-async function logToSheet(values) {
+// ✅ Accept optional sheet name argument
+async function logToSheet(values, sheetName = 'DayTrader Log') {
   if (!sheetsClient) {
     console.error('❌ Sheets client not initialized. Call authorizeGoogleSheets() first.');
     return;
@@ -35,14 +35,14 @@ async function logToSheet(values) {
   try {
     await sheetsClient.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
-      range: `${SHEET_NAME}!A:I`,
+      range: `${sheetName}!A1`,
       valueInputOption: 'USER_ENTERED',
       requestBody: {
         values: [values],
       },
     });
 
-    console.log('📝 Logged to Google Sheets:', values);
+    console.log(`📝 Logged to Google Sheets tab '${sheetName}':`, values);
   } catch (err) {
     console.error('❌ Failed to log to Google Sheets:', err.message);
   }
