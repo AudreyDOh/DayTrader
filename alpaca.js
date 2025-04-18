@@ -7,10 +7,11 @@ const Alpaca = require('@alpacahq/alpaca-trade-api');
 
 // (1) ===== CREATE ALPACA INSTANCE =====
 const alpaca = new Alpaca({
-    keyId: process.env.ALPACA_API_KEY,
-    secretKey: process.env.ALPACA_SECRET_KEY,
-    paper: true,  // ✅ This must be true
-  });
+  keyId: process.env.ALPACA_API_KEY,
+  secretKey: process.env.ALPACA_SECRET_KEY,
+  paper: true // ✅ Make sure this is true
+});
+
   async function placeOrder(symbol, qty, side = 'buy') {
     try {
       const order = await alpaca.createOrder({
@@ -116,6 +117,7 @@ const alpaca = new Alpaca({
   }
   
   module.exports = {
+    alpaca,              
     placeOrder,
     getLastQuote,
     getPreviousBars,
@@ -123,6 +125,7 @@ const alpaca = new Alpaca({
     getAccountInfo,
     getCurrentPositions
   };
+  
 
 // // ===== PLACE A TEST ORDER =====
 // async function placeTestOrder() {

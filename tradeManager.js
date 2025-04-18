@@ -5,7 +5,7 @@ Uses the Alpaca API to execute trades based on the signals generated from the so
 
 const { getTPandSL } = require('./solarStrategy');
 const { logToSheet } = require('./logToSheets');
-const alpaca = require('./alpaca');
+const { alpaca } = require('./alpaca');
 
 const TRADE_LOG_SHEET = 'Alpaca Trades';
 
