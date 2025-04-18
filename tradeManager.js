@@ -139,7 +139,7 @@ class TradeManager {
     }
   }
 
-  async getEntrySignal(symbol, loose = false) {
+  async getEntrySignal(symbol, loose = true) {
     const bars = await alpaca.getPreviousBars(symbol, 5);
     const current = await alpaca.getLastQuote(symbol);
   
@@ -148,12 +148,17 @@ class TradeManager {
     const avgVolume = bars.reduce((acc, b) => acc + b.volume, 0) / bars.length;
     const currentVolume = bars[bars.length - 1].volume;
   
-    const volumeThreshold = loose ? 1.5 : 2.0;
+    const price = current.askPrice;
+    const bid = current.bidPrice;
   
-    if (current.askPrice > prevHigh && currentVolume > volumeThreshold * avgVolume) {
+    const looseBreakoutBuffer = 0.995; // allows entry if price is just 0.5% below previous high
+    const volumeThreshold = 1.1; // just 10% above average
+  
+    // Loosened breakout & volume logic
+    if (price > prevHigh * looseBreakoutBuffer && currentVolume > volumeThreshold * avgVolume) {
       return { side: 'long' };
     }
-    if (current.bidPrice < prevLow && currentVolume > volumeThreshold * avgVolume) {
+    if (bid < prevLow * 1.005 && currentVolume > volumeThreshold * avgVolume) {
       return { side: 'short' };
     }
   
