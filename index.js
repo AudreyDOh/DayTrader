@@ -159,6 +159,7 @@ mqttClient.on('message', async (topic, message) => {
           tradeManager = new TradeManager(equity);
           tradingInterval = setInterval(async () => {
             for (const symbol of suggestedStocks) {
+              console.log(`⏱️ Running 60s trade scan for ${tradeMood}...`);
               const result = await tradeManager.evaluateTradeEntry(
                 symbol,
                 tradeMood,
@@ -166,8 +167,8 @@ mqttClient.on('message', async (topic, message) => {
                 data.temperature,
                 data.humidity
               );
-          
               if (!result?.executed && result?.reason) {
+                console.log(`⚠️ Skipped ${symbol}: ${result.reason}`);
                 const timeNow = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
                 await logToSheet([
                   timeNow,
@@ -180,7 +181,10 @@ mqttClient.on('message', async (topic, message) => {
                   tradeMood,
                   "—"
                 ], 'Skipped Trades');
+              } else {
+                console.log(`✅ Executed ${result?.side?.toUpperCase()} trade for ${symbol}`);
               }
+              
             }
           }, 60_000); // every 60 seconds
           
