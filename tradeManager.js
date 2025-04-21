@@ -3,86 +3,149 @@ Manage trading operations, including entry and exit signals, position sizing, an
 Uses the Alpaca API to execute trades based on the signals generated from the solar sensors.
 */
 
-const { getTPandSL } = require('./solarStrategy');
+
+// Access the required modules to handle trading operations and logging
+const { getTPandSL } = require('./solarStrategy'); 
 const { logToSheet } = require('./logToSheets');
+// Access the Alpaca API for trading operations
 const alpaca = require('./alpaca'); 
 
 const TRADE_LOG_SHEET = 'Alpaca Trades';
 
+// Define the TradeManager class to manage trading operations
+// The constructor initializes the account balance and sets up arrays for open and closed trades
+// The class also includes methods for evaluating trade entries, updating open trades, and closing trades
+
 class TradeManager {
+  // Constructor to initialize the TradeManager with an account balance
   constructor(accountBalance) {
-    this.accountBalance = accountBalance;
-    this.openTrades = []; // multiple trades per symbol
-    this.closedTrades = [];
+    this.accountBalance = accountBalance; 
+    this.openTrades = []; // Array to hold open trades
+    this.closedTrades = []; // Array to hold closed trades
+  }
+
+  isValidSensorData(lux, temp, humidity) {
+    return (
+      typeof lux === 'number' && lux >= 0 &&
+      typeof temp === 'number' && temp > -50 && temp < 150 &&
+      typeof humidity === 'number' && humidity >= 0 && humidity <= 100
+    );
   }
 
   async evaluateTradeEntry(symbol, mood, lux, temp, humidity) {
-    const signal = await this.getEntrySignal(symbol, true); // loosened entry
-    if (!signal) return { executed: false, reason: 'No breakout or low volume' };
-  
-    const { takeProfit, stopLoss } = require('./solarStrategy').getRiskProfile(lux);
-    const maxHoldMinutes = require('./solarStrategy').getMaxHoldMinutes(humidity);
-  
-    const quote = await alpaca.getLastQuote(symbol);
-    const entryPrice = quote.askPrice;
-  
-    const volatility = await alpaca.getVolatility(symbol);
-    const volatilityFactor = Math.min(volatility / 0.03, 1);
-  
-    const positionSize = require('./solarStrategy').getPositionSize(
-      temp,
-      this.accountBalance,
-      entryPrice,
-      stopLoss,
-      volatilityFactor
-    );
-  
-    const { takeProfit: tpPrice, stopLoss: slPrice } = getTPandSL(
-      entryPrice,
-      signal.side,
-      takeProfit,
-      stopLoss
-    );
-  
-    await this.openTrade({
-      symbol,
-      side: signal.side,
-      entryPrice,
-      shares: positionSize,
-      tpPrice,
-      slPrice,
-      entryTime: Date.now(),
-      maxHoldMinutes,
-      mood
-    });
-  
-    return { executed: true }; // ✅ Successful trade
+    try {
+      if (!symbol || typeof symbol !== 'string') {
+        return { executed: false, reason: 'Invalid symbol provided' };
+      }
+
+      if (!this.isValidSensorData(lux, temp, humidity)) {
+        return { executed: false, reason: 'Invalid sensor data provided' };
+      }
+
+      const existingPosition = this.openTrades.find(trade => trade.symbol === symbol);
+      if (existingPosition) {
+        return { executed: false, reason: `Already have an open position in ${symbol}` };
+      }
+
+      const signal = await this.getEntrySignal(symbol);
+      if (!signal) return { executed: false, reason: 'No valid entry signal (price/volume or bars)' };
+
+      const { takeProfit, stopLoss } = require('./solarStrategy').getRiskProfile(lux);
+      const maxHoldMinutes = require('./solarStrategy').getMaxHoldMinutes(humidity);
+
+      const quote = await alpaca.getLastQuote(symbol);
+      if (!quote || !quote.askPrice) {
+        return { executed: false, reason: 'Could not retrieve valid quote data' };
+      }
+
+      const entryPrice = quote.askPrice;
+
+      const volatility = await alpaca.getVolatility(symbol);
+      const volatilityFactor = Math.min(volatility / 0.03, 1);
+
+      const positionSize = require('./solarStrategy').getPositionSize(
+        temp,
+        this.accountBalance,
+        entryPrice,
+        stopLoss,
+        volatilityFactor
+      );
+
+      const { takeProfit: tpPrice, stopLoss: slPrice } = getTPandSL(
+        entryPrice,
+        signal.side,
+        takeProfit,
+        stopLoss
+      );
+
+      await this.openTrade({
+        symbol,
+        side: signal.side,
+        entryPrice,
+        shares: positionSize,
+        tpPrice,
+        slPrice,
+        entryTime: Date.now(),
+        maxHoldMinutes,
+        mood
+      });
+
+      return { executed: true };
+    } catch (error) {
+      console.error(`❌ Error evaluating trade entry for ${symbol}:`, error.message);
+      return { executed: false, reason: `Error: ${error.message}` };
+    }
   }
 
   async updateOpenTrades() {
     const now = Date.now();
+    const tradesToClose = [];
 
-    for (let i = this.openTrades.length - 1; i >= 0; i--) {
+    for (let i = 0; i < this.openTrades.length; i++) {
       const trade = this.openTrades[i];
-      const current = await alpaca.getLastQuote(trade.symbol);
-      const price = trade.side === 'long' ? current.bidPrice : current.askPrice;
+      try {
+        const current = await alpaca.getLastQuote(trade.symbol);
+        if (!current || (!current.bidPrice && !current.askPrice)) {
+          console.warn(`⚠️ Unable to get valid quote for ${trade.symbol}. Skipping update.`);
+          continue;
+        }
 
-      const hitTP = trade.side === 'long' ? price >= trade.tpPrice : price <= trade.tpPrice;
-      const hitSL = trade.side === 'long' ? price <= trade.slPrice : price >= trade.slPrice;
-      const ageMinutes = (now - trade.entryTime) / (60 * 1000);
+        const price = trade.side === 'long' ? current.bidPrice : current.askPrice;
 
-      if (hitTP || hitSL || ageMinutes > trade.maxHoldMinutes) {
-        await this.closeTrade(trade, price, hitTP ? 'TP' : hitSL ? 'SL' : 'TIME');
-        this.openTrades.splice(i, 1);
+        const hitTP = trade.side === 'long' ? price >= trade.tpPrice : price <= trade.tpPrice;
+        const hitSL = trade.side === 'long' ? price <= trade.slPrice : price >= trade.slPrice;
+        const ageMinutes = (now - trade.entryTime) / (60 * 1000);
+
+        if (hitTP || hitSL || ageMinutes > trade.maxHoldMinutes) {
+          tradesToClose.push({ trade, price, reason: hitTP ? 'TP' : hitSL ? 'SL' : 'TIME' });
+        }
+      } catch (error) {
+        console.error(`❌ Error updating trade for ${trade.symbol}:`, error.message);
       }
+    }
+
+    for (const { trade, price, reason } of tradesToClose) {
+      await this.closeTrade(trade, price, reason);
+      this.openTrades = this.openTrades.filter(t =>
+        t.symbol !== trade.symbol || t.entryTime !== trade.entryTime
+      );
     }
   }
 
   async forceCloseAll() {
-    for (let trade of this.openTrades) {
-      const current = await alpaca.getLastQuote(trade.symbol);
-      const price = trade.side === 'long' ? current.bidPrice : current.askPrice;
-      await this.closeTrade(trade, price, 'FORCED');
+    const tradesToClose = [...this.openTrades];
+
+    for (let trade of tradesToClose) {
+      try {
+        const current = await alpaca.getLastQuote(trade.symbol);
+        const price = (current && (current.bidPrice || current.askPrice))
+          ? (trade.side === 'long' ? current.bidPrice : current.askPrice)
+          : trade.entryPrice;
+        await this.closeTrade(trade, price, current ? 'FORCED' : 'FORCED_ERROR');
+      } catch (error) {
+        console.error(`❌ Error during force close for ${trade.symbol}:`, error.message);
+        await this.closeTrade(trade, trade.entryPrice, 'FORCED_ERROR');
+      }
     }
     this.openTrades = [];
   }
@@ -98,6 +161,7 @@ class TradeManager {
       this.openTrades.push(trade);
     } catch (err) {
       console.error(`❌ Failed to place ${trade.side} order for ${trade.symbol}:`, err.message);
+      throw err;
     }
   }
 
@@ -134,28 +198,49 @@ class TradeManager {
   }
 
   async getEntrySignal(symbol, loose = true) {
-    const bars = await alpaca.getPreviousBars(symbol, 5);
-    const current = await alpaca.getLastQuote(symbol);
+    try {
+      const bars = await alpaca.getPreviousBars(symbol, 5);
+      const current = await alpaca.getLastQuote(symbol);
 
-    const prevHigh = Math.max(...bars.map(b => b.high));
-    const prevLow = Math.min(...bars.map(b => b.low));
-    const avgVolume = bars.reduce((acc, b) => acc + b.volume, 0) / bars.length;
-    const currentVolume = bars[bars.length - 1].volume;
+      if (!bars || bars.length === 0) {
+        console.warn(`⚠️ No bars returned for ${symbol}. Skipping entry signal.`);
+        return null;
+      }
 
-    const price = current.askPrice;
-    const bid = current.bidPrice;
+      if (!current || !current.askPrice || !current.bidPrice) {
+        console.warn(`⚠️ Invalid quote data for ${symbol}. Skipping entry signal.`);
+        return null;
+      }
 
-    const looseBreakoutBuffer = 0.995;
-    const volumeThreshold = 1.1;
+      const prevHigh = Math.max(...bars.map(b => b.high));
+      const prevLow = Math.min(...bars.map(b => b.low));
+      const avgVolume = bars.reduce((acc, b) => acc + b.volume, 0) / bars.length;
+      const currentVolume = bars[bars.length - 1].volume;
 
-    if (price > prevHigh * looseBreakoutBuffer && currentVolume > volumeThreshold * avgVolume) {
-      return { side: 'long' };
+      const price = current.askPrice;
+      const bid = current.bidPrice;
+
+      const looseBreakoutBuffer = 0.99;
+      const volumeThreshold = 1.02;
+
+      console.log(`📊 [Signal Check] ${symbol} | Ask: ${price} | PrevHigh: ${prevHigh} | Bid: ${bid} | PrevLow: ${prevLow}`);
+      console.log(`📉 [Volume Check] Volume: ${currentVolume} | AvgVol: ${avgVolume}`);
+
+      if (price > prevHigh * looseBreakoutBuffer && currentVolume > volumeThreshold * avgVolume) {
+        console.log(`✅ Signal detected for LONG entry on ${symbol}`);
+        return { side: 'long' };
+      }
+      if (bid < prevLow * 1.01 && currentVolume > volumeThreshold * avgVolume) {
+        console.log(`✅ Signal detected for SHORT entry on ${symbol}`);
+        return { side: 'short' };
+      }
+
+      console.log(`⛔ No signal for ${symbol}.`);
+      return null;
+    } catch (error) {
+      console.error(`❌ Error getting entry signal for ${symbol}:`, error.message);
+      return null;
     }
-    if (bid < prevLow * 1.005 && currentVolume > volumeThreshold * avgVolume) {
-      return { side: 'short' };
-    }
-
-    return null;
   }
 }
 

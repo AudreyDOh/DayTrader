@@ -9,6 +9,7 @@ const mqtt = require('mqtt');
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
+const alpaca = require('./alpaca'); // Alpaca Module to fetch account infos
 
 const app = express();
 const server = http.createServer(app);
@@ -32,6 +33,7 @@ let tradeManager = null;
 let lastMarketCloseTime = 0;
 const MARKET_COOLDOWN_MINUTES = 15;
 let tradingInterval = null;
+const loggedSkips = new Set(); // ✅ Track skipped trades
 
 const moodStockMap = {
   "Bright & Dry": ["TSLA", "NVDA", "META", "SHOP", "AAPL", "MSFT", "AMZN", "GOOGL"],
@@ -85,6 +87,7 @@ mqttClient.on('message', async (topic, message) => {
   try {
     const data = JSON.parse(msg);
     const now = Date.now();
+    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
 
     if (data.power === 0) {
       powerZeroCount++;
@@ -106,8 +109,20 @@ mqttClient.on('message', async (topic, message) => {
       io.emit('suggestedStocks', { stocks: suggestedStocks });
 
       if (tradeMood !== "Cold & Wet" && suggestedStocks.length > 0) {
-        const equity = 100000; // Starting paper balance
-        tradeManager = new TradeManager(equity);
+        // const equity = 100000; // Starting paper balance
+        // tradeManager = new TradeManager(equity);
+        try {
+          const account = await alpaca.getAccount(); // Fetch account info from Alpaca
+          const equity = parseFloat(account.equity); // parseFloat to ensure full number without commas
+          if (isNaN(equity)) {
+            throw new Error('Invalid equity value from Alpaca');
+          }
+          console.log('📈 Alpaca account equity:', equity);
+          tradeManager = new TradeManager(equity); // Use Alpaca account balance
+        } catch (err) {
+          console.error('❌ Failed to fetch account info from Alpaca:', err.message); 
+          tradeManager = new TradeManager(100000); // fallback to paper balance
+        }
 
         tradingInterval = setInterval(async () => {
           for (const symbol of suggestedStocks) {
@@ -120,18 +135,22 @@ mqttClient.on('message', async (topic, message) => {
             );
 
             if (!result?.executed && result?.reason) {
-              const timeNow = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
-              await logToSheet([
-                timeNow,
-                symbol,
-                "Skipped",
-                result.reason,
-                data.lux,
-                data.temperature,
-                data.humidity,
-                tradeMood,
-                "—"
-              ], 'Skipped Trades');
+              const key = `${today}-${symbol}`;
+              if (!loggedSkips.has(key)) {
+                loggedSkips.add(key);
+                const timeNow = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
+                await logToSheet([
+                  timeNow,
+                  symbol,
+                  "Skipped",
+                  result.reason,
+                  data.lux,
+                  data.temperature,
+                  data.humidity,
+                  tradeMood,
+                  "—"
+                ], 'Skipped Trades');
+              }
             }
           }
 
@@ -150,6 +169,7 @@ mqttClient.on('message', async (topic, message) => {
       powerZeroCount = 0;
       powerPositiveCount = 0;
       lastMarketCloseTime = now;
+      loggedSkips.clear(); // ✅ Reset skip tracking at market close
       if (tradeManager) {
         await tradeManager.forceCloseAll();
       }
@@ -214,5 +234,5 @@ io.on('connection', socket => {
 app.use(express.static('public'));
 
 server.listen(3000, () => {
-  console.log('🌐 Server running at http://localhost:3000');
+  //console.log('🌐 Server running at http://localhost:3000');
 });

@@ -42,7 +42,7 @@ async function logToSheet(values, sheetName = 'DayTrader Log') {
       },
     });
 
-    console.log(`📝 Logged to Google Sheets tab '${sheetName}':`, values);
+    console.log(`📝 Logged to Google Sheets tab '${sheetName}'`);
   } catch (err) {
     console.error('❌ Failed to log to Google Sheets:', err.message);
   }
