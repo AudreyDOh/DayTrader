@@ -114,41 +114,44 @@ class TradeManager {
     try {
       const bars = await alpaca.getPreviousBars(symbol, 5); // Get the last 5 bars for the symbol stock (5-minute trend)
       const current = await alpaca.getLastQuote(symbol); // Get the latest quote for the symbol stock
-
+  
       // Basic data validation
-      if (!bars || bars.length < 2 || !current?.askPrice || !current?.bidPrice) return null;
-
+      if (!bars || bars.length < 2 || !current?.askPrice || !current?.bidPrice) {
+        console.log(`❌ [${symbol}] Insufficient data: bars=${bars?.length || 0}, ask=${current?.askPrice}, bid=${current?.bidPrice}`);
+        return null;
+      }
+  
       // Calculate positive or negative trend based on latest closing price vs oldest closing price
-      const closes = bars.map(b => b.close); // 
-      // If last closing price is greater than first closing price, then it is an uptrend
-      // If last closing price is less than first closing price, then it is a downtrend
+      const closes = bars.map(b => b.close);
       const trend = closes[closes.length - 1] - closes[0]; // + is uptrend, - is downtrend
-     
-
+  
       // Get the current and average volume of the last 5 bars
       const avgVolume = bars.reduce((sum, b) => sum + b.volume, 0) / bars.length;
       const lastVolume = bars[bars.length - 1].volume;
   
-      const trendStrength = Math.abs(trend) > 0.1; // over $0.1 move counts as real, execute trade
-      const volumeOkay = lastVolume > avgVolume * 0.5; // if the last volume is greater than 50% of the average volume, execute trae
+      const trendStrength = Math.abs(trend) > 0.03; // over $0.1 move counts as real, execute trade
+      const volumeOkay = lastVolume > avgVolume * 0.2; // if the last volume is greater than 50% of the average volume, execute trade
+  
+      // === DEBUG LOGGING ===
+      console.log(`🔍 [${symbol}] Entry Signal Evaluation`);
+      console.log(`- Closes: ${closes.map(c => c.toFixed(2)).join(', ')}`);
+      console.log(`- Trend: ${trend.toFixed(4)} (${trend > 0 ? 'Up' : 'Down'})`);
+      console.log(`- Trend strength OK? ${trendStrength}`);
+      console.log(`- Last volume: ${lastVolume}, Avg volume: ${avgVolume.toFixed(2)}, Volume OK? ${volumeOkay}`);
+      console.log(`- Quote: Ask=${current.askPrice}, Bid=${current.bidPrice}`);
   
       // if the trend is up and the volume is okay, make long entry
       if (trend > 0 && trendStrength && volumeOkay) {
         console.log(`✅ Signal detected for LONG entry on ${symbol}`);
         return { side: 'long' };
       }
-        // if the trend is down and the volume is okay, make short entry
+  
+      // if the trend is down and the volume is okay, make short entry
       if (trend < 0 && trendStrength && volumeOkay) {
         console.log(`✅ Signal detected for SHORT entry on ${symbol}`);
         return { side: 'short' };
       }
-
-      // // Make a loose signal check if the trend is not strong enough 
-      // // still make long and short entry 
-      // if (Math.abs(trend) >= 0.02) {
-      //   return { side: trend > 0 ? 'long' : 'short' };
-      // }
-      
+  
       console.log(`❌ No valid entry signal for ${symbol}`);
       return null; // no movement at all -> skip
     } catch (error) {
@@ -156,6 +159,7 @@ class TradeManager {
       return null;
     }
   }
+  
 
   // Method to open a trade and log it
   async openTrade(trade) {
