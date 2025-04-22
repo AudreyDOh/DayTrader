@@ -47,7 +47,6 @@ function normalize(value, min, max) {
     return lux < 200 && humidity > 80;
   }
   
-
 module.exports = {
     getRiskProfile,
     getPositionSize,
