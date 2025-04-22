@@ -113,12 +113,13 @@ mqttClient.on('message', async (topic, message) => {
         // tradeManager = new TradeManager(equity);
         try {
           const account = await alpaca.getAccount(); // Fetch account info from Alpaca
-          const equity = parseFloat(account.equity); // parseFloat to ensure full number without commas
-          if (isNaN(equity)) {
-            throw new Error('Invalid equity value from Alpaca');
-          }
+          const equity = parseFloat(account.equity); // parseFloat to ensure full number without commas, save into "equity" variable
+          // if (isNaN(equity)) {
+          //   throw new Error('Invalid equity value from Alpaca');
+          // }
           console.log('📈 Alpaca account equity:', equity);
-          tradeManager = new TradeManager(equity); // Use Alpaca account balance
+          // tradeManager class 
+          tradeManager = new TradeManager(equity); // passes "equity" variable to TradeManager constructor 
         } catch (err) {
           console.error('❌ Failed to fetch account info from Alpaca:', err.message); 
           tradeManager = new TradeManager(100000); // fallback to paper balance

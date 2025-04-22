@@ -5,10 +5,9 @@ Uses the Alpaca API to execute trades based on the signals generated from the so
 
 
 // Access the required modules to handle trading operations and logging
-const { getTPandSL } = require('./solarStrategy'); 
+const { getTPandSL } = require('./solarStrategy');
 const { logToSheet } = require('./logToSheets');
-// Access the Alpaca API for trading operations
-const alpaca = require('./alpaca'); 
+const alpaca = require('./alpaca'); // Access the Alpaca API for trading operations
 
 const TRADE_LOG_SHEET = 'Alpaca Trades';
 
@@ -19,14 +18,16 @@ const TRADE_LOG_SHEET = 'Alpaca Trades';
 class TradeManager {
   // Constructor to initialize the TradeManager with an account balance
   constructor(accountBalance) {
-    this.accountBalance = accountBalance; 
+    this.accountBalance = accountBalance;
     this.openTrades = []; // Array to hold open trades
     this.closedTrades = []; // Array to hold closed trades
+    console.log(`💰 TradeManager initialized with account balance: $${this.accountBalance}`);
   }
 
+  // Method to check if the sensor data is valid
   isValidSensorData(lux, temp, humidity) {
-    return (
-      typeof lux === 'number' && lux >= 0 &&
+    return ( // Check if lux, temp, and humidity are numbers in valid ranges
+      typeof lux === 'number' && lux >= -1 &&
       typeof temp === 'number' && temp > -50 && temp < 150 &&
       typeof humidity === 'number' && humidity >= 0 && humidity <= 100
     );
@@ -34,35 +35,42 @@ class TradeManager {
 
   async evaluateTradeEntry(symbol, mood, lux, temp, humidity) {
     try {
+
+      // Pulls target values from solarStrategy.js for takeProfit, stopLoss (lux) and maxHold (humidity)
+      const { takeProfit, stopLoss } = require('./solarStrategy').getRiskProfile(lux);
+      const maxHoldMinutes = require('./solarStrategy').getMaxHoldMinutes(humidity);
+
+      // check if trade symbol exists as string 
       if (!symbol || typeof symbol !== 'string') {
         return { executed: false, reason: 'Invalid symbol provided' };
       }
 
+      // check if sensor dat is valid
       if (!this.isValidSensorData(lux, temp, humidity)) {
         return { executed: false, reason: 'Invalid sensor data provided' };
       }
-
+      
+      // check if trade symbol is already doing a trade
       const existingPosition = this.openTrades.find(trade => trade.symbol === symbol);
       if (existingPosition) {
         return { executed: false, reason: `Already have an open position in ${symbol}` };
       }
 
+      // check if there is valid entrysignal 
       const signal = await this.getEntrySignal(symbol);
       if (!signal) return { executed: false, reason: 'No valid entry signal (price/volume or bars)' };
 
-      const { takeProfit, stopLoss } = require('./solarStrategy').getRiskProfile(lux);
-      const maxHoldMinutes = require('./solarStrategy').getMaxHoldMinutes(humidity);
-
-      const quote = await alpaca.getLastQuote(symbol);
-      if (!quote || !quote.askPrice) {
+      // Get the latest quote for the symbol stock, including "askPrice" and bidPrice"
+      const quote = await alpaca.getLastQuote(symbol); 
+      if (!quote || !quote.askPrice) { 
         return { executed: false, reason: 'Could not retrieve valid quote data' };
-      }
+      } 
+      const entryPrice = quote.askPrice; 
+      const volatility = await alpaca.getVolatility(symbol); // Get the volatility of the stock
+      const volatilityFactor = Math.min(volatility / 0.03, 1); 
 
-      const entryPrice = quote.askPrice;
-
-      const volatility = await alpaca.getVolatility(symbol);
-      const volatilityFactor = Math.min(volatility / 0.03, 1);
-
+      // HOW MUCH TO TRADE
+      // Calculate the position size based on the account balance, entry price, stop loss, and volatility factor
       const positionSize = require('./solarStrategy').getPositionSize(
         temp,
         this.accountBalance,
@@ -71,6 +79,8 @@ class TradeManager {
         volatilityFactor
       );
 
+      // WHEN TO GET OUT
+      // uses getTPandSL function to calculate take profit and stop loss prices
       const { takeProfit: tpPrice, stopLoss: slPrice } = getTPandSL(
         entryPrice,
         signal.side,
@@ -78,6 +88,7 @@ class TradeManager {
         stopLoss
       );
 
+      // calls openTrade function to execute the trade
       await this.openTrade({
         symbol,
         side: signal.side,
@@ -90,6 +101,7 @@ class TradeManager {
         mood
       });
 
+      // return if the trade was executed successfully
       return { executed: true };
     } catch (error) {
       console.error(`❌ Error evaluating trade entry for ${symbol}:`, error.message);
@@ -199,44 +211,47 @@ class TradeManager {
 
   async getEntrySignal(symbol, loose = true) {
     try {
-      const bars = await alpaca.getPreviousBars(symbol, 5);
-      const current = await alpaca.getLastQuote(symbol);
+      const bars = await alpaca.getPreviousBars(symbol, 5); // Get the last 5 bars for the symbol stock (5-minute trend)
+      const current = await alpaca.getLastQuote(symbol); // Get the latest quote for the symbol stock
 
-      if (!bars || bars.length === 0) {
-        console.warn(`⚠️ No bars returned for ${symbol}. Skipping entry signal.`);
-        return null;
-      }
+      // Basic data validation
+      if (!bars || bars.length < 2 || !current?.askPrice || !current?.bidPrice) return null;
 
-      if (!current || !current.askPrice || !current.bidPrice) {
-        console.warn(`⚠️ Invalid quote data for ${symbol}. Skipping entry signal.`);
-        return null;
-      }
-
-      const prevHigh = Math.max(...bars.map(b => b.high));
-      const prevLow = Math.min(...bars.map(b => b.low));
-      const avgVolume = bars.reduce((acc, b) => acc + b.volume, 0) / bars.length;
-      const currentVolume = bars[bars.length - 1].volume;
-
-      const price = current.askPrice;
-      const bid = current.bidPrice;
-
-      const looseBreakoutBuffer = 0.99;
-      const volumeThreshold = 1.02;
-
-      console.log(`📊 [Signal Check] ${symbol} | Ask: ${price} | PrevHigh: ${prevHigh} | Bid: ${bid} | PrevLow: ${prevLow}`);
-      console.log(`📉 [Volume Check] Volume: ${currentVolume} | AvgVol: ${avgVolume}`);
-
-      if (price > prevHigh * looseBreakoutBuffer && currentVolume > volumeThreshold * avgVolume) {
+      // Calculate positive or negative trend based on latest closing price vs oldest closing price
+      const closes = bars.map(b => b.close); // 
+      const lastClose = closes[closes.length - 1]; // get the last closing price
+      const firstClose = closes[0]; // get the first closing price
+      // If last closing price is greater than first closing price, then it is an uptrend
+      // If last closing price is less than first closing price, then it is a downtrend
+      const trend = lastClose - firstClose; // + is uptrend, - is downtrend
+      // const trendDirection = trend > 0 ? 'up' : trend < 0 ? 'down' : 'neutral';
+      
+      // Get the current and average volume of the last 5 bars
+      const avgVolume = bars.reduce((sum, b) => sum + b.volume, 0) / bars.length;
+      const lastVolume = bars[bars.length - 1].volume;
+  
+      const trendStrength = Math.abs(trend) > 0.1; // over $0.10 move counts as real, execute trade
+      const volumeOkay = lastVolume > avgVolume * 0.5; // if the last volume is greater than 50% of the average volume, execute trae
+  
+      // if the trend is up and the volume is okay, make long entry
+      if (trend > 0 && trendStrength && volumeOkay) {
         console.log(`✅ Signal detected for LONG entry on ${symbol}`);
         return { side: 'long' };
       }
-      if (bid < prevLow * 1.01 && currentVolume > volumeThreshold * avgVolume) {
+        // if the trend is down and the volume is okay, make short entry
+      if (trend < 0 && trendStrength && volumeOkay) {
         console.log(`✅ Signal detected for SHORT entry on ${symbol}`);
         return { side: 'short' };
       }
+  
+      // Make a loose signal check if the trend is not strong enough 
+      // still make long and short entry 
+      if (Math.abs(trend) >= 0.02) {
+        return { side: trend > 0 ? 'long' : 'short' };
+      }
 
-      console.log(`⛔ No signal for ${symbol}.`);
-      return null;
+      return null; // no movement at all -> skip
+      console.log(`❌ No valid entry signal for ${symbol}`);
     } catch (error) {
       console.error(`❌ Error getting entry signal for ${symbol}:`, error.message);
       return null;
