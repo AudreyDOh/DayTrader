@@ -4,6 +4,7 @@ Received data from MQTT Broker and forwards data via Websocket to Frontend
 
 require('dotenv').config();
 const { authorizeGoogleSheets, logToSheet } = require('./logToSheets');
+const { shouldSkipDay } = require('./solarStrategy');
 const TradeManager = require('./tradeManager');
 const mqtt = require('mqtt');
 const express = require('express');
@@ -108,6 +109,10 @@ mqttClient.on('message', async (topic, message) => {
       io.emit('weatherMood', { mood: moodNameMap[tradeMood] ?? tradeMood });
       io.emit('suggestedStocks', { stocks: suggestedStocks });
 
+      if (shouldSkipDay(data.lux, data.humidity, data.temperature)) {
+        console.log('🌫️ Skipping trades: too dark, humid and cold.');
+        return; // Exit early, skip this cycle
+      }
       if (tradeMood !== "Cold & Wet" && suggestedStocks.length > 0) {
         // const equity = 100000; // Starting paper balance
         // tradeManager = new TradeManager(equity);
@@ -134,6 +139,13 @@ mqttClient.on('message', async (topic, message) => {
               data.temperature,
               data.humidity
             );
+            // /////////
+            if (result?.executed) {
+              console.log(`✅ TRADE EXECUTED: ${symbol}`);
+            } else {
+              console.log(`⏭️ Skipped ${symbol}: ${result?.reason}`);
+            }
+            ////////////
 
             if (!result?.executed && result?.reason) {
               const key = `${today}-${symbol}`;

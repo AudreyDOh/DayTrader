@@ -43,8 +43,8 @@ function normalize(value, min, max) {
     return Math.floor(5 + humidNorm * 40); // 5–45 min
   }
 
-  function shouldSkipDay(lux, humidity) {
-    return lux < 200 && humidity > 80;
+  function shouldSkipDay(lux, humidity, temperature) {
+    return lux < 200 && humidity > 80 && temperature < 7; // Too dark and humid
   }
   
 module.exports = {
