@@ -5,7 +5,8 @@ Uses the Alpaca API to execute trades based on the signals generated from the so
 
 
 // Access the required modules to handle trading operations and logging
-const { getTPandSL } = require('./solarStrategy');
+const { getTPandSL, getRiskProfile, getMaxHoldMinutes } = require('./solarStrategy');
+// const { getTPandSL } = require('./solarStrategy');
 const { logToSheet } = require('./logToSheets');
 const alpaca = require('./alpaca'); // Access the Alpaca API for trading operations
 
@@ -37,15 +38,15 @@ class TradeManager {
     try {
 
       // Pulls target values from solarStrategy.js for takeProfit, stopLoss (lux) and maxHold (humidity)
-      const { takeProfit, stopLoss } = require('./solarStrategy').getRiskProfile(lux);
-      const maxHoldMinutes = require('./solarStrategy').getMaxHoldMinutes(humidity);
+      const { takeProfit, stopLoss } = getRiskProfile(lux);
+      const maxHoldMinutes = getMaxHoldMinutes(humidity);
 
       // check if trade symbol exists as string 
       if (!symbol || typeof symbol !== 'string') {
         return { executed: false, reason: 'Invalid symbol provided' };
       }
 
-      // check if sensor dat is valid
+      // check if sensor data is valid
       if (!this.isValidSensorData(lux, temp, humidity)) {
         return { executed: false, reason: 'Invalid sensor data provided' };
       }
@@ -109,10 +110,127 @@ class TradeManager {
     }
   }
 
+  async getEntrySignal(symbol) {
+    try {
+      const bars = await alpaca.getPreviousBars(symbol, 5); // Get the last 5 bars for the symbol stock (5-minute trend)
+      const current = await alpaca.getLastQuote(symbol); // Get the latest quote for the symbol stock
+
+      // Basic data validation
+      if (!bars || bars.length < 2 || !current?.askPrice || !current?.bidPrice) return null;
+
+      // Calculate positive or negative trend based on latest closing price vs oldest closing price
+      const closes = bars.map(b => b.close); // 
+      // If last closing price is greater than first closing price, then it is an uptrend
+      // If last closing price is less than first closing price, then it is a downtrend
+      const trend = closes[closes.length - 1] - closes[0]; // + is uptrend, - is downtrend
+     
+
+      // Get the current and average volume of the last 5 bars
+      const avgVolume = bars.reduce((sum, b) => sum + b.volume, 0) / bars.length;
+      const lastVolume = bars[bars.length - 1].volume;
+  
+      const trendStrength = Math.abs(trend) > 0.1; // over $0.1 move counts as real, execute trade
+      const volumeOkay = lastVolume > avgVolume * 0.5; // if the last volume is greater than 50% of the average volume, execute trae
+  
+      // if the trend is up and the volume is okay, make long entry
+      if (trend > 0 && trendStrength && volumeOkay) {
+        console.log(`✅ Signal detected for LONG entry on ${symbol}`);
+        return { side: 'long' };
+      }
+        // if the trend is down and the volume is okay, make short entry
+      if (trend < 0 && trendStrength && volumeOkay) {
+        console.log(`✅ Signal detected for SHORT entry on ${symbol}`);
+        return { side: 'short' };
+      }
+
+      // // Make a loose signal check if the trend is not strong enough 
+      // // still make long and short entry 
+      // if (Math.abs(trend) >= 0.02) {
+      //   return { side: trend > 0 ? 'long' : 'short' };
+      // }
+      
+      console.log(`❌ No valid entry signal for ${symbol}`);
+      return null; // no movement at all -> skip
+    } catch (error) {
+      console.error(`❌ Error getting entry signal for ${symbol}:`, error.message);
+      return null;
+    }
+  }
+
+  // Method to open a trade and log it
+  async openTrade(trade) {
+    console.log(`🚀 Open ${trade.side.toUpperCase()} trade: ${trade.symbol} @ ${trade.entryPrice} x${trade.shares}`);
+    try {
+      // Place the order using the Alpaca API of "symbol" stock, "shares" amount, and "side" long or short
+      // sends actual market order to Alpaca
+      await alpaca.placeOrder(
+        trade.symbol,
+        trade.shares,
+        trade.side === 'short' ? 'sell' : 'buy'
+      );
+      // Log the trade in openTrades 
+      await logToSheet([
+        new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }),
+        trade.symbol,
+        trade.side.toUpperCase(),
+        trade.entryPrice,
+        trade.tpPrice,
+        trade.slPrice,
+        '—', // Exit price unknown at entry
+        'ENTRY',
+        trade.mood || 'Unknown'
+      ], TRADE_LOG_SHEET);
+      
+      this.openTrades.push(trade);  
+    } catch (err) {
+      console.error(`❌ Failed to place ${trade.side} order for ${trade.symbol}:`, err.message);
+      throw err;
+    }
+  }
+
+  // Method to close a trade and log it
+  async closeTrade(trade, exitPrice, reason) {
+    console.log(`💸 Close ${trade.side.toUpperCase()} trade: ${trade.symbol} @ ${exitPrice} (${reason})`);
+    const closedTrade = { ...trade, exitPrice, reason, exitTime: Date.now() };
+    this.closedTrades.push(closedTrade); // log the closed trade
+
+    // sends actual close order to Alpaca
+    try {
+      await alpaca.placeOrder(
+        trade.symbol,
+        trade.shares,
+        trade.side === 'short' ? 'buy' : 'sell'
+      );
+    } catch (err) {
+      console.error(`❌ Failed to close ${trade.side} trade for ${trade.symbol}:`, err.message);
+    }
+
+    // log the closed trade to Google Sheets
+    try {
+      await logToSheet([
+        new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }),
+        closedTrade.symbol,
+        closedTrade.side,
+        closedTrade.entryPrice,
+        closedTrade.tpPrice,
+        closedTrade.slPrice,
+        exitPrice,
+        reason,
+        closedTrade.mood || 'Unknown'
+      ], TRADE_LOG_SHEET);
+    } catch (err) {
+      console.error('❌ Failed to log trade to Google Sheets:', err.message);
+    }
+  }
+
+  // REGULARLY CHECK OPEN TRADES to check for take profit hits and stop loss hits and max time held
+  // Method to update open trades and check if they meet exit criteria
   async updateOpenTrades() {
+    // Check if there are any open trades to update
     const now = Date.now();
     const tradesToClose = [];
 
+    // Iterate through each open trade and check if it meets the exit criteria
     for (let i = 0; i < this.openTrades.length; i++) {
       const trade = this.openTrades[i];
       try {
@@ -144,6 +262,7 @@ class TradeManager {
     }
   }
 
+  // Close all open trades
   async forceCloseAll() {
     const tradesToClose = [...this.openTrades];
 
@@ -162,101 +281,6 @@ class TradeManager {
     this.openTrades = [];
   }
 
-  async openTrade(trade) {
-    console.log(`🚀 Open ${trade.side.toUpperCase()} trade: ${trade.symbol} @ ${trade.entryPrice} x${trade.shares}`);
-    try {
-      await alpaca.placeOrder(
-        trade.symbol,
-        trade.shares,
-        trade.side === 'short' ? 'sell' : 'buy'
-      );
-      this.openTrades.push(trade);
-    } catch (err) {
-      console.error(`❌ Failed to place ${trade.side} order for ${trade.symbol}:`, err.message);
-      throw err;
-    }
-  }
-
-  async closeTrade(trade, exitPrice, reason) {
-    console.log(`💸 Close ${trade.side.toUpperCase()} trade: ${trade.symbol} @ ${exitPrice} (${reason})`);
-    const closedTrade = { ...trade, exitPrice, reason, exitTime: Date.now() };
-    this.closedTrades.push(closedTrade);
-
-    try {
-      await alpaca.placeOrder(
-        trade.symbol,
-        trade.shares,
-        trade.side === 'short' ? 'buy' : 'sell'
-      );
-    } catch (err) {
-      console.error(`❌ Failed to close ${trade.side} trade for ${trade.symbol}:`, err.message);
-    }
-
-    try {
-      await logToSheet([
-        new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }),
-        closedTrade.symbol,
-        closedTrade.side,
-        closedTrade.entryPrice,
-        closedTrade.tpPrice,
-        closedTrade.slPrice,
-        exitPrice,
-        reason,
-        closedTrade.mood || 'Unknown'
-      ], TRADE_LOG_SHEET);
-    } catch (err) {
-      console.error('❌ Failed to log trade to Google Sheets:', err.message);
-    }
-  }
-
-  async getEntrySignal(symbol, loose = true) {
-    try {
-      const bars = await alpaca.getPreviousBars(symbol, 5); // Get the last 5 bars for the symbol stock (5-minute trend)
-      const current = await alpaca.getLastQuote(symbol); // Get the latest quote for the symbol stock
-
-      // Basic data validation
-      if (!bars || bars.length < 2 || !current?.askPrice || !current?.bidPrice) return null;
-
-      // Calculate positive or negative trend based on latest closing price vs oldest closing price
-      const closes = bars.map(b => b.close); // 
-      const lastClose = closes[closes.length - 1]; // get the last closing price
-      const firstClose = closes[0]; // get the first closing price
-      // If last closing price is greater than first closing price, then it is an uptrend
-      // If last closing price is less than first closing price, then it is a downtrend
-      const trend = lastClose - firstClose; // + is uptrend, - is downtrend
-      // const trendDirection = trend > 0 ? 'up' : trend < 0 ? 'down' : 'neutral';
-      
-      // Get the current and average volume of the last 5 bars
-      const avgVolume = bars.reduce((sum, b) => sum + b.volume, 0) / bars.length;
-      const lastVolume = bars[bars.length - 1].volume;
-  
-      const trendStrength = Math.abs(trend) > 0.1; // over $0.10 move counts as real, execute trade
-      const volumeOkay = lastVolume > avgVolume * 0.5; // if the last volume is greater than 50% of the average volume, execute trae
-  
-      // if the trend is up and the volume is okay, make long entry
-      if (trend > 0 && trendStrength && volumeOkay) {
-        console.log(`✅ Signal detected for LONG entry on ${symbol}`);
-        return { side: 'long' };
-      }
-        // if the trend is down and the volume is okay, make short entry
-      if (trend < 0 && trendStrength && volumeOkay) {
-        console.log(`✅ Signal detected for SHORT entry on ${symbol}`);
-        return { side: 'short' };
-      }
-  
-      // Make a loose signal check if the trend is not strong enough 
-      // still make long and short entry 
-      if (Math.abs(trend) >= 0.02) {
-        return { side: trend > 0 ? 'long' : 'short' };
-      }
-
-      return null; // no movement at all -> skip
-      console.log(`❌ No valid entry signal for ${symbol}`);
-    } catch (error) {
-      console.error(`❌ Error getting entry signal for ${symbol}:`, error.message);
-      return null;
-    }
-  }
 }
 
 module.exports = TradeManager;
