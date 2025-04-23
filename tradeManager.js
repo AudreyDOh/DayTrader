@@ -92,19 +92,14 @@ if (!signal) return { executed: false, reason: 'No valid entry signal (bars)' };
 
   async getEntrySignal(symbol) {
     try {
-      const barsResponse = await alpaca.getBars([symbol], {
-        timeframe: '1Min',
-        limit: 5
-      });
-
-      const bars = barsResponse[symbol];
+      const bars = await alpaca.getPreviousBars(symbol, 5);
 
       if (!bars || bars.length < 2) {
         console.log(`❌ [${symbol}] Not enough bar data`);
         return null;
       }
       
-      const closes = bars.map(b => b.c); // close prices
+      const closes = bars.map(b => b.close); // close prices
       // calculate trend and volume
       // Trend: Price difference between the last and first bar — shows relative change / overall direction.
       const trend = closes[closes.length - 1] - closes[0];
@@ -124,21 +119,19 @@ if (!signal) return { executed: false, reason: 'No valid entry signal (bars)' };
       // Enter Long
       if (trendUp) {
         console.log(`⚡ Minimal uptrend detected. Enter LONG for ${symbol}`);
-        return { side: 'long' };
+        return { side: 'long', lastClose: closes[closes.length - 1] };
       }
       // Enter Short
       if (trendDown) {
         console.log(`⚡ Minimal downtrend detected. Enter SHORT for ${symbol}`);
-        return { side: 'short' };
+        return { side: 'short', lastClose: closes[closes.length - 1] };
       }
 
       // Fallback Strategy: Randomly enter if no trend detected
       // This is a last resort to ensure some activity in the market
-      if (current.askPrice || current.bidPrice) {
-        const fallbackSide = Math.random() > 0.5 ? 'long' : 'short';
-        console.log(`🤷 No trend. Randomly entering ${fallbackSide.toUpperCase()} for ${symbol}`);
-        return { side: fallbackSide };
-      }
+      const fallbackSide = Math.random() > 0.5 ? 'long' : 'short';
+      console.log(`🤷 No trend. Randomly entering ${fallbackSide.toUpperCase()} for ${symbol}`);
+      return { side: fallbackSide, lastClose: closes[closes.length - 1] };
 
       return null;
     } catch (error) {
