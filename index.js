@@ -11,6 +11,9 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const alpaca = require('./alpaca'); // Alpaca Module to fetch account infos
+// Add Polygon.io client
+const { restClient } = require('@polygon.io/client-js');
+const polygonClient = restClient(process.env.POLYGON_API_KEY);
 
 const app = express();
 const server = http.createServer(app);
@@ -88,6 +91,27 @@ function determineTradeMood({ lux, temperature, humidity }) {
   return "Unknown";
 }
 
+function determineSignalFromSnapshot(snapshot) {
+  // Helper function to determine signal from snapshot data
+  // Implement your trend detection logic using the snapshot data
+  // This will depend on the exact format of Polygon's snapshot response
+  const { lastTrade, prevDay, day } = snapshot;
+  
+  if (!lastTrade || !prevDay) return null;
+  
+  const trend = lastTrade.p - prevDay.c;
+  const minimalTrend = prevDay.c * 0.005; // 0.5% change
+  
+  if (trend >= minimalTrend) {
+    return { side: 'long' };
+  } else if (trend <= -minimalTrend) {
+    return { side: 'short' };
+  } else {
+    const fallbackSide = Math.random() > 0.5 ? 'long' : 'short';
+    return { side: fallbackSide };
+  }
+}
+
 mqttClient.on('connect', () => {
   console.log('✅ Connected to MQTT broker');
   mqttClient.subscribe(topic);
@@ -129,18 +153,14 @@ mqttClient.on('message', async (topic, message) => {
         try {
           const account = await alpaca.getAccountInfo(); // Fetch account info from Alpaca
           const cash = parseFloat(account.cash); // safer + clearer for trading logic
-console.log('📈 Alpaca cash balance:', cash);
-tradeManager = new TradeManager(cash);
-const buyingPower = parseFloat(account.buying_power);
-console.log('📈 Alpaca buying power:', buyingPower);
+          console.log('📈 Alpaca cash balance:', cash);
+          tradeManager = new TradeManager(cash);
+          const buyingPower = parseFloat(account.buying_power);
+          console.log('📈 Alpaca buying power:', buyingPower);
 
-if (isNaN(cash)) {
-  throw new Error('⚠️ Received NaN for cash balance');
-}
-
-
-
-
+          if (isNaN(cash)) {
+            throw new Error('⚠️ Received NaN for cash balance');
+          }
 
           // const equity = parseFloat(account.equity); // parseFloat to ensure full number without commas, save into "equity" variable
           // if (isNaN(equity)) {
@@ -155,43 +175,56 @@ if (isNaN(cash)) {
         }
 
         tradingInterval = setInterval(async () => {
-          for (const symbol of suggestedStocks) {
-            const result = await tradeManager.evaluateTradeEntry(
-              symbol,
-              tradeMood,
-              data.lux,
-              data.temperature,
-              data.humidity
-            );
-            // /////////
-            if (result?.executed) {
-              console.log(`✅ TRADE EXECUTED: ${symbol}`);
-            } else {
-              console.log(`⏭️ Skipped ${symbol}: ${result?.reason}`);
+          try {
+            // Get all symbols for the current mood based on moodStockMap at once to reduce API calls
+            const symbols = moodStockMap[tradeMood] || [];
+            
+            // check if symbols is empty 
+            // especially for "Cold & Wet" mood
+            if (symbols.length === 0) {
+              console.log("No symbols to trade for current mood");
+              return;
             }
-            ////////////
 
-            if (!result?.executed && result?.reason) {
-              const key = `${today}-${symbol}`;
-              if (!loggedSkips.has(key)) {
-                loggedSkips.add(key);
-                const timeNow = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
-                await logToSheet([
-                  timeNow,
+            // Get snapshot data for all symbols in one request (1 API call)
+            const snapshots = await polygonClient.stocks.snapshotAllTickers({
+              tickers: symbols.join(',')
+            });
+
+            // Process each symbol using the snapshot data
+            for (const symbol of symbols) {
+              const snapshot = snapshots.tickers.find(t => t.ticker === symbol);
+              
+              if (!snapshot) {
+                console.log(`⏭️ Skipped ${symbol}: No snapshot data available`);
+                continue;
+              }
+
+              // Use snapshot data to make trading decisions
+              const signal = determineSignalFromSnapshot(snapshot);
+              
+              if (signal) {
+                const result = await tradeManager.evaluateTradeEntry(
                   symbol,
-                  "Skipped",
-                  result.reason,
+                  tradeMood,
                   data.lux,
                   data.temperature,
                   data.humidity,
-                  tradeMood,
-                  "—"
-                ], 'Skipped Trades');
+                  signal // Pass the pre-determined signal
+                );
+
+                if (result?.executed) {
+                  console.log(`✅ TRADE EXECUTED: ${symbol}`);
+                } else {
+                  console.log(`⏭️ Skipped ${symbol}: ${result?.reason}`);
+                }
               }
             }
-          }
 
-          await tradeManager.updateOpenTrades();
+            await tradeManager.updateOpenTrades();
+          } catch (error) {
+            console.error('❌ Error in trading interval:', error.message);
+          }
         }, 60_000);
       }
     }
