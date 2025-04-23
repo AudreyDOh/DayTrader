@@ -154,8 +154,142 @@ class TradeManager {
       return null;
     }
   }
+// Add this method to your TradeManager class
+async updateOpenTrades() {
+  try {
+    if (this.openTrades.length === 0) {
+      return { updated: true, message: 'No open trades to update' };
+    }
+    
+    const alpaca = require('./alpaca'); // Make sure to import your alpaca module
+    
+    console.log(`🔄 Updating ${this.openTrades.length} open trade(s)...`);
+    
+    for (const trade of [...this.openTrades]) {
+      const quote = await alpaca.getLastQuote(trade.symbol);
+      if (!quote) {
+        console.log(`⚠️ Could not get quote for ${trade.symbol}`);
+        continue;
+      }
+      
+      const currentPrice = trade.side === 'long' ? quote.bidPrice : quote.askPrice;
+      const holdTime = (Date.now() - trade.entryTime) / (1000 * 60); // minutes
+      
+      // Check for take profit
+      if ((trade.side === 'long' && currentPrice >= trade.tpPrice) || 
+          (trade.side === 'short' && currentPrice <= trade.tpPrice)) {
+        console.log(`🎯 Take profit hit for ${trade.symbol} at ${currentPrice}`);
+        await this.closeTrade(trade, currentPrice, 'take_profit');
+        continue;
+      }
+      
+      // Check for stop loss
+      if ((trade.side === 'long' && currentPrice <= trade.slPrice) || 
+          (trade.side === 'short' && currentPrice >= trade.slPrice)) {
+        console.log(`🛑 Stop loss hit for ${trade.symbol} at ${currentPrice}`);
+        await this.closeTrade(trade, currentPrice, 'stop_loss');
+        continue;
+      }
+      
+      // Check for max hold time
+      if (holdTime >= trade.maxHoldMinutes) {
+        console.log(`⏱️ Max hold time reached for ${trade.symbol}`);
+        await this.closeTrade(trade, currentPrice, 'max_hold_time');
+        continue;
+      }
+    }
+    
+    return { updated: true, message: `Updated ${this.openTrades.length} open trades` };
+  } catch (error) {
+    console.error('❌ Error updating open trades:', error.message);
+    return { updated: false, error: error.message };
+  }
+}
 
-  // (other methods unchanged)
+// You'll also need a closeTrade method if you don't have one already
+async closeTrade(trade, exitPrice, reason) {
+  try {
+    const alpaca = require('./alpaca');
+    
+    // Calculate profit/loss
+    const entryValue = trade.entryPrice * trade.shares;
+    const exitValue = exitPrice * trade.shares;
+    const pnl = trade.side === 'long' 
+      ? exitValue - entryValue 
+      : entryValue - exitValue;
+    
+    const pnlPercent = (pnl / entryValue * 100).toFixed(2);
+    
+    console.log(`💵 Closing ${trade.side} position in ${trade.symbol}:
+      - Entry: $${trade.entryPrice} × ${trade.shares} shares
+      - Exit: $${exitPrice}
+      - P&L: $${pnl.toFixed(2)} (${pnlPercent}%)
+      - Reason: ${reason}`);
+    
+    // Log the closed trade
+    this.closedTrades.push({
+      ...trade,
+      exitPrice,
+      exitTime: Date.now(),
+      pnl,
+      pnlPercent,
+      reason
+    });
+    
+    // Remove from open trades
+    this.openTrades = this.openTrades.filter(t => t !== trade);
+    
+    // Log to Google sheets if you have that functionality
+    const { logToSheet } = require('./logToSheets');
+    const now = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
+    
+    await logToSheet([
+      now,
+      trade.symbol,
+      trade.side,
+      trade.entryPrice,
+      exitPrice,
+      trade.shares,
+      pnl.toFixed(2),
+      pnlPercent,
+      reason,
+      (trade.exitTime - trade.entryTime) / (1000 * 60) // Hold time in minutes
+    ], 'Alpaca Trades');
+    
+    return { closed: true };
+  } catch (error) {
+    console.error(`❌ Error closing trade for ${trade.symbol}:`, error.message);
+    return { closed: false, error: error.message };
+  }
+}
+
+// You might also need a forceCloseAll method that's referenced in your index.js
+async forceCloseAll() {
+  try {
+    if (this.openTrades.length === 0) {
+      console.log('📭 No open trades to close');
+      return { closed: true, message: 'No open trades to close' };
+    }
+    
+    console.log(`🚨 Force closing ${this.openTrades.length} open trade(s)...`);
+    
+    const alpaca = require('./alpaca');
+    
+    for (const trade of [...this.openTrades]) {
+      const quote = await alpaca.getLastQuote(trade.symbol);
+      if (!quote) continue;
+      
+      const currentPrice = trade.side === 'long' ? quote.bidPrice : quote.askPrice;
+      await this.closeTrade(trade, currentPrice, 'market_close');
+    }
+    
+    return { closed: true, message: 'All trades closed' };
+  } catch (error) {
+    console.error('❌ Error force closing all trades:', error.message);
+    return { closed: false, error: error.message };
+  }
+}
+  
 }
 
 module.exports = TradeManager;
