@@ -37,15 +37,25 @@ let tradingInterval = null;
 const loggedSkips = new Set(); // ✅ Track skipped trades
 
 const moodStockMap = {
-  "Bright & Dry": ["TSLA", "NVDA", "META", "SHOP", "AAPL", "MSFT", "AMZN", "GOOGL"],
-  "Cold & Bright": ["PLTR", "UBER", "ABNB", "NET", "ROKU", "SNOW", "DKNG"],
-  "Hot & Dry": ["AI", "UPST", "HOOD", "COIN", "AFRM", "SOFI", "LCID", "RIVN", "FSLY", "BB"],
-  "Hot & Humid": ["GME", "MARA", "RIOT", "BBBY", "CVNA", "AMC", "OSTK", "SPCE", "BBIG", "DWAC"],
-  "Dark & Wet": ["SPY", "JNJ", "PG", "KO", "PEP", "VZ", "WMT", "XLP", "XLU"],
-  "Dry & Cloudy": ["TLT", "XLU", "GLD", "XLF", "XLE", "USO", "BND"],
-  "Bright & Wet": ["DIS", "SQ", "SOFI", "PYPL", "ZM", "LYFT", "WISH"],
+  "Bright & Dry": ["TSLA", "NVDA", "META", "AVGO", "AAPL", "MSFT", "AMZN", "GOOGL"],
+  "Cold & Bright": ["PLTR", "UBER", "ABNB", "SNOW", "ROKU", "DKNG", "DASH"],
+  "Hot & Dry": ["COIN", "UPST", "HOOD", "AFRM", "SOFI", "LCID", "RIVN", "FSLY"],
+  "Hot & Humid": ["GME", "MARA", "RIOT", "CVNA", "AMC", "OSTK", "SPCE", "DWAC"],
+  "Dark & Wet": ["PG", "JNJ", "KO", "PEP", "WMT", "VZ", "MCK", "PM"],
+  "Dry & Cloudy": ["PFE", "NKE", "EL", "CPB", "IFF", "BF.B", "STZ"],
+  "Bright & Wet": ["CRM", "ADBE", "INTU", "ADSK", "PTC", "MANH", "NOW"],
   "Cold & Wet": []
 };
+// const moodStockMap = {
+//   "Bright & Dry": ["TSLA", "NVDA", "META", "SHOP", "AAPL", "MSFT", "AMZN", "GOOGL"],
+//   "Cold & Bright": ["PLTR", "UBER", "ABNB", "NET", "ROKU", "SNOW", "DKNG"],
+//   "Hot & Dry": ["AI", "UPST", "HOOD", "COIN", "AFRM", "SOFI", "LCID", "RIVN", "FSLY", "BB"],
+//   "Hot & Humid": ["GME", "MARA", "RIOT", "BBBY", "CVNA", "AMC", "OSTK", "SPCE", "BBIG", "DWAC"],
+//   "Dark & Wet": ["SPY", "JNJ", "PG", "KO", "PEP", "VZ", "WMT", "XLP", "XLU"],
+//   "Dry & Cloudy": ["TLT", "XLU", "GLD", "XLF", "XLE", "USO", "BND"],
+//   "Bright & Wet": ["DIS", "SQ", "SOFI", "PYPL", "ZM", "LYFT", "WISH"],
+//   "Cold & Wet": []
+// };
 
 const moodNameMap = {
   "Bright & Dry": "Golden Clarity (아지랑이)",
