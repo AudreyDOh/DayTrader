@@ -185,42 +185,61 @@ mqttClient.on('message', async (topic, message) => {
               console.log("No symbols to trade for current mood");
               return;
             }
-
-            // Get snapshot data for all symbols in one request (1 API call)
-            const snapshots = await polygonClient.stocks.snapshotAllTickers({
-              tickers: symbols.join(',')
-            });
-
-            // Process each symbol using the snapshot data
+        
+            // Process a limited number of symbols to stay within rate limits
+            let processedSymbols = 0;
             for (const symbol of symbols) {
-              const snapshot = snapshots.tickers.find(t => t.ticker === symbol);
+              if (processedSymbols >= 5) break; // Stay within rate limit
               
-              if (!snapshot) {
-                console.log(`⏭️ Skipped ${symbol}: No snapshot data available`);
-                continue;
-              }
-
-              // Use snapshot data to make trading decisions
-              const signal = determineSignalFromSnapshot(snapshot);
-              
-              if (signal) {
-                const result = await tradeManager.evaluateTradeEntry(
-                  symbol,
-                  tradeMood,
-                  data.lux,
-                  data.temperature,
-                  data.humidity,
-                  signal // Pass the pre-determined signal
-                );
-
-                if (result?.executed) {
-                  console.log(`✅ TRADE EXECUTED: ${symbol}`);
-                } else {
-                  console.log(`⏭️ Skipped ${symbol}: ${result?.reason}`);
+              try {
+                // Get last quote and trade data individually for this symbol
+                const quote = await polygonClient.stocks.lastQuote(symbol);
+                const prevDay = await polygonClient.stocks.previousClose(symbol);
+                
+                // Skip if we couldn't get the necessary data
+                if (!quote?.results || !prevDay?.results) {
+                  console.log(`⏭️ Skipped ${symbol}: Insufficient data available`);
+                  continue;
                 }
+                
+                // Create a simplified snapshot from individual API calls
+                const snapshot = {
+                  ticker: symbol,
+                  lastTrade: {
+                    p: quote.results.p || quote.results.P, // Use available price
+                    s: 0 // We don't need size for our signal
+                  },
+                  prevDay: {
+                    c: prevDay.results.c // Previous day's close
+                  }
+                };
+                
+                // Use snapshot data to make trading decisions
+                const signal = determineSignalFromSnapshot(snapshot);
+                
+                if (signal) {
+                  const result = await tradeManager.evaluateTradeEntry(
+                    symbol,
+                    tradeMood,
+                    data.lux,
+                    data.temperature,
+                    data.humidity,
+                    signal // Pass the pre-determined signal
+                  );
+        
+                  if (result?.executed) {
+                    console.log(`✅ TRADE EXECUTED: ${symbol}`);
+                  } else {
+                    console.log(`⏭️ Skipped ${symbol}: ${result?.reason}`);
+                  }
+                }
+                
+                processedSymbols++;
+              } catch (error) {
+                console.error(`❌ Error processing ${symbol}: ${error.message}`);
               }
             }
-
+        
             await tradeManager.updateOpenTrades();
           } catch (error) {
             console.error('❌ Error in trading interval:', error.message);
