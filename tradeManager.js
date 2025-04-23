@@ -3,7 +3,6 @@ Manage trading operations, including entry and exit signals, position sizing, an
 Uses the Alpaca API to execute trades based on the signals generated from the solar sensors.
 */
 
-
 // Access the required modules to handle trading operations and logging
 const { getTPandSL, getRiskProfile, getMaxHoldMinutes } = require('./solarStrategy');
 // const { getTPandSL } = require('./solarStrategy');
@@ -63,7 +62,7 @@ class TradeManager {
 
       // Get the latest quote for the symbol stock, including "askPrice" and bidPrice"
       const quote = await alpaca.getLastQuote(symbol); 
-      if (!quote || !quote.askPrice) { 
+      if (!quote || quote.askPrice == null) { 
         return { executed: false, reason: 'Could not retrieve valid quote data' };
       } 
       const entryPrice = quote.askPrice; 
@@ -114,52 +113,54 @@ class TradeManager {
     try {
       const bars = await alpaca.getPreviousBars(symbol, 5); // Get the last 5 bars for the symbol stock (5-minute trend)
       const current = await alpaca.getLastQuote(symbol); // Get the latest quote for the symbol stock
-  
+
       // Basic data validation
-      if (!bars || bars.length < 2 || !current?.askPrice || !current?.bidPrice) {
+      if (!bars || bars.length < 2 || (current.askPrice == null && current.bidPrice == null)) {
         console.log(`❌ [${symbol}] Insufficient data: bars=${bars?.length || 0}, ask=${current?.askPrice}, bid=${current?.bidPrice}`);
         return null;
       }
-  
+
       // Calculate positive or negative trend based on latest closing price vs oldest closing price
       const closes = bars.map(b => b.close);
       const trend = closes[closes.length - 1] - closes[0]; // + is uptrend, - is downtrend
-  
+
       // Get the current and average volume of the last 5 bars
       const avgVolume = bars.reduce((sum, b) => sum + b.volume, 0) / bars.length;
       const lastVolume = bars[bars.length - 1].volume;
-  
-      const trendStrength = Math.abs(trend) > 0.03; // over $0.1 move counts as real, execute trade
-      const volumeOkay = lastVolume > avgVolume * 0.2; // if the last volume is greater than 50% of the average volume, execute trade
-  
+
+      const minimalTrend = 0.005; // Only $0.005 needed
+      const trendUp = trend >= minimalTrend;
+      const trendDown = trend <= -minimalTrend;
+
       // === DEBUG LOGGING ===
       console.log(`🔍 [${symbol}] Entry Signal Evaluation`);
       console.log(`- Closes: ${closes.map(c => c.toFixed(2)).join(', ')}`);
       console.log(`- Trend: ${trend.toFixed(4)} (${trend > 0 ? 'Up' : 'Down'})`);
-      console.log(`- Trend strength OK? ${trendStrength}`);
-      console.log(`- Last volume: ${lastVolume}, Avg volume: ${avgVolume.toFixed(2)}, Volume OK? ${volumeOkay}`);
       console.log(`- Quote: Ask=${current.askPrice}, Bid=${current.bidPrice}`);
-  
-      // if the trend is up and the volume is okay, make long entry
-      if (trend > 0 && trendStrength && volumeOkay) {
-        console.log(`✅ Signal detected for LONG entry on ${symbol}`);
+
+      // if minimal trend exists, enter trade
+      if (trendUp) {
+        console.log(`⚡ Minimal uptrend detected. Enter LONG for ${symbol}`);
         return { side: 'long' };
       }
-  
-      // if the trend is down and the volume is okay, make short entry
-      if (trend < 0 && trendStrength && volumeOkay) {
-        console.log(`✅ Signal detected for SHORT entry on ${symbol}`);
+      if (trendDown) {
+        console.log(`⚡ Minimal downtrend detected. Enter SHORT for ${symbol}`);
         return { side: 'short' };
       }
-  
-      console.log(`❌ No valid entry signal for ${symbol}`);
-      return null; // no movement at all -> skip
+
+      // fallback: random entry if no clear trend but prices exist
+      if (current.askPrice || current.bidPrice) {
+        const fallbackSide = Math.random() > 0.5 ? 'long' : 'short';
+        console.log(`🤷 No trend. Randomly entering ${fallbackSide.toUpperCase()} for ${symbol}`);
+        return { side: fallbackSide };
+      }
+
+      return null; // still no valid data
     } catch (error) {
       console.error(`❌ Error getting entry signal for ${symbol}:`, error.message);
       return null;
     }
   }
-  
 
   // Method to open a trade and log it
   async openTrade(trade) {
@@ -284,7 +285,6 @@ class TradeManager {
     }
     this.openTrades = [];
   }
-
 }
 
 module.exports = TradeManager;

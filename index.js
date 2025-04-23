@@ -118,13 +118,27 @@ mqttClient.on('message', async (topic, message) => {
         // tradeManager = new TradeManager(equity);
         try {
           const account = await alpaca.getAccount(); // Fetch account info from Alpaca
-          const equity = parseFloat(account.equity); // parseFloat to ensure full number without commas, save into "equity" variable
+          const cash = parseFloat(account.cash); // safer + clearer for trading logic
+console.log('📈 Alpaca cash balance:', cash);
+tradeManager = new TradeManager(cash);
+const buyingPower = parseFloat(account.buying_power);
+console.log('📈 Alpaca buying power:', buyingPower);
+
+if (isNaN(cash)) {
+  throw new Error('⚠️ Received NaN for cash balance');
+}
+
+
+
+
+
+          // const equity = parseFloat(account.equity); // parseFloat to ensure full number without commas, save into "equity" variable
           // if (isNaN(equity)) {
           //   throw new Error('Invalid equity value from Alpaca');
           // }
-          console.log('📈 Alpaca account equity:', equity);
-          // tradeManager class 
-          tradeManager = new TradeManager(equity); // passes "equity" variable to TradeManager constructor 
+          // console.log('📈 Alpaca account equity:', equity);
+          // // tradeManager class 
+          // tradeManager = new TradeManager(equity); // passes "equity" variable to TradeManager constructor 
         } catch (err) {
           console.error('❌ Failed to fetch account info from Alpaca:', err.message); 
           tradeManager = new TradeManager(100000); // fallback to paper balance
