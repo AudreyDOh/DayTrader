@@ -127,7 +127,7 @@ mqttClient.on('message', async (topic, message) => {
         // const equity = 100000; // Starting paper balance
         // tradeManager = new TradeManager(equity);
         try {
-          const account = await alpaca.getAccount(); // Fetch account info from Alpaca
+          const account = await alpaca.getAccountInfo(); // Fetch account info from Alpaca
           const cash = parseFloat(account.cash); // safer + clearer for trading logic
 console.log('📈 Alpaca cash balance:', cash);
 tradeManager = new TradeManager(cash);
