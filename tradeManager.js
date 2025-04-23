@@ -50,13 +50,9 @@ class TradeManager {
       }
 
       const signal = await this.getEntrySignal(symbol);
-      if (!signal) return { executed: false, reason: 'No valid entry signal (price/volume or bars)' };
+if (!signal) return { executed: false, reason: 'No valid entry signal (bars)' };
 
-      const quote = await alpaca.getLastQuote(symbol); 
-      if (!quote || quote.askPrice == null) { 
-        return { executed: false, reason: 'Could not retrieve valid quote data' };
-      } 
-      const entryPrice = quote.askPrice; 
+      const entryPrice = signal.lastClose;
       const volatility = await alpaca.getVolatility(symbol); 
       const volatilityFactor = Math.min(volatility / 0.03, 1); 
 
@@ -96,21 +92,19 @@ class TradeManager {
 
   async getEntrySignal(symbol) {
     try {
-      const bars = await alpaca.getPreviousBars(symbol, 5); // get last 5 bars for stock (open, high, low, close, volume)
-      const current = await alpaca.getLastQuote(symbol); // get real-time price
+      const barsResponse = await alpaca.getBars([symbol], {
+        timeframe: '1Min',
+        limit: 5
+      });
 
-      // check if bar data is valid
-      if (!bars || bars.length < 2 || (current.askPrice == null && current.bidPrice == null)) {
-        console.log(`❌ [${symbol}] Insufficient data: bars=${bars?.length || 0}, ask=${current?.askPrice}, bid=${current?.bidPrice}`);
-        return null; // if missing, exit with null
-      }
+      const bars = barsResponse[symbol];
 
-      const closes = bars.map(b => b?.close).filter(c => typeof c === 'number');
-      if (closes.length < 2) {
-        console.log(`❌ [${symbol}] Missing close data in bars. Skipping.`);
+      if (!bars || bars.length < 2) {
+        console.log(`❌ [${symbol}] Not enough bar data`);
         return null;
       }
-
+      
+      const closes = bars.map(b => b.c); // close prices
       // calculate trend and volume
       // Trend: Price difference between the last and first bar — shows relative change / overall direction.
       const trend = closes[closes.length - 1] - closes[0];
@@ -124,10 +118,8 @@ class TradeManager {
       const trendUp = trend >= minimalTrend; // 0.5% increase
       const trendDown = trend <= -minimalTrend; // 0.5% decrease
 
-      // Debug logging console.log(`🔍 [${symbol}] Entry Signal Evaluation`);
-      console.log(`- Closes: ${closes.map(c => c !== undefined ? c.toFixed(2) : 'undefined').join(', ')}`);
-      console.log(`- Trend: ${trend !== undefined ? trend.toFixed(4) : 'undefined'} (${trend > 0 ? 'Up' : 'Down'})`);
-      console.log(`- Quote: Ask=${current.askPrice}, Bid=${current.bidPrice}`);
+      console.log(`📊 [${symbol}] Closes: ${closes.join(', ')}`);
+      console.log(`📈 Trend: ${trend.toFixed(4)} | Volume: ${lastVolume}/${avgVolume.toFixed(0)}`);
 
       // Enter Long
       if (trendUp) {
