@@ -41,14 +41,14 @@ const alpaca = new Alpaca({
     }
   }
   
-  // ✅ Get current bid/ask
-  async function getLastQuote(symbol) {
-    const quote = await alpaca.getLatestQuote(symbol);
-    return {
-      bidPrice: parseFloat(quote.Bp),
-      askPrice: parseFloat(quote.Ap)
-    };
-  }
+  // // ✅ Get current bid/ask
+  // async function getLastQuote(symbol) {
+  //   const quote = await alpaca.getLatestQuote(symbol);
+  //   return {
+  //     bidPrice: parseFloat(quote.Bp),
+  //     askPrice: parseFloat(quote.Ap)
+  //   };
+  // }
   
   // ✅ Get recent bars for breakout detection
   async function getPreviousBars(symbol, limit = 5) {
@@ -71,6 +71,39 @@ const alpaca = new Alpaca({
     return result;
   }
   
+  async function getBars(symbols, options) {
+    try {
+      const result = {};
+      for (const symbol of symbols) {
+        const bars = await alpaca.getBarsV2(
+          symbol,
+          { 
+            timeframe: options.timeframe || '1Min',
+            limit: options.limit || 5
+          },
+          alpaca.configuration
+        );
+        
+        const barArray = [];
+        for await (let bar of bars) {
+          barArray.push({
+            t: bar.t,
+            o: bar.o,
+            h: bar.h,
+            l: bar.l,
+            c: bar.c,
+            v: bar.v || 0
+          });
+        }
+        result[symbol] = barArray;
+      }
+      return result;
+    } catch (error) {
+      console.error(`Error getting bars: ${error.message}`);
+      throw error;
+    }
+  }
+
   // ✅ Estimate volatility based on last 5 closes
   async function getVolatility(symbol) {
     const bars = await getPreviousBars(symbol, 5);
@@ -119,7 +152,8 @@ const alpaca = new Alpaca({
   module.exports = {
     alpaca,              
     placeOrder,
-    getLastQuote,
+    //getLastQuote,
+    getBars, 
     getPreviousBars,
     getVolatility,
     getAccountInfo,

@@ -245,7 +245,7 @@ console.log(`📈 Suggested Stocks:`, suggestedStocks);
       console.log('⚠️ Ignored non-sensor message:', msg);
     }
   } catch (err) {
-    console.log('❌ Invalid JSON:', msg);
+    //console.log('❌ Invalid JSON:', msg);
   }
 });
 
