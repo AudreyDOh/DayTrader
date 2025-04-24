@@ -3,15 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <title>Day Trader Dashboard</title>
-  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
   <style>
     body {
       font-family: sans-serif;
       padding: 2rem;
       background: #f8f9fa;
+      max-width: 1200px;
+      margin: 0 auto;
     }
     h1 {
       margin-bottom: 0.5rem;
+      color: #333;
     }
     .clock {
       font-size: 1.1rem;
@@ -28,27 +31,106 @@
       border-radius: 6px;
       margin-bottom: 1rem;
     }
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .mood-card {
+      background: linear-gradient(to right, #f8f9fa, #e9ecef);
+      border-left: 5px solid #007bff;
+    }
+    .stocks-card {
+      background: linear-gradient(to right, #f8f9fa, #e9ecef);
+      border-left: 5px solid #28a745;
+    }
+    #marketStatus {
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    #marketStatus.open {
+      color: #28a745;
+    }
+    #marketStatus.closed {
+      color: #dc3545;
+    }
+    .history-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 15px;
+    }
+    .history-item {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .history-time {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    .mood-display {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #333;
+      margin: 15px 0;
+    }
+    #suggestedStocks {
+      list-style-type: none;
+      padding: 0;
+    }
+    #suggestedStocks li {
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      background: #e9ecef;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .stock-symbol {
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
-  <h1>Day Trader Dashboard</h1>
+  <h1>Solar Day Trader Dashboard</h1>
   <div class="clock" id="clock">Loading current time...</div>
-  <div class="timestamp" id="timestamp">Waiting for sensor data...</div>
-  <pre id="output">—</pre>
-  <h2 id="mood">Today's Mood: </h2>
-  <p id="weatherMood">Waiting for mood...</p>
-
-  <h2>Suggested Stocks:</h2>
-<ul id="suggestedStocks">
-  <li>Waiting for stock suggestions...</li>
-</ul>
-
-<h2>Market Status:</h2>
-<p id="marketStatus">Waiting for market signal...</p>
-
+  
+  <div class="dashboard-grid">
+    <div class="card">
+      <h2>Current Sensor Data</h2>
+      <div class="timestamp" id="timestamp">Waiting for sensor data...</div>
+      <pre id="output">—</pre>
+    </div>
+    
+    <div class="card mood-card">
+      <h2>Trading Mood</h2>
+      <div class="mood-display" id="weatherMood">Waiting for mood...</div>
+      <div id="moodExplanation"></div>
+    </div>
+    
+    <div class="card stocks-card">
+      <h2>Suggested Stocks</h2>
+      <ul id="suggestedStocks">
+        <li>Waiting for stock suggestions...</li>
+      </ul>
+    </div>
+    
+    <div class="card">
+      <h2>Market Status</h2>
+      <p id="marketStatus" class="closed">Waiting for market signal...</p>
+      <div id="marketInfo"></div>
+    </div>
+  </div>
+  
   <h2>Sensor Reading History</h2>
-  <div id="history"></div>
-
+  <div id="history" class="history-grid"></div>
 
   <script>
     const socket = io();
@@ -57,7 +139,6 @@
     socket.on('mqttData', ({ latest, history }) => {
       console.log('Received mqttData:', { latest, history });
       
-
       const latestOutput = `
 Lux: ${latest.lux}
 Temperature: ${latest.temperature}
@@ -69,31 +150,60 @@ Battery: ${latest.battery}
       // Display the latest data
       document.getElementById('timestamp').innerText = `Last data logged at ${latest.time}`;
       document.getElementById('output').innerText = latestOutput;
-      document.getElementById('mood').innerText = `Today's Mood: ${latest.mood || 'Not Set'}`;
+      
+      // Only update mood if it's not already set from the dedicated event
+      if (latest.mood && document.getElementById('weatherMood').innerText === "Waiting for mood...") {
+        document.getElementById('weatherMood').innerText = latest.mood;
+      }
 
       // Display the last 5 messages
       const historyContainer = document.getElementById('history');
       historyContainer.innerHTML = history
         .map(entry => {
-          return `<pre><strong>${entry.time}</strong>\n${[
-            `Temperature: ${entry.temperature}`,
-            `Humidity: ${entry.humidity}`,
-            `Lux: ${entry.lux}`,
-            `Power: ${entry.power}`,
-            `Battery: ${entry.battery}`
-          ].join(', ')}</pre>`;
-          
-                    })
+          return `<div class="history-item">
+            <div class="history-time">${entry.time}</div>
+            <div>Temperature: ${entry.temperature}°C</div>
+            <div>Humidity: ${entry.humidity}%</div>
+            <div>Lux: ${entry.lux}</div>
+            <div>Power: ${entry.power}W</div>
+            <div>Battery: ${entry.battery}V</div>
+          </div>`;
+        })
         .join('');
     });
 
-    // Listen for market open/close updates from backend
-socket.on('marketStatus', ({ open }) => {
-  const el = document.getElementById('marketStatus');
-  el.innerText = open ? "Market status: OPEN" : "Market status: CLOSED";
-  el.style.color = open ? "green" : "red";
-});
+    // Listen for mood updates
+    socket.on('weatherMood', ({ mood }) => {
+      console.log('Received weather mood:', mood);
+      document.getElementById('weatherMood').innerText = mood;
+    });
 
+    // Listen for stock suggestions
+    socket.on('suggestedStocks', ({ stocks }) => {
+      console.log('Received suggested stocks:', stocks);
+      const stocksList = document.getElementById('suggestedStocks');
+      
+      if (stocks && stocks.length > 0) {
+        stocksList.innerHTML = stocks
+          .map(stock => `<li><span class="stock-symbol">${stock}</span></li>`)
+          .join('');
+      } else {
+        stocksList.innerHTML = '<li>No stocks suggested for current mood</li>';
+      }
+    });
+
+    // Listen for market open/close updates from backend
+    socket.on('marketStatus', ({ open }) => {
+      const el = document.getElementById('marketStatus');
+      el.innerText = open ? "Market status: OPEN" : "Market status: CLOSED";
+      el.className = open ? "open" : "closed";
+      
+      if (open) {
+        document.getElementById('marketInfo').innerText = "Trades are actively being evaluated based on current solar conditions.";
+      } else {
+        document.getElementById('marketInfo').innerText = "Trading paused until solar power is detected.";
+      }
+    });
 
     // Display live clock in EST
     function updateClock() {
@@ -111,20 +221,8 @@ socket.on('marketStatus', ({ open }) => {
       document.getElementById('clock').innerText = `Current EST Time: ${now}`;
     }
 
-
-
     setInterval(updateClock, 1000);
     updateClock();
   </script>
-
-
-<!-- Load socket.io from server -->
-<script src="/socket.io/socket.io.js"></script>
-
-<!-- Load your custom frontend script -->
-<script src="script.js"></script>
-
-
-
 </body>
 </html>
