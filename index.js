@@ -37,15 +37,16 @@ let tradingInterval = null;
 const loggedSkips = new Set(); // ✅ Track skipped trades
 
 const moodStockMap = {
-  "Bright & Dry": ["TSLA", "NVDA", "META", "AVGO", "AAPL", "MSFT", "AMZN", "GOOGL"],
-  "Cold & Bright": ["PLTR", "UBER", "ABNB", "SNOW", "ROKU", "DKNG", "DASH"],
-  "Hot & Dry": ["COIN", "UPST", "HOOD", "AFRM", "SOFI", "LCID", "RIVN", "FSLY"],
-  "Hot & Humid": ["GME", "MARA", "RIOT", "CVNA", "AMC", "OSTK", "SPCE", "DWAC"],
-  "Dark & Wet": ["PG", "JNJ", "KO", "PEP", "WMT", "VZ", "MCK", "PM"],
-  "Dry & Cloudy": ["PFE", "NKE", "EL", "CPB", "IFF", "BF.B", "STZ"],
-  "Bright & Wet": ["CRM", "ADBE", "INTU", "ADSK", "PTC", "MANH", "NOW"],
-  "Cold & Wet": []
+  "Bright & Dry": ["MSFT", "GOOG"], // Clear tech leaders
+  "Cold & Bright": ["INTC", "IBM"], // Established tech with measured growth
+  "Hot & Dry": ["SPWR", "SEDG"], // Solar energy, capturing heat
+  "Hot & Humid": ["DASH", "UBER"], // Fast-moving delivery
+  "Dark & Wet": ["NEE", "WM"], // Utilities, waste management - essentials
+  "Dry & Cloudy": ["PFE", "ABT"], // Healthcare, stability in uncertainty
+  "Bright & Wet": ["NKE", "LULU"], // Activewear, thriving after rain
+  "Cold & Wet": ["TGT", "COST"] // Retail basics, essentials
 };
+
 // const moodStockMap = {
 //   "Bright & Dry": ["TSLA", "NVDA", "META", "SHOP", "AAPL", "MSFT", "AMZN", "GOOGL"],
 //   "Cold & Bright": ["PLTR", "UBER", "ABNB", "NET", "ROKU", "SNOW", "DKNG"],
