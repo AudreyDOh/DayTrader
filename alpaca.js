@@ -97,48 +97,26 @@ async function getLastQuote(symbol) {
       return null;
     }
   }
-  
-  async function getBars(symbols, options) {
-    try {
-      const result = {};
-      for (const symbol of symbols) {
-        const bars = await alpaca.getBarsV2(
-          symbol,
-          { 
-            timeframe: options.timeframe || '1Min',
-            limit: options.limit || 5
-          },
-          alpaca.configuration
-        );
-        
-        const barArray = [];
-        for await (let bar of bars) {
-          barArray.push({
-            t: bar.t,
-            o: bar.o,
-            h: bar.h,
-            l: bar.l,
-            c: bar.c,
-            v: bar.v || 0
-          });
-        }
-        result[symbol] = barArray;
-      }
-      return result;
-    } catch (error) {
-      console.error(`Error getting bars: ${error.message}`);
-      throw error;
-    }
-  }
 
   // ✅ Estimate volatility based on last 5 closes
   async function getVolatility(symbol) {
-    const bars = await getPreviousBars(symbol, 5);
-    const prices = bars.map(b => b.close);
-    const avg = prices.reduce((a, b) => a + b) / prices.length;
-    const high = Math.max(...prices);
-    const low = Math.min(...prices);
-    return (high - low) / avg;
+    try {
+      const bars = await getPreviousBars(symbol, 5);
+      
+      if (!bars || bars.length === 0) {
+        console.warn(`⚠️ No bars available for volatility calculation for ${symbol}`);
+        return 0.03; // Return a default moderate volatility
+      }
+      
+      const prices = bars.map(b => b.close);
+      const avg = prices.reduce((a, b) => a + b) / prices.length;
+      const high = Math.max(...prices);
+      const low = Math.min(...prices);
+      return (high - low) / avg;
+    } catch (error) {
+      console.error(`❌ Error calculating volatility for ${symbol}:`, error.message);
+      return 0.03; // Return a default moderate volatility on error
+    }
   }
   
   // ✅ Account diagnostics
@@ -173,6 +151,53 @@ async function getLastQuote(symbol) {
       return positions;
     } catch (error) {
       console.error('❌ Error fetching positions:', error.response?.data || error.message);
+    }
+  }
+
+  async function getBars(symbols, options) {
+    try {
+      const result = {};
+      for (const symbol of symbols) {
+        const bars = await alpaca.getBarsV2(
+          symbol,
+          { 
+            timeframe: options.timeframe || '1Min',
+            limit: options.limit || 5
+          },
+          alpaca.configuration
+        );
+        
+        const barArray = [];
+        for await (let bar of bars) {
+          // Handle both formats
+          if (bar) {
+            if (typeof bar.o === 'number' && typeof bar.c === 'number') {
+              barArray.push({
+                t: bar.t,
+                o: bar.o,
+                h: bar.h,
+                l: bar.l,
+                c: bar.c,
+                v: bar.v || 0
+              });
+            } else if (typeof bar.OpenPrice === 'number' && typeof bar.ClosePrice === 'number') {
+              barArray.push({
+                t: bar.Timestamp,
+                o: bar.OpenPrice,
+                h: bar.HighPrice,
+                l: bar.LowPrice,
+                c: bar.ClosePrice,
+                v: bar.Volume || 0
+              });
+            }
+          }
+        }
+        result[symbol] = barArray;
+      }
+      return result;
+    } catch (error) {
+      console.error(`Error getting bars: ${error.message}`);
+      throw error;
     }
   }
   
