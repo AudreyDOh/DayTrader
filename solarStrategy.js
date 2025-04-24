@@ -46,10 +46,26 @@ function normalize(value, min, max) {
   function shouldSkipDay(lux, humidity, temperature) {
     return lux < 200 && humidity > 80 && temperature < 7; // Too dark and humid
   }
+
+  function getTPandSL(currentPrice, side, takeProfitPct, stopLossPct) {
+    // Calculate take profit and stop loss prices based on side (long/short)
+    if (side === 'long') {
+      const takeProfit = currentPrice * (1 + takeProfitPct / 100);
+      const stopLoss = currentPrice * (1 - stopLossPct / 100);
+      return { takeProfit, stopLoss };
+    } else { // side === 'short'
+      const takeProfit = currentPrice * (1 - takeProfitPct / 100);
+      const stopLoss = currentPrice * (1 + stopLossPct / 100);
+      return { takeProfit, stopLoss };
+    }
+  }
   
+// Update the module.exports in solarStrategy.js to include the new function
 module.exports = {
-    getRiskProfile,
-    getPositionSize,
-    getMaxHoldMinutes,
-    shouldSkipDay,
-  };
+  getRiskProfile,
+  getPositionSize,
+  getMaxHoldMinutes,
+  shouldSkipDay,
+  getTPandSL
+};
+

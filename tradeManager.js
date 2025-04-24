@@ -275,6 +275,64 @@ async forceCloseAll() {
   }
 }
   
+// Add this method to TradeManager class in tradeManager.js
+async openTrade(tradeConfig) {
+  try {
+    const { symbol, side, entryPrice, shares, tpPrice, slPrice, entryTime, maxHoldMinutes, mood } = tradeConfig;
+    
+    // Execute the trade via Alpaca
+    const orderSide = side === 'long' ? 'buy' : 'sell';
+    const order = await alpaca.placeOrder(symbol, shares, orderSide);
+    
+    if (!order) {
+      throw new Error(`Failed to place ${orderSide} order for ${symbol}`);
+    }
+    
+    // Record the trade
+    const tradeRecord = {
+      symbol,
+      side,
+      entryPrice,
+      shares,
+      tpPrice,
+      slPrice,
+      entryTime,
+      maxHoldMinutes,
+      mood,
+      orderId: order.id
+    };
+    
+    this.openTrades.push(tradeRecord);
+    
+    // Log to Google Sheets
+    const now = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
+    await logToSheet([
+      now,
+      symbol,
+      side,
+      entryPrice,
+      'OPEN',
+      shares,
+      '0',
+      '0%',
+      'ENTRY',
+      '0'
+    ], TRADE_LOG_SHEET);
+    
+    console.log(`🛒 Opened ${side} position in ${symbol}:
+      - Price: $${entryPrice}
+      - Shares: ${shares}
+      - Take Profit: $${tpPrice}
+      - Stop Loss: $${slPrice}
+      - Max Hold: ${maxHoldMinutes} minutes`);
+    
+    return { success: true, trade: tradeRecord };
+  } catch (error) {
+    console.error(`❌ Error opening trade for ${tradeConfig.symbol}:`, error.message);
+    return { success: false, error: error.message };
+  }
+}
+
 }
 
 module.exports = TradeManager;

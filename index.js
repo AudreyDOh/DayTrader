@@ -88,6 +88,25 @@ function determineTradeMood({ lux, temperature, humidity }) {
   return "Unknown";
 }
 
+function isMarketHours() {
+  const now = new Date();
+  const nyTime = new Date(now.toLocaleString('en-US', { timeZone: 'America/New_York' }));
+  const day = nyTime.getDay();
+  const hour = nyTime.getHours();
+  const minute = nyTime.getMinutes();
+  
+  // Check if it's a weekday (Monday-Friday)
+  if (day === 0 || day === 6) {
+    return false; // Weekend
+  }
+  
+  // Check if it's between 9:30 AM and 4:00 PM ET
+  const marketOpen = hour > 9 || (hour === 9 && minute >= 30);
+  const marketClosed = hour >= 16;
+  
+  return marketOpen && !marketClosed;
+}
+
 mqttClient.on('connect', () => {
   console.log('✅ Connected to MQTT broker');
   mqttClient.subscribe(topic);
@@ -109,7 +128,10 @@ mqttClient.on('message', async (topic, message) => {
     }
 
     const timeSinceLastClose = (now - lastMarketCloseTime) / 60000;
-    if (powerPositiveCount >= 5 && !marketOpen && timeSinceLastClose >= MARKET_COOLDOWN_MINUTES) {
+    const inMarketHours = isMarketHours();
+
+
+    if (powerPositiveCount >= 5 && !marketOpen && timeSinceLastClose >= MARKET_COOLDOWN_MINUTES && inMarketHours) {
       marketOpen = true;
       io.emit('marketStatus', { open: true });
 
@@ -137,11 +159,6 @@ console.log('📈 Alpaca buying power:', buyingPower);
 if (isNaN(cash)) {
   throw new Error('⚠️ Received NaN for cash balance');
 }
-
-
-
-
-
           // const equity = parseFloat(account.equity); // parseFloat to ensure full number without commas, save into "equity" variable
           // if (isNaN(equity)) {
           //   throw new Error('Invalid equity value from Alpaca');
@@ -248,7 +265,7 @@ if (isNaN(cash)) {
 
     logToSheet(values);
   } catch (err) {
-    console.log('❌ Invalid JSON:', msg);
+    // console.log('❌ Invalid JSON:', msg);
   }
 });
 

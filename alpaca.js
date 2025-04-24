@@ -41,34 +41,61 @@ const alpaca = new Alpaca({
     }
   }
   
-  // // ✅ Get current bid/ask
-  // async function getLastQuote(symbol) {
-  //   const quote = await alpaca.getLatestQuote(symbol);
-  //   return {
-  //     bidPrice: parseFloat(quote.Bp),
-  //     askPrice: parseFloat(quote.Ap)
-  //   };
-  // }
-  
+async function getLastQuote(symbol) {
+  try {
+    const quote = await alpaca.getLatestQuote(symbol);
+    return {
+      bidPrice: parseFloat(quote.Bp), 
+      askPrice: parseFloat(quote.Ap)
+    };
+  } catch (error) {
+    console.error(`❌ Error getting quote for ${symbol}:`, error.message);
+    return null;
+  }
+}
+
+
+
   // ✅ Get recent bars for breakout detection
   async function getPreviousBars(symbol, limit = 5) {
-    const bars = await alpaca.getBarsV2(
-      symbol,
-      { timeframe: '5Min', limit },
-      alpaca.configuration
-    );
-  
-    const result = [];
-    for await (let bar of bars) {
-      result.push({
-        open: bar.o,
-        high: bar.h,
-        low: bar.l,
-        close: bar.c,
-        volume: bar.v
-      });
+    try {
+      const bars = await alpaca.getBarsV2(
+        symbol,
+        { timeframe: '5Min', limit },
+        alpaca.configuration
+      );
+      
+      if (!bars) {
+        console.error(`❌ No bar data returned for ${symbol}`);
+        return null;
+      }
+      
+      const result = [];
+      for await (let bar of bars) {
+        // Validate bar data before adding to result
+        if (bar && typeof bar.o === 'number' && typeof bar.c === 'number') {
+          result.push({
+            open: bar.o,
+            high: bar.h,
+            low: bar.l,
+            close: bar.c,
+            volume: bar.v || 0
+          });
+        } else {
+          console.warn(`⚠️ Invalid bar data for ${symbol}: ${JSON.stringify(bar)}`);
+        }
+      }
+      
+      if (result.length === 0) {
+        console.error(`❌ No valid bars found for ${symbol}`);
+        return null;
+      }
+      
+      return result;
+    } catch (error) {
+      console.error(`❌ Error getting bars for ${symbol}:`, error.message);
+      return null;
     }
-    return result;
   }
   
   async function getBars(symbols, options) {
@@ -149,16 +176,16 @@ const alpaca = new Alpaca({
     }
   }
   
-  module.exports = {
-    alpaca,              
-    placeOrder,
-    //getLastQuote,
-    getBars, 
-    getPreviousBars,
-    getVolatility,
-    getAccountInfo,
-    getCurrentPositions
-  };
+module.exports = {
+  alpaca,              
+  placeOrder,
+  getLastQuote,  // Add this back
+  getBars, 
+  getPreviousBars,
+  getVolatility,
+  getAccountInfo,
+  getCurrentPositions
+};
   
 
 // // ===== PLACE A TEST ORDER =====
