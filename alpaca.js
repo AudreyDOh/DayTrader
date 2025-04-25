@@ -57,23 +57,27 @@ async function getLastQuote(symbol) {
 
 
   // ✅ Get recent bars for breakout detection
-  async function getPreviousBars(symbol, limit = 5) {
-    try {
-      const bars = await alpaca.getBarsV2(
-        symbol,
-        { timeframe: '5Min', limit },
-        alpaca.configuration
-      );
-      
-      if (!bars) {
-        console.error(`❌ No bar data returned for ${symbol}`);
-        return null;
-      }
-      
-      const result = [];
-      for await (let bar of bars) {
-        // Validate bar data before adding to result
-        if (bar && typeof bar.o === 'number' && typeof bar.c === 'number') {
+ // Updated getPreviousBars function to handle both data formats
+async function getPreviousBars(symbol, limit = 5) {
+  try {
+    const bars = await alpaca.getBarsV2(
+      symbol,
+      { timeframe: '5Min', limit },
+      alpaca.configuration
+    );
+    
+    if (!bars) {
+      console.error(`❌ No bar data returned for ${symbol}`);
+      return null;
+    }
+    
+    const result = [];
+    
+    for await (let bar of bars) {
+      // Handle both new format (o, h, l, c) and old format (OpenPrice, HighPrice, etc.)
+      if (bar) {
+        // Check if using new format
+        if (typeof bar.o === 'number' && typeof bar.c === 'number') {
           result.push({
             open: bar.o,
             high: bar.h,
@@ -81,22 +85,33 @@ async function getLastQuote(symbol) {
             close: bar.c,
             volume: bar.v || 0
           });
+        } 
+        // Check if using old format
+        else if (typeof bar.OpenPrice === 'number' && typeof bar.ClosePrice === 'number') {
+          result.push({
+            open: bar.OpenPrice,
+            high: bar.HighPrice,
+            low: bar.LowPrice,
+            close: bar.ClosePrice,
+            volume: bar.Volume || 0
+          });
         } else {
           console.warn(`⚠️ Invalid bar data for ${symbol}: ${JSON.stringify(bar)}`);
         }
       }
-      
-      if (result.length === 0) {
-        console.error(`❌ No valid bars found for ${symbol}`);
-        return null;
-      }
-      
-      return result;
-    } catch (error) {
-      console.error(`❌ Error getting bars for ${symbol}:`, error.message);
+    }
+    
+    if (result.length === 0) {
+      console.error(`❌ No valid bars found for ${symbol}`);
       return null;
     }
+    
+    return result;
+  } catch (error) {
+    console.error(`❌ Error getting bars for ${symbol}:`, error.message);
+    return null;
   }
+}
 
   // ✅ Estimate volatility based on last 5 closes
   async function getVolatility(symbol) {
