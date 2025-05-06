@@ -39,7 +39,7 @@ function normalize(value, min, max) {
   // The more humid the day, the longer you are willing to hold the stock (sticky vs dry)
     // The drier the day, the more you want to sell quickly (dry vs sticky)
   function getMaxHoldMinutes(humidity) {
-    const humidNorm = normalize(humidity, 0, 100);
+    const humidNorm = normalize(humidity, 0, 100); 
     return Math.floor(5 + humidNorm * 40); // 5–45 min
   }
 

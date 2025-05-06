@@ -100,7 +100,7 @@
 </head>
 <body>
   <h1>Solar Day Trader Dashboard</h1>
-  <p style="margin-top: 0; color: #666; font-size: 1.2rem;">
+  <p style="margin-top: 0; color: #666; font-size: 1.0rem;">
     Automated trading system powered by real-time solar sensor readings
   </p>
   <div class="clock" id="clock">Loading current time...</div>
@@ -134,6 +134,10 @@
   
   <h2>Sensor Reading History</h2>
   <div id="history" class="history-grid"></div>
+
+  <footer style="margin-top: 3rem; padding-top: 2rem; font-size: 0.9rem; color: #777; border-top: 1px solid #ddd; text-align: center;">
+    Solar Day Trader (2025). Built with ESP32 sensors, MQTT, and Node.js. A speculative experiment linking sunlight and financial markets.
+  </footer>
 
   <script>
     const socket = io();
