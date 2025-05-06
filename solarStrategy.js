@@ -20,7 +20,6 @@ function normalize(value, min, max) {
      // (1) CONSERVATIVE SL VER: const stopLoss = parseFloat((1 + 1 * luxNorm).toFixed(2));       // 1–2%
 
     const stopLoss = parseFloat((2 + 2 * luxNorm).toFixed(2));    // 2–4%
-    return { takeProfit, stopLoss };
     // Stop Loss is set to X% of the stock price (means you are willing to lose X% until you sell)
     return { takeProfit, stopLoss };
   }
