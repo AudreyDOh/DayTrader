@@ -70,8 +70,8 @@ const moodNameMap = {
 };
 
 function determineTradeMood({ lux, temperature, humidity }) {
-  const isBright = lux > 1000;
-  const isDark = lux <= 1000;
+  const isBright = lux > 10000;
+  const isDark = lux <= 10000;
   const isHot = temperature > 15;
   const isCold = temperature < 15;
   const isDry = humidity < 50;
