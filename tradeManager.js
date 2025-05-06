@@ -67,7 +67,8 @@ if (!signal) return { executed: false, reason: 'No valid entry signal (bars)' };
         this.accountBalance,
         entryPrice,
         stopLoss,
-        volatilityFactor
+        volatilityFactor, 
+        mood
       );
 
       // 

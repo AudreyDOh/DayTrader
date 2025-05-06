@@ -31,6 +31,11 @@ function normalize(value, min, max) {
                                                                          // volatility-adjusted position sizing (0.5 benchmark)
     const tempNorm = normalize(tempC, 0, 40); // Temperature values set to between 0 and 40 degrees Celsius
     // Calculate the maximum risk per trade based on account balance and temperature
+
+    // get volatility factor based on mood
+    const volatilityFactor = getMoodVolatilityFactor(mood);
+
+    
     const maxRiskPerTrade = accountBalanceUSD * 0.03 * tempNorm; // 0–1% of capital
     // Calculate the number of shares to buy based on entry price and stop loss percentage
     const perShareRisk = entryPrice * (stopLossPct / 100);
@@ -49,6 +54,24 @@ function normalize(value, min, max) {
     const humidNorm = normalize(humidity, 0, 100); 
     return Math.floor(5 + humidNorm * 40); // 5–45 min
   }
+
+// Assign volatility factor  based on weather mood
+// Volatility factor is a value between 0 and 1 that represents the volatility of the stock, here it is used to adjust the number of shares to buy
+// : The more aggressive the mood, the less volatility reduction
+function getMoodVolatilityFactor(mood) {
+  const moodVolatilityMap = {
+    "Bright & Dry": 0.2,     
+    "Cold & Bright": 0.3,    
+    "Hot & Dry": 0.1,        
+    "Hot & Humid": 0.1,      
+    "Dark & Wet": 0.7,       
+    "Dry & Cloudy": 0.5,     
+    "Bright & Wet": 0.3,     
+    "Cold & Wet": 0.6        
+  };
+  
+  return moodVolatilityMap[mood] || 0.4; // Default to 0.4 if mood not found
+}
 
   function shouldSkipDay(lux, humidity, temperature) {
     return lux < 200 && humidity > 80 && temperature < 7; // Too dark and humid
