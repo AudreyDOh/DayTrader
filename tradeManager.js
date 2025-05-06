@@ -211,6 +211,19 @@ async closeTrade(trade, exitPrice, reason) {
   try {
     const alpaca = require('./alpaca'); // Import Alpaca module (same as above)
     
+    // Execute the liquidation order on open trade
+    const exitSide = trade.side === 'long' ? 'sell' : 'buy'; // if the trade is long (buy), sell to exit; if short (sell), buy to exit
+    console.log(`🔄 Executing liquidation order: ${exitSide.toUpperCase()} ${trade.shares} shares of ${trade.symbol}`);
+    
+    // // place the liquidation order to close the position
+    try {
+      const order = await alpaca.placeOrder(trade.symbol, trade.shares, exitSide);
+      console.log(`✅ Liquidation order placed successfully: ${order.id}`); // debug line for closed order
+    } catch (orderError) {
+      console.error(`⚠️ Error placing liquidation order: ${orderError.message}`); 
+      // Continue with the function even if order fails, to maintain internal state
+    } 
+
     // Calculate profit/loss
     const entryValue = trade.entryPrice * trade.shares; // entry value = entry price * number of shares
     const exitValue = exitPrice * trade.shares; // exit value = exit price * number of shares
@@ -250,8 +263,9 @@ async closeTrade(trade, exitPrice, reason) {
       trade.entryPrice,
       exitPrice,
       trade.shares,
-      pnl.toFixed(2),
-      pnlPercent,
+      // how much you made : (exit - entry price)
+      pnl.toFixed(2), // P&L in dollars
+      pnlPercent, // P&L percentage, profit/loss 
       reason,
       (trade.exitTime - trade.entryTime) / (1000 * 60) // Hold time in minutes
     ], 'Alpaca Trades');
@@ -263,7 +277,8 @@ async closeTrade(trade, exitPrice, reason) {
   }
 }
 
-// You might also need a forceCloseAll method that's referenced in your index.js
+// forceCloseAll method to close all open trades at the end of the day (market close)
+// This method is called when the market closes or when a force close is triggered
 async forceCloseAll() {
   try {
     if (this.openTrades.length === 0) {
@@ -275,12 +290,13 @@ async forceCloseAll() {
     
     const alpaca = require('./alpaca');
     
+    // Loop through each open trade and close it
     for (const trade of [...this.openTrades]) {
       const quote = await alpaca.getLastQuote(trade.symbol);
       if (!quote) continue;
       
-      const currentPrice = trade.side === 'long' ? quote.bidPrice : quote.askPrice;
-      await this.closeTrade(trade, currentPrice, 'market_close');
+      const currentPrice = trade.side === 'long' ? quote.bidPrice : quote.askPrice; // get the current price based on the trade side
+      await this.closeTrade(trade, currentPrice, 'market_close'); // close the trade at market close
     }
     
     return { closed: true, message: 'All trades closed' };
