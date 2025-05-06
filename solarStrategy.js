@@ -27,15 +27,14 @@ function normalize(value, min, max) {
 
   // Temperature value to trade volume
   // The hotter the day, the more shares you are willing to buy ( more heat - spending power )
-  function getPositionSize(tempC, accountBalanceUSD, entryPrice, stopLossPct, volatilityFactor = 0.5) {
+  function getPositionSize(tempC, accountBalanceUSD, entryPrice, stopLossPct, mood) {
                                                                          // volatility-adjusted position sizing (0.5 benchmark)
     const tempNorm = normalize(tempC, 0, 40); // Temperature values set to between 0 and 40 degrees Celsius
     // Calculate the maximum risk per trade based on account balance and temperature
 
     // get volatility factor based on mood
-    const volatilityFactor = getMoodVolatilityFactor(mood);
+    const moodvolatilityFactor = getMoodVolatilityFactor(mood);
 
-    
     const maxRiskPerTrade = accountBalanceUSD * 0.03 * tempNorm; // 0–1% of capital
     // Calculate the number of shares to buy based on entry price and stop loss percentage
     const perShareRisk = entryPrice * (stopLossPct / 100);
@@ -43,7 +42,7 @@ function normalize(value, min, max) {
     const rawShares = maxRiskPerTrade / perShareRisk;
     // volatility factor is a value between 0 and 1 that represents the volatility of the stock
     // current code takes 0.3 position of 
-    const adjustedShares = Math.floor(rawShares * (1 - volatilityFactor)); // reduction of shares based on volatility
+    const adjustedShares = Math.floor(rawShares * (1 - moodvolatilityFactor)); // reduction of shares based on volatility
     return Math.max(1, adjustedShares); // Ensure at least 1 share is bought
   }
 
