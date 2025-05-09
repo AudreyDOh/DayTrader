@@ -114,7 +114,7 @@ function isMarketHours() {
 }
 
 mqttClient.on('connect', () => {
-  console.log('✅ Connected to MQTT broker');
+  // console.log('✅ Connected to MQTT broker');
   mqttClient.subscribe(topic);
 });
 
@@ -358,37 +358,37 @@ app.get('/api/account', async (req, res) => {
       ];
       res.json(account);
     } else {
-      // Fallback to dummy data if no account info
-      res.json({
-        equity: "100000.00",
-        buying_power: "200000.00",
-        cash: "100000.00",
-        history: [
-          { timestamp: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString(), equity: 95000 },
-          { timestamp: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(), equity: 97000 },
-          { timestamp: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(), equity: 99000 },
-          { timestamp: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(), equity: 101000 },
-          { timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), equity: 102000 },
-          { timestamp: new Date().toISOString(), equity: 100000 }
-        ]
-      });
+      // // Fallback to dummy data if no account info
+      // res.json({
+      //   equity: "100000.00",
+      //   buying_power: "200000.00",
+      //   cash: "100000.00",
+      //   history: [
+      //     { timestamp: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString(), equity: 95000 },
+      //     { timestamp: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(), equity: 97000 },
+      //     { timestamp: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(), equity: 99000 },
+      //     { timestamp: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(), equity: 101000 },
+      //     { timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), equity: 102000 },
+      //     { timestamp: new Date().toISOString(), equity: 100000 }
+      //   ]
+      // });
     }
   } catch (error) {
     console.error('Error in account API route:', error.message);
     // Return dummy data in case of any error
-    res.json({
-      equity: "100000.00",
-      buying_power: "200000.00",
-      cash: "100000.00",
-      history: [
-        { timestamp: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString(), equity: 95000 },
-        { timestamp: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(), equity: 97000 },
-        { timestamp: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(), equity: 99000 },
-        { timestamp: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(), equity: 101000 },
-        { timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), equity: 102000 },
-        { timestamp: new Date().toISOString(), equity: 100000 }
-      ]
-    });
+    // res.json({
+    //   equity: "100000.00",
+    //   buying_power: "200000.00",
+    //   cash: "100000.00",
+    //   history: [
+    //     { timestamp: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString(), equity: 95000 },
+    //     { timestamp: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(), equity: 97000 },
+    //     { timestamp: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(), equity: 99000 },
+    //     { timestamp: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(), equity: 101000 },
+    //     { timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), equity: 102000 },
+    //     { timestamp: new Date().toISOString(), equity: 100000 }
+    //   ]
+    // });
   }
 });
 
@@ -402,47 +402,28 @@ app.get('/api/positions', async (req, res) => {
     if (positions && positions.length > 0) {
       res.json(positions);
     } else {
-      // Return dummy positions data
-      res.json([
-        {
-          symbol: "AAPL",
-          qty: "10",
-          avg_entry_price: "175.50",
-          market_value: "1800.00",
-          unrealized_pl: "50.00",
-          unrealized_plpc: "2.86"
-        },
-        {
-          symbol: "MSFT",
-          qty: "5",
-          avg_entry_price: "350.25",
-          market_value: "1800.00",
-          unrealized_pl: "48.75",
-          unrealized_plpc: "2.78"
-        }
-      ]);
+      // // Return dummy positions data
+      // res.json([
+      //   {
+      //     symbol: "AAPL",
+      //     qty: "10",
+      //     avg_entry_price: "175.50",
+      //     market_value: "1800.00",
+      //     unrealized_pl: "50.00",
+      //     unrealized_plpc: "2.86"
+      //   },
+      //   {
+      //     symbol: "MSFT",
+      //     qty: "5",
+      //     avg_entry_price: "350.25",
+      //     market_value: "1800.00",
+      //     unrealized_pl: "48.75",
+      //     unrealized_plpc: "2.78"
+      //   }
+      // ]);
     }
   } catch (error) {
     console.error('Error in positions API route:', error.message);
-    // Return dummy data in case of any error
-    res.json([
-      {
-        symbol: "AAPL",
-        qty: "10",
-        avg_entry_price: "175.50",
-        market_value: "1800.00",
-        unrealized_pl: "50.00",
-        unrealized_plpc: "2.86"
-      },
-      {
-        symbol: "MSFT",
-        qty: "5",
-        avg_entry_price: "350.25",
-        market_value: "1800.00",
-        unrealized_pl: "48.75",
-        unrealized_plpc: "2.78"
-      }
-    ]);
   }
 });
 
@@ -459,49 +440,12 @@ app.get('/api/orders', async (req, res) => {
     if (orders && orders.length > 0) {
       res.json(orders);
     } else {
-      // Return dummy orders data
-      res.json([
-        {
-          symbol: "AAPL",
-          qty: "5",
-          side: "buy",
-          type: "market",
-          status: "filled",
-          submitted_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
-        },
-        {
-          symbol: "MSFT",
-          qty: "3",
-          side: "buy",
-          type: "limit",
-          limit_price: "350.00",
-          status: "new",
-          submitted_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
-        }
-      ]);
+
     }
   } catch (error) {
     console.error('Error in orders API route:', error.message);
     // Return dummy data in case of any error
-    res.json([
-      {
-        symbol: "AAPL",
-        qty: "5",
-        side: "buy",
-        type: "market",
-        status: "filled",
-        submitted_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
-      },
-      {
-        symbol: "MSFT",
-        qty: "3",
-        side: "buy",
-        type: "limit",
-        limit_price: "350.00",
-        status: "new",
-        submitted_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
-      }
-    ]);
+
   }
 });
 
