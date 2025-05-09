@@ -1,235 +1,304 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Day Trader Dashboard</title>
-  <script src="/socket.io/socket.io.js"></script>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 2rem;
-      background: #f8f9fa;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    h1 {
-      margin-bottom: 0.5rem;
-      color: #333;
-    }
-    .clock {
-      font-size: 1.1rem;
-      color: #555;
-      margin-bottom: 1rem;
-    }
-    .timestamp {
-      font-size: 1.2rem;
-      margin-bottom: 1rem;
-    }
-    pre {
-      background: #eee;
-      padding: 1rem;
-      border-radius: 6px;
-      margin-bottom: 1rem;
-    }
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-    }
-    .card {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .mood-card {
-      background: linear-gradient(to right, #f8f9fa, #e9ecef);
-      border-left: 5px solid #007bff;
-    }
-    .stocks-card {
-      background: linear-gradient(to right, #f8f9fa, #e9ecef);
-      border-left: 5px solid #28a745;
-    }
-    #marketStatus {
-      font-weight: bold;
-      font-size: 1.2rem;
-    }
-    #marketStatus.open {
-      color: #28a745;
-    }
-    #marketStatus.closed {
-      color: #dc3545;
-    }
-    .history-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 15px;
-    }
-    .history-item {
-      background: white;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    .history-time {
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-    .mood-display {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: #333;
-      margin: 15px 0;
-    }
-    #suggestedStocks {
-      list-style-type: none;
-      padding: 0;
-    }
-    #suggestedStocks li {
-      padding: 8px 12px;
-      margin-bottom: 8px;
-      background: #e9ecef;
-      border-radius: 4px;
-      display: flex;
-      justify-content: space-between;
-    }
-    .stock-symbol {
-      font-weight: bold;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day Trader - Solar Trading Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        :root {
+            --alpaca-green: #1EC46B;
+            --alpaca-red: #FF4D4D;
+            --alpaca-blue: #3EB2FF;
+            --alpaca-gray: #F5F5F5;
+            --alpaca-dark: #1B1B1B;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: #FAFAFA;
+            color: #1B1B1B;
+            padding: 20px;
+        }
+        
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Your existing solar dashboard styles */
+        .solar-data {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .weather-mood {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .sensor-readings {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .sensor-item {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .sensor-value {
+            font-size: 22px;
+            font-weight: bold;
+        }
+        
+        .sensor-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-open {
+            background-color: var(--alpaca-green);
+        }
+        
+        .status-closed {
+            background-color: var(--alpaca-red);
+        }
+        
+        /* Alpaca dashboard styles */
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            border: none;
+        }
+        
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid #eaeaea;
+            padding: 15px 20px;
+            font-weight: 600;
+            border-radius: 12px 12px 0 0 !important;
+        }
+        
+        .value-up {
+            color: var(--alpaca-green);
+        }
+        
+        .value-down {
+            color: var(--alpaca-red);
+        }
+        
+        .position-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eaeaea;
+        }
+        
+        .position-item:last-child {
+            border-bottom: none;
+        }
+        
+        .order-status-open {
+            color: var(--alpaca-blue);
+        }
+        
+        .order-status-filled {
+            color: var(--alpaca-green);
+        }
+        
+        .order-side-buy {
+            background-color: rgba(30, 196, 107, 0.1);
+            color: var(--alpaca-green);
+        }
+        
+        .order-side-sell {
+            background-color: rgba(255, 77, 77, 0.1);
+            color: var(--alpaca-red);
+        }
+        
+        .badge {
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 6px;
+        }
+        
+        .account-value {
+            font-size: 32px;
+            font-weight: 700;
+        }
+        
+        .account-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .small-chart {
+            height: 60px;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        
+        .dashboard-title {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .last-updated {
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: var(--alpaca-blue);
+        }
+        
+        .portfolio-chart-container {
+            height: 300px;
+            margin-bottom: 20px;
+        }
+        
+        .tab-content {
+            margin-top: 20px;
+        }
+        
+        .nav-tabs .nav-link {
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .nav-tabs .nav-link.active {
+            color: var(--alpaca-blue);
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .account-value {
+                font-size: 24px;
+            }
+            
+            .portfolio-chart-container {
+                height: 200px;
+            }
+        }
+        
+        /* Stocks list styling */
+        .stocks-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .stock-item {
+            background-color: #f0f3f5;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+    </style>
 </head>
 <body>
-  <h1>Solar Day Trader Dashboard</h1>
-  <p style="margin-top: 0; color: #666; font-size: 1.0rem;">
-    Automated trading system powered by real-time solar sensor readings
-  </p>
-  <div class="clock" id="clock">Loading current time...</div>
-  
-  <div class="dashboard-grid">
-    <div class="card">
-      <h2>Current Sensor Data</h2>
-      <div class="timestamp" id="timestamp">Waiting for sun's decision...</div>
-      <pre id="output">—</pre>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
     </div>
-    
-    <div class="card mood-card">
-      <h2>Trading Mood</h2>
-      <div class="mood-display" id="weatherMood">Waiting for mood...</div>
-      <div id="moodExplanation"></div>
-    </div>
-    
-    <div class="card stocks-card">
-      <h2>Suggested Stocks</h2>
-      <ul id="suggestedStocks">
-        <li>Waiting for stock suggestions...</li>
-      </ul>
-    </div>
-    
-    <div class="card">
-      <h2>Market Status</h2>
-      <p id="marketStatus" class="closed">Waiting for market signal...</p>
-      <div id="marketInfo"></div>
-    </div>
-  </div>
-  
-  <h2>Sensor Reading History</h2>
-  <div id="history" class="history-grid"></div>
 
-  <footer style="margin-top: 3rem; padding-top: 2rem; font-size: 0.9rem; color: #777; border-top: 1px solid #ddd; text-align: center;">
-    Solar Day Trader (2025). Built with ESP32 sensors, MQTT, and Node.js. A speculative experiment linking sunlight and financial markets.
-  </footer>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Day Trader: Solar-Powered Trading</h1>
+            <div>
+                <p class="last-updated">Last updated: <span id="headerLastUpdated">Loading...</span></p>
+            </div>
+        </div>
 
-  <script>
-    const socket = io();
+        <!-- Tabs navigation -->
+        <ul class="nav nav-tabs" id="dashboard-tabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="solar-tab" data-bs-toggle="tab" data-bs-target="#solar-content" type="button" role="tab" aria-controls="solar-content" aria-selected="true">Solar Sensor Data</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="alpaca-tab" data-bs-toggle="tab" data-bs-target="#alpaca-content" type="button" role="tab" aria-controls="alpaca-content" aria-selected="false">Alpaca Portfolio</button>
+            </li>
+        </ul>
 
-    // Update the dashboard when sensor data is received
-    socket.on('mqttData', ({ latest, history }) => {
-      console.log('Received mqttData:', { latest, history });
-      
-      const latestOutput = `
-Lux: ${latest.lux}
-Temperature: ${latest.temperature}
-Humidity: ${latest.humidity}
-Power: ${latest.power}
-Battery: ${latest.battery}
-      `.trim();
-      
-      // Display the latest data
-      document.getElementById('timestamp').innerText = `Last data logged at ${latest.time}`;
-      document.getElementById('output').innerText = latestOutput;
-      
-      // Only update mood if it's not already set from the dedicated event
-      if (latest.mood && document.getElementById('weatherMood').innerText === "Waiting for mood...") {
-        document.getElementById('weatherMood').innerText = latest.mood;
-      }
-
-      // Display the last 5 messages
-      const historyContainer = document.getElementById('history');
-      historyContainer.innerHTML = history
-        .map(entry => {
-          return `<div class="history-item">
-            <div class="history-time">${entry.time}</div>
-            <div>Temperature: ${entry.temperature}°C</div>
-            <div>Humidity: ${entry.humidity}%</div>
-            <div>Lux: ${entry.lux}</div>
-            <div>Power: ${entry.power}W</div>
-            <div>Battery: ${entry.battery}V</div>
-          </div>`;
-        })
-        .join('');
-    });
-
-    // Listen for mood updates
-    socket.on('weatherMood', ({ mood }) => {
-      console.log('Received weather mood:', mood);
-      document.getElementById('weatherMood').innerText = mood;
-    });
-
-    // Listen for stock suggestions
-    socket.on('suggestedStocks', ({ stocks }) => {
-      console.log('Received suggested stocks:', stocks);
-      const stocksList = document.getElementById('suggestedStocks');
-      
-      if (stocks && stocks.length > 0) {
-        stocksList.innerHTML = stocks
-          .map(stock => `<li><span class="stock-symbol">${stock}</span></li>`)
-          .join('');
-      } else {
-        stocksList.innerHTML = '<li>No stocks suggested for current mood</li>';
-      }
-    });
-
-    // Listen for market open/close updates from backend
-    socket.on('marketStatus', ({ open }) => {
-      const el = document.getElementById('marketStatus');
-      el.innerText = open ? "Market status: OPEN" : "Market status: CLOSED";
-      el.className = open ? "open" : "closed";
-      
-      if (open) {
-        document.getElementById('marketInfo').innerText = "Trades are actively being evaluated based on current solar conditions.";
-      } else {
-        document.getElementById('marketInfo').innerText = "Trading paused until solar power is detected.";
-      }
-    });
-
-    // Display live clock in EST
-    function updateClock() {
-      const now = new Date().toLocaleString('en-US', {
-        timeZone: 'America/New_York',
-        weekday: 'short',
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: true
-      });
-      document.getElementById('clock').innerText = `Current EST Time: ${now}`;
-    }
-
-    setInterval(updateClock, 1000);
-    updateClock();
-  </script>
-</body>
-</html>
+        <!-- Tab content -->
+        <div class="tab-content" id="dashboard-tab-content">
+            <!-- Solar Sensor Data Tab -->
+            <div class="tab-pane fade show active" id="solar-content" role="tabpanel" aria-labelledby="solar-tab">
+                <div class="solar-data">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="weather-mood" id="weatherMood">Loading sensor data...</div>
+                        <div class="market-status">
+                            <span class="status-indicator status-closed" id="marketStatusIndicator"></span>
+                            <span id="marketStatusText">Market Closed</span>
+                        </div>
+                    </div>
+                    
+                    <div class="sensor-readings">
+                        <div class="sensor-item">
+                            <div class="sensor-value" id="luxValue">—</div>
+                            <div class="sensor-label">Light (lux)</div>
+                        </div>
+                        <div class="sensor-item">
+                            <div class="sensor-value" id="tempValue">—</div>
+                            <div class="sensor-label">Temperature (°C)</div>
+                        </div>
+                        <div class="sensor-item">
+                            <div class="sensor-value" id="humidityValue">—</div>
+                            <div class="sensor-label">Humidity (%)</div>
+                        </div>
+                        <div class="sensor-item">
+                            <div class="sensor-value" id="currentValue">—</div>
+                            <div class="sensor-label">Current (mA)</div>
+                        </div>
+                        <div class="sensor-item">
+                            <div class="sensor-value" id="powerValue">—</div>
+                            <div class="sensor-label">Power (mW)</div>
+                        </div>
+                        <div class="sensor-item">
+                            <div class="sensor-value" id="batteryValue">—</div>
+                            <div class="sensor-label">Battery (%)</div>
+                        </div>
+                    </div>
