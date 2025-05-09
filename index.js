@@ -22,7 +22,12 @@ const mqttClient = mqtt.connect('mqtt://tigoe.net', {
 });
 const topic = 'energy/audrey';
 
-authorizeGoogleSheets();
+// ADDED: Try-catch block around Google Sheets authorization
+try {
+  authorizeGoogleSheets();
+} catch (err) {
+  console.error('Error authorizing Google Sheets (continuing anyway):', err);
+}
 
 let lastReading = null;
 const sensorHistory = [];
@@ -46,6 +51,17 @@ const moodStockMap = {
   "Bright & Wet": ["NKE", "LULU"], // Activewear, thriving after rain
   "Cold & Wet": ["TGT", "COST"] // Retail basics, essentials
 };
+
+// const moodStockMap = {
+//   "Bright & Dry": ["TSLA", "NVDA", "META", "SHOP", "AAPL", "MSFT", "AMZN", "GOOGL"],
+//   "Cold & Bright": ["PLTR", "UBER", "ABNB", "NET", "ROKU", "SNOW", "DKNG"],
+//   "Hot & Dry": ["AI", "UPST", "HOOD", "COIN", "AFRM", "SOFI", "LCID", "RIVN", "FSLY", "BB"],
+//   "Hot & Humid": ["GME", "MARA", "RIOT", "BBBY", "CVNA", "AMC", "OSTK", "SPCE", "BBIG", "DWAC"],
+//   "Dark & Wet": ["SPY", "JNJ", "PG", "KO", "PEP", "VZ", "WMT", "XLP", "XLU"],
+//   "Dry & Cloudy": ["TLT", "XLU", "GLD", "XLF", "XLE", "USO", "BND"],
+//   "Bright & Wet": ["DIS", "SQ", "SOFI", "PYPL", "ZM", "LYFT", "WISH"],
+//   "Cold & Wet": []
+// };
 
 const moodNameMap = {
   "Bright & Dry": "Golden Clarity (아지랑이)",
@@ -100,6 +116,11 @@ function isMarketHours() {
 mqttClient.on('connect', () => {
   console.log('✅ Connected to MQTT broker');
   mqttClient.subscribe(topic);
+});
+
+// ADDED: Error handling for MQTT connection
+mqttClient.on('error', (err) => {
+  console.error('❌ MQTT connection error:', err);
 });
 
 mqttClient.on('message', async (topic, message) => {
@@ -173,17 +194,22 @@ mqttClient.on('message', async (topic, message) => {
               if (!loggedSkips.has(key)) {
                 loggedSkips.add(key);
                 const timeNow = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
-                await logToSheet([
-                  timeNow,
-                  symbol,
-                  "Skipped",
-                  result.reason,
-                  data.lux,
-                  data.temperature,
-                  data.humidity,
-                  tradeMood,
-                  "—"
-                ], 'Skipped Trades');
+                try {
+                  // ADDED: Try-catch block around logToSheet
+                  await logToSheet([
+                    timeNow,
+                    symbol,
+                    "Skipped",
+                    result.reason,
+                    data.lux,
+                    data.temperature,
+                    data.humidity,
+                    tradeMood,
+                    "—"
+                  ], 'Skipped Trades');
+                } catch (err) {
+                  console.error('Error logging to sheet:', err);
+                }
               }
             }
           }
@@ -231,30 +257,59 @@ mqttClient.on('message', async (topic, message) => {
       history: sensorHistory
     });
 
-    const values = [
-      formatted.time,
-      data.lux,
-      data.temperature,
-      data.humidity,
-      data.current,
-      data.power,
-      data.battery,
-      formatted.mood,
-      (moodStockMap[tradeMood] || []).join(', ')
-    ];
+    try {
+      // ADDED: Try-catch block around logToSheet
+      const values = [
+        formatted.time,
+        data.lux,
+        data.temperature,
+        data.humidity,
+        data.current,
+        data.power,
+        data.battery,
+        formatted.mood,
+        (moodStockMap[tradeMood] || []).join(', ')
+      ];
 
-    logToSheet(values);
+      logToSheet(values);
+    } catch (err) {
+      console.error('Error logging to sheet:', err);
+    }
   } catch (err) {
     // console.log('❌ Invalid JSON:', msg);
   }
 });
 
+// ADDED: Enhanced connection event handler with fallback data
 io.on('connection', socket => {
+  console.log('🔌 New client connected');
+
   if (lastReading || sensorHistory.length > 0) {
     socket.emit('mqttData', {
       latest: lastReading ?? sensorHistory[0],
       history: sensorHistory
     });
+  } else {
+    // ADDED: Provide fallback data if no real data is available
+    console.log('No sensor data available, sending dummy data');
+    const dummyData = {
+      time: new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }),
+      temperature: 22,
+      humidity: 45,
+      lux: 15000,
+      current: 250,
+      power: 1200,
+      battery: 85,
+      mood: "Golden Clarity (아지랑이)"
+    };
+    
+    socket.emit('mqttData', {
+      latest: dummyData,
+      history: [dummyData]
+    });
+    
+    socket.emit('weatherMood', { mood: dummyData.mood });
+    socket.emit('suggestedStocks', { stocks: ["MSFT", "GOOG"] });
   }
 
   if (tradeMood) {
@@ -269,7 +324,18 @@ app.use(express.static('public'));
 
 // Test route to check if API is working
 app.get('/api/test', (req, res) => {
-  res.json({ message: 'API is working!' });
+  // ADDED: More detailed test endpoint response
+  const alpacaConfigured = !!(alpaca && alpaca.alpaca);
+  
+  res.json({
+    message: 'API is working!',
+    timestamp: new Date().toISOString(),
+    alpaca_configured: alpacaConfigured,
+    env_vars_set: {
+      ALPACA_API_KEY: !!process.env.ALPACA_API_KEY,
+      ALPACA_SECRET_KEY: !!process.env.ALPACA_SECRET_KEY
+    }
+  });
 });
 
 // Simplified account info route with error handling

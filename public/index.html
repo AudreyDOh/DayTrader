@@ -236,9 +236,23 @@
             border-radius: 20px;
             font-weight: 500;
         }
+
+        .debug-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: none; /* Hidden by default */
+        }
+
     </style>
 </head>
 <body>
+
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner-border" role="status">
             <span class="visually-hidden">Loading...</span>
@@ -302,3 +316,531 @@
                             <div class="sensor-label">Battery (%)</div>
                         </div>
                     </div>
+                    
+                    <div class="suggested-stocks">
+                        <h4>Suggested Stocks</h4>
+                        <div class="stocks-list" id="suggestedStocks">
+                            Loading...
+                        </div>
+                    </div>
+                    
+                    <div class="sensor-history mt-4">
+                        <h4>Recent Sensor History</h4>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Light</th>
+                                        <th>Temp</th>
+                                        <th>Humidity</th>
+                                        <th>Current</th>
+                                        <th>Power</th>
+                                        <th>Battery</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sensorHistoryTable">
+                                    <tr>
+                                        <td colspan="7" class="text-center">Loading history...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Alpaca Portfolio Tab -->
+            <div class="tab-pane fade" id="alpaca-content" role="tabpanel" aria-labelledby="alpaca-tab">
+                <div class="alpaca-dashboard">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3>Alpaca Portfolio Dashboard</h3>
+                        <div>
+                            <span id="paperBadge" class="badge bg-warning">PAPER</span>
+                            <span class="last-updated">Last updated: <span id="alpacaLastUpdated">Loading...</span></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header">Portfolio Value</div>
+                                <div class="card-body">
+                                    <div class="portfolio-chart-container">
+                                        <canvas id="portfolioChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header">Account Summary</div>
+                                <div class="card-body">
+                                    <div class="mb-4">
+                                        <div class="account-label">Equity</div>
+                                        <div class="account-value" id="equity">$0.00</div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <div class="account-label">Buying Power</div>
+                                        <div class="account-value" id="buyingPower">$0.00</div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <div class="account-label">Cash</div>
+                                        <div class="account-value" id="cash">$0.00</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">Top Positions</div>
+                                <div class="card-body">
+                                    <div id="positionsList">
+                                        <div class="text-center py-4">Loading positions...</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">Recent Orders</div>
+                                <div class="card-body">
+                                    <div id="ordersList">
+                                        <div class="text-center py-4">Loading orders...</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Debug controls -->
+    <div class="debug-controls" id="debugControls">
+        <button class="btn btn-sm btn-danger" onclick="hideLoading()">Force Hide Loading</button>
+        <button class="btn btn-sm btn-primary" onclick="refreshData()">Refresh Data</button>
+        <button class="btn btn-sm btn-secondary" onclick="toggleTab()">Switch Tab</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Debug functions
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+            console.log('Loading overlay manually hidden');
+        }
+        
+        function refreshData() {
+            console.log('Manually refreshing data');
+            if (typeof fetchAccountInfo === 'function') {
+                fetchAccountInfo();
+                fetchPositions();
+                fetchOrders();
+            }
+            updateLastUpdated();
+        }
+        
+        function toggleTab() {
+            const solarTab = document.getElementById('solar-tab');
+            const alpacaTab = document.getElementById('alpaca-tab');
+            
+            if (solarTab.classList.contains('active')) {
+                alpacaTab.click();
+            } else {
+                solarTab.click();
+            }
+        }
+        
+        // Socket connection with error handling
+        const socket = io();
+        
+        socket.on('connect', () => {
+            console.log('✅ Socket.io connected!');
+        });
+        
+        socket.on('connect_error', (error) => {
+            console.error('❌ Socket.io connection error:', error);
+            document.getElementById('weatherMood').textContent = 'Error connecting to server';
+            hideLoading();
+            document.getElementById('debugControls').style.display = 'block';
+        });
+        
+        // Debug socket events with data handling
+        socket.on('mqttData', (data) => {
+            console.log('📡 Received MQTT data:', data);
+            if (data && data.latest) {
+                updateSensorReadings(data.latest);
+                updateSensorHistory(data.history || []);
+            }
+            hideLoading();
+        });
+        
+        socket.on('weatherMood', (data) => {
+            console.log('🌤️ Received weather mood:', data);
+            if (data && data.mood) {
+                document.getElementById('weatherMood').textContent = data.mood;
+            }
+        });
+        
+        socket.on('suggestedStocks', (data) => {
+            console.log('📈 Received suggested stocks:', data);
+            updateSuggestedStocks(data.stocks || []);
+        });
+        
+        socket.on('marketStatus', (data) => {
+            console.log('🏛️ Received market status:', data);
+            updateMarketStatus(data);
+        });
+        
+        // Automatic timeout to hide loading overlay
+        setTimeout(() => {
+            if (document.getElementById('loadingOverlay').style.display !== 'none') {
+                console.log('⚠️ Loading timeout reached - forcing UI display');
+                hideLoading();
+                document.getElementById('debugControls').style.display = 'block';
+            }
+        }, 5000);
+        
+        // Helper functions for updating UI
+        function updateLastUpdated() {
+            const now = new Date();
+            const timeString = now.toLocaleString();
+            document.getElementById('headerLastUpdated').textContent = timeString;
+            document.getElementById('alpacaLastUpdated').textContent = timeString;
+        }
+        
+        function updateSensorReadings(data) {
+            if (!data) return;
+            
+            document.getElementById('luxValue').textContent = formatValue(data.lux);
+            document.getElementById('tempValue').textContent = formatValue(data.temperature);
+            document.getElementById('humidityValue').textContent = formatValue(data.humidity);
+            document.getElementById('currentValue').textContent = formatValue(data.current);
+            document.getElementById('powerValue').textContent = formatValue(data.power);
+            document.getElementById('batteryValue').textContent = formatValue(data.battery);
+            
+            updateLastUpdated();
+        }
+        
+        function formatValue(value) {
+            if (value === undefined || value === null || value === '—') return '—';
+            if (typeof value === 'number') return value.toLocaleString();
+            return value;
+        }
+        
+        function updateSensorHistory(history) {
+            if (!history || history.length === 0) return;
+            
+            const tbody = document.getElementById('sensorHistoryTable');
+            tbody.innerHTML = '';
+            
+            history.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.time}</td>
+                    <td>${formatValue(item.lux)}</td>
+                    <td>${formatValue(item.temperature)}</td>
+                    <td>${formatValue(item.humidity)}</td>
+                    <td>${formatValue(item.current)}</td>
+                    <td>${formatValue(item.power)}</td>
+                    <td>${formatValue(item.battery)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function updateSuggestedStocks(stocks) {
+            const container = document.getElementById('suggestedStocks');
+            
+            if (!stocks || stocks.length === 0) {
+                container.innerHTML = '<div>No stocks suggested for current conditions</div>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            stocks.forEach(stock => {
+                const stockItem = document.createElement('div');
+                stockItem.className = 'stock-item';
+                stockItem.textContent = stock;
+                container.appendChild(stockItem);
+            });
+        }
+        
+        function updateMarketStatus(data) {
+            const indicator = document.getElementById('marketStatusIndicator');
+            const text = document.getElementById('marketStatusText');
+            
+            if (data && data.open) {
+                indicator.className = 'status-indicator status-open';
+                text.textContent = 'Market Open';
+            } else {
+                indicator.className = 'status-indicator status-closed';
+                text.textContent = 'Market Closed';
+            }
+        }
+        
+        // Alpaca Portfolio Functions
+        let portfolioChart = null;
+        
+        function initializeAlpacaDashboard() {
+            console.log('Initializing Alpaca dashboard');
+            initializePortfolioChart();
+            fetchAccountInfo();
+            fetchPositions();
+            fetchOrders();
+        }
+        
+        function initializePortfolioChart() {
+            const ctx = document.getElementById('portfolioChart');
+            if (!ctx) {
+                console.error('Portfolio chart canvas not found');
+                return;
+            }
+            
+            portfolioChart = new Chart(ctx.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Portfolio Value',
+                        data: [],
+                        borderColor: '#1EC46B',
+                        backgroundColor: 'rgba(30, 196, 107, 0.1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return formatCurrency(context.parsed.y);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            beginAtZero: false,
+                            ticks: {
+                                callback: function(value) {
+                                    return formatCurrency(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        async function fetchAccountInfo() {
+            try {
+                const response = await fetch('/api/account');
+                const data = await response.json();
+                
+                // Update the account summary section
+                document.getElementById('equity').textContent = formatCurrency(data.equity);
+                document.getElementById('buyingPower').textContent = formatCurrency(data.buying_power);
+                document.getElementById('cash').textContent = formatCurrency(data.cash);
+                
+                // Update portfolio chart with account history
+                if (data.history) {
+                    updatePortfolioChart(data.history);
+                }
+                
+                updateLastUpdated();
+            } catch (error) {
+                console.error('Error fetching account info:', error);
+                // Show error message
+                document.getElementById('equity').textContent = 'Error loading data';
+                document.getElementById('buyingPower').textContent = 'Error loading data';
+                document.getElementById('cash').textContent = 'Error loading data';
+            }
+        }
+        
+        async function fetchPositions() {
+            try {
+                const response = await fetch('/api/positions');
+                const positions = await response.json();
+                
+                const positionsList = document.getElementById('positionsList');
+                positionsList.innerHTML = '';
+                
+                if (positions.length === 0) {
+                    positionsList.innerHTML = '<div class="text-center py-4">No positions</div>';
+                    return;
+                }
+                
+                // Sort positions by market value (descending)
+                positions.sort((a, b) => parseFloat(b.market_value) - parseFloat(a.market_value));
+                
+                // Display the top positions
+                positions.forEach(position => {
+                    const isProfit = parseFloat(position.unrealized_pl) >= 0;
+                    const positionItem = document.createElement('div');
+                    positionItem.className = 'position-item';
+                    positionItem.innerHTML = `
+                        <div>
+                            <h5>${position.symbol}</h5>
+                            <div>${position.qty} shares @ ${formatCurrency(position.avg_entry_price)}</div>
+                        </div>
+                        <div class="text-end">
+                            <h5>${formatCurrency(position.market_value)}</h5>
+                            <div class="${isProfit ? 'value-up' : 'value-down'}">
+                                ${formatCurrency(position.unrealized_pl)} (${formatPercentage(position.unrealized_plpc)})
+                            </div>
+                        </div>
+                    `;
+                    positionsList.appendChild(positionItem);
+                });
+            } catch (error) {
+                console.error('Error fetching positions:', error);
+                // Show error message
+                document.getElementById('positionsList').innerHTML = '<div class="text-center py-4">Error loading positions</div>';
+            }
+        }
+        
+        async function fetchOrders() {
+            try {
+                const response = await fetch('/api/orders');
+                const orders = await response.json();
+                
+                const ordersList = document.getElementById('ordersList');
+                ordersList.innerHTML = '';
+                
+                if (orders.length === 0) {
+                    ordersList.innerHTML = '<div class="text-center py-4">No recent orders</div>';
+                    return;
+                }
+                
+                // Sort orders by submission time (most recent first)
+                orders.sort((a, b) => new Date(b.submitted_at) - new Date(a.submitted_at));
+                
+                // Display the most recent orders (limit to 5)
+                orders.slice(0, 5).forEach(order => {
+                    const orderItem = document.createElement('div');
+                    orderItem.className = 'position-item';
+                    
+                    const orderTime = new Date(order.submitted_at).toLocaleString();
+                    
+                    // Determine status class
+                    let statusClass = '';
+                    if (order.status === 'filled') {
+                        statusClass = 'order-status-filled';
+                    } else if (['new', 'accepted', 'partially_filled'].includes(order.status)) {
+                        statusClass = 'order-status-open';
+                    }
+                    
+                    // Determine side class
+                    const sideClass = order.side === 'buy' ? 'order-side-buy' : 'order-side-sell';
+                    
+                    orderItem.innerHTML = `
+                        <div>
+                            <h5>${order.symbol}</h5>
+                            <div>
+                                <span class="badge ${sideClass}">${order.side.toUpperCase()}</span>
+                                ${order.qty} ${order.type} @ ${order.limit_price ? formatCurrency(order.limit_price) : 'Market'}
+                            </div>
+                            <div class="text-muted small">${orderTime}</div>
+                        </div>
+                        <div class="text-end">
+                            <h5 class="${statusClass}">${order.status.toUpperCase()}</h5>
+                        </div>
+                    `;
+                    ordersList.appendChild(orderItem);
+                });
+            } catch (error) {
+                console.error('Error fetching orders:', error);
+                // Show error message
+                document.getElementById('ordersList').innerHTML = '<div class="text-center py-4">Error loading orders</div>';
+            }
+        }
+        
+        function formatCurrency(value) {
+            // Check if value is a string and convert it to a number
+            const numValue = typeof value === 'string' ? parseFloat(value) : value;
+            
+            // Format the number as currency
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            }).format(numValue);
+        }
+        
+        function formatPercentage(value) {
+            // Check if value is a string and convert it to a number
+            const numValue = typeof value === 'string' ? parseFloat(value) : value;
+            
+            // Format the number as a percentage
+            return new Intl.NumberFormat('en-US', {
+                style: 'percent',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(numValue / 100);
+        }
+        
+        function updatePortfolioChart(history) {
+            if (!portfolioChart) {
+                console.error('Portfolio chart not initialized');
+                return;
+            }
+            
+            // Extract dates and equity values from history
+            const labels = history.map(item => new Date(item.timestamp).toLocaleDateString());
+            const data = history.map(item => item.equity);
+            
+            // Update chart data
+            portfolioChart.data.labels = labels;
+            portfolioChart.data.datasets[0].data = data;
+            
+            // Determine if portfolio is up or down
+            const isUp = data[data.length - 1] >= data[0];
+            portfolioChart.data.datasets[0].borderColor = isUp ? '#1EC46B' : '#FF4D4D';
+            portfolioChart.data.datasets[0].backgroundColor = isUp ? 'rgba(30, 196, 107, 0.1)' : 'rgba(255, 77, 77, 0.1)';
+            
+            // Update the chart
+            portfolioChart.update();
+        }
+        
+        // Initialize on DOM load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing dashboards');
+            
+            // Initialize socket listeners (already defined above)
+            
+            // Setup tab change event
+            document.getElementById('alpaca-tab').addEventListener('click', function() {
+                console.log('Alpaca tab clicked, initializing dashboard');
+                initializeAlpacaDashboard();
+            });
+            
+            // Set timeout to auto-hide loading after 5 seconds
+            setTimeout(() => {
+                hideLoading();
+            }, 5000);
+            
+            // Initial update of last updated time
+            updateLastUpdated();
+        });
+    </script>
+</body>
+</html>
