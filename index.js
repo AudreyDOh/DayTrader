@@ -16,6 +16,9 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
+// Accept JSON POSTS from devices (ESP32)
+app.use(express.json());
+
 const mqttClient = mqtt.connect('mqtt://tigoe.net', {
   username: process.env.MQTT_USERNAME,
   password: process.env.MQTT_PASSWORD
@@ -113,6 +116,155 @@ function isMarketHours() {
   return marketOpen && !marketClosed;
 }
 
+// Unified handler for incoming sensor data (MQTT or HTTP POST)
+async function handleSensorData(data) {
+  const now = Date.now();
+  const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+
+  if (data.power === 0) {
+    powerZeroCount++;
+    powerPositiveCount = 0;
+  } else {
+    powerZeroCount = 0;
+    powerPositiveCount++;
+  }
+
+  const timeSinceLastClose = (now - lastMarketCloseTime) / 60000;
+  const inMarketHours = isMarketHours();
+
+  if (powerPositiveCount >= 5 && !marketOpen && timeSinceLastClose >= MARKET_COOLDOWN_MINUTES && inMarketHours) {
+    marketOpen = true;
+    io.emit('marketStatus', { open: true });
+
+    tradeMood = determineTradeMood(data);
+    const suggestedStocks = moodStockMap[tradeMood] || [];
+
+    io.emit('weatherMood', { mood: moodNameMap[tradeMood] ?? tradeMood });
+    io.emit('suggestedStocks', { stocks: suggestedStocks });
+
+    if (shouldSkipDay(data.lux, data.humidity, data.temperature)) {
+      console.log('🌫️ Skipping trades: too dark, humid and cold.');
+      return; // Exit early, skip this cycle
+    }
+    if (tradeMood !== "Cold & Wet" && suggestedStocks.length > 0) {
+      try {
+        const account = await alpaca.getAccountInfo(); // Fetch account info from Alpaca
+        const cash = parseFloat(account.cash); // safer + clearer for trading logic
+        console.log('📈 Alpaca cash balance:', cash);
+        tradeManager = new TradeManager(cash);
+        const buyingPower = parseFloat(account.buying_power);
+        console.log('📈 Alpaca buying power:', buyingPower);
+
+        if (isNaN(cash)) {
+          throw new Error('⚠️ Received NaN for cash balance');
+        }
+      } catch (err) {
+        console.error('❌ Failed to fetch account info from Alpaca:', err.message); 
+        tradeManager = new TradeManager(100000); // fallback to paper balance
+      }
+
+      tradingInterval = setInterval(async () => {
+        for (const symbol of suggestedStocks) {
+          const result = await tradeManager.evaluateTradeEntry(
+            symbol,
+            tradeMood,
+            data.lux,
+            data.temperature,
+            data.humidity
+          );
+          
+          if (result?.executed) {
+            console.log(`✅ TRADE EXECUTED: ${symbol}`);
+          } else {
+            console.log(`⏭️ Skipped ${symbol}: ${result?.reason}`);
+          }
+
+          if (!result?.executed && result?.reason) {
+            const key = `${today}-${symbol}`;
+            if (!loggedSkips.has(key)) {
+              loggedSkips.add(key);
+              const timeNow = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
+              try {
+                await logToSheet([
+                  timeNow,
+                  symbol,
+                  "Skipped",
+                  result.reason,
+                  data.lux,
+                  data.temperature,
+                  data.humidity,
+                  tradeMood,
+                  "—"
+                ], 'Skipped Trades');
+              } catch (err) {
+                console.error('Error logging to sheet:', err);
+              }
+            }
+          }
+        }
+
+        await tradeManager.updateOpenTrades();
+      }, 60_000);
+    }
+  }
+
+  if (powerZeroCount >= 5 && marketOpen) {
+    io.emit('marketStatus', { open: false });
+    if (tradingInterval) {
+      clearInterval(tradingInterval);
+      tradingInterval = null;
+    }
+    marketOpen = false;
+    powerZeroCount = 0;
+    powerPositiveCount = 0;
+    lastMarketCloseTime = now;
+    loggedSkips.clear(); // ✅ Reset skip tracking at market close
+    if (tradeManager) {
+      await tradeManager.forceCloseAll();
+    }
+  }
+
+  const formatted = {
+    time: new Date(data.timeStamp ?? Date.now()).toLocaleString('en-US', {
+      timeZone: 'America/New_York'
+    }),
+    temperature: data.temperature ?? '—',
+    humidity: data.humidity ?? '—',
+    lux: data.lux ?? '—',
+    current: data.current ?? '—',
+    power: data.power ?? '—',
+    battery: data.battery ?? '—',
+    mood: moodNameMap[tradeMood] ?? tradeMood
+  };
+
+  lastReading = formatted;
+  sensorHistory.unshift(formatted);
+  if (sensorHistory.length > 5) sensorHistory.pop();
+
+  io.emit('mqttData', {
+    latest: lastReading,
+    history: sensorHistory
+  });
+
+  try {
+    const values = [
+      formatted.time,
+      data.lux,
+      data.temperature,
+      data.humidity,
+      data.current,
+      data.power,
+      data.battery,
+      formatted.mood,
+      (moodStockMap[tradeMood] || []).join(', ')
+    ];
+
+    logToSheet(values);
+  } catch (err) {
+    console.error('Error logging to sheet:', err);
+  }
+}
+
 mqttClient.on('connect', () => {
   // console.log('✅ Connected to MQTT broker');
   mqttClient.subscribe(topic);
@@ -127,154 +279,7 @@ mqttClient.on('message', async (topic, message) => {
   const msg = message.toString();
   try {
     const data = JSON.parse(msg);
-    const now = Date.now();
-    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
-
-    if (data.power === 0) {
-      powerZeroCount++;
-      powerPositiveCount = 0;
-    } else {
-      powerZeroCount = 0;
-      powerPositiveCount++;
-    }
-
-    const timeSinceLastClose = (now - lastMarketCloseTime) / 60000;
-    const inMarketHours = isMarketHours();
-
-
-    if (powerPositiveCount >= 5 && !marketOpen && timeSinceLastClose >= MARKET_COOLDOWN_MINUTES && inMarketHours) {
-      marketOpen = true;
-      io.emit('marketStatus', { open: true });
-
-      tradeMood = determineTradeMood(data);
-      const suggestedStocks = moodStockMap[tradeMood] || [];
-
-      io.emit('weatherMood', { mood: moodNameMap[tradeMood] ?? tradeMood });
-      io.emit('suggestedStocks', { stocks: suggestedStocks });
-
-      if (shouldSkipDay(data.lux, data.humidity, data.temperature)) {
-        console.log('🌫️ Skipping trades: too dark, humid and cold.');
-        return; // Exit early, skip this cycle
-      }
-      if (tradeMood !== "Cold & Wet" && suggestedStocks.length > 0) {
-        try {
-          const account = await alpaca.getAccountInfo(); // Fetch account info from Alpaca
-          const cash = parseFloat(account.cash); // safer + clearer for trading logic
-          console.log('📈 Alpaca cash balance:', cash);
-          tradeManager = new TradeManager(cash);
-          const buyingPower = parseFloat(account.buying_power);
-          console.log('📈 Alpaca buying power:', buyingPower);
-
-          if (isNaN(cash)) {
-            throw new Error('⚠️ Received NaN for cash balance');
-          }
-        } catch (err) {
-          console.error('❌ Failed to fetch account info from Alpaca:', err.message); 
-          tradeManager = new TradeManager(100000); // fallback to paper balance
-        }
-
-        tradingInterval = setInterval(async () => {
-          for (const symbol of suggestedStocks) {
-            const result = await tradeManager.evaluateTradeEntry(
-              symbol,
-              tradeMood,
-              data.lux,
-              data.temperature,
-              data.humidity
-            );
-            
-            if (result?.executed) {
-              console.log(`✅ TRADE EXECUTED: ${symbol}`);
-            } else {
-              console.log(`⏭️ Skipped ${symbol}: ${result?.reason}`);
-            }
-
-            if (!result?.executed && result?.reason) {
-              const key = `${today}-${symbol}`;
-              if (!loggedSkips.has(key)) {
-                loggedSkips.add(key);
-                const timeNow = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
-                try {
-                  // ADDED: Try-catch block around logToSheet
-                  await logToSheet([
-                    timeNow,
-                    symbol,
-                    "Skipped",
-                    result.reason,
-                    data.lux,
-                    data.temperature,
-                    data.humidity,
-                    tradeMood,
-                    "—"
-                  ], 'Skipped Trades');
-                } catch (err) {
-                  console.error('Error logging to sheet:', err);
-                }
-              }
-            }
-          }
-
-          await tradeManager.updateOpenTrades();
-        }, 60_000);
-      }
-    }
-
-    if (powerZeroCount >= 5 && marketOpen) {
-      io.emit('marketStatus', { open: false });
-      if (tradingInterval) {
-        clearInterval(tradingInterval);
-        tradingInterval = null;
-      }
-      marketOpen = false;
-      powerZeroCount = 0;
-      powerPositiveCount = 0;
-      lastMarketCloseTime = now;
-      loggedSkips.clear(); // ✅ Reset skip tracking at market close
-      if (tradeManager) {
-        await tradeManager.forceCloseAll();
-      }
-    }
-
-    const formatted = {
-      time: new Date(data.timeStamp ?? Date.now()).toLocaleString('en-US', {
-        timeZone: 'America/New_York'
-      }),
-      temperature: data.temperature ?? '—',
-      humidity: data.humidity ?? '—',
-      lux: data.lux ?? '—',
-      current: data.current ?? '—',
-      power: data.power ?? '—',
-      battery: data.battery ?? '—',
-      mood: moodNameMap[tradeMood] ?? tradeMood
-    };
-
-    lastReading = formatted;
-    sensorHistory.unshift(formatted);
-    if (sensorHistory.length > 5) sensorHistory.pop();
-
-    io.emit('mqttData', {
-      latest: lastReading,
-      history: sensorHistory
-    });
-
-    try {
-      // ADDED: Try-catch block around logToSheet
-      const values = [
-        formatted.time,
-        data.lux,
-        data.temperature,
-        data.humidity,
-        data.current,
-        data.power,
-        data.battery,
-        formatted.mood,
-        (moodStockMap[tradeMood] || []).join(', ')
-      ];
-
-      logToSheet(values);
-    } catch (err) {
-      console.error('Error logging to sheet:', err);
-    }
+    await handleSensorData(data);
   } catch (err) {
     // console.log('❌ Invalid JSON:', msg);
   }
@@ -336,6 +341,20 @@ app.get('/api/test', (req, res) => {
       ALPACA_SECRET_KEY: !!process.env.ALPACA_SECRET_KEY
     }
   });
+});
+
+// HTTP ingest endpoint for ESP32 to POST sensor readings (JSON)
+app.post('/api/ingest', async (req, res) => {
+  try {
+    if (!req.body || typeof req.body !== 'object') {
+      return res.status(400).json({ ok: false, error: 'Invalid JSON body' });
+    }
+    await handleSensorData(req.body);
+    res.json({ ok: true });
+  } catch (err) {
+    console.error('Ingest error:', err);
+    res.status(500).json({ ok: false, error: err.message });
+  }
 });
 
 // Simplified account info route with error handling
@@ -449,6 +468,7 @@ app.get('/api/orders', async (req, res) => {
   }
 });
 
-server.listen(3000, () => {
-  console.log('🌐 Server running at http://localhost:3000');
+const port = process.env.PORT || 3000;
+server.listen(port, () => {
+  console.log(`🌐 Server running on port ${port}`);
 });
