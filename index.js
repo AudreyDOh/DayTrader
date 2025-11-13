@@ -19,11 +19,20 @@ const io = socketIo(server);
 // Accept JSON POSTS from devices (ESP32)
 app.use(express.json());
 
-const mqttClient = mqtt.connect('mqtt://tigoe.net', {
-  username: process.env.MQTT_USERNAME,
-  password: process.env.MQTT_PASSWORD
-});
+// MQTT toggle (default OFF). Set ENABLE_MQTT=true to enable.
+const ENABLE_MQTT = process.env.ENABLE_MQTT === 'true';
+let mqttClient = null;
 const topic = 'energy/audrey';
+if (ENABLE_MQTT) {
+  const mqttUrl = process.env.MQTT_URL || 'mqtt://tigoe.net';
+  mqttClient = mqtt.connect(mqttUrl, {
+    username: process.env.MQTT_USERNAME,
+    password: process.env.MQTT_PASSWORD
+  });
+  console.log(`🔌 MQTT enabled. Connecting to ${mqttUrl}...`);
+} else {
+  console.log('🔌 MQTT disabled (set ENABLE_MQTT=true to enable).');
+}
 
 // ADDED: Try-catch block around Google Sheets authorization
 try {
@@ -265,25 +274,31 @@ async function handleSensorData(data) {
   }
 }
 
-mqttClient.on('connect', () => {
-  // console.log('✅ Connected to MQTT broker');
-  mqttClient.subscribe(topic);
-});
+if (ENABLE_MQTT && mqttClient) {
+  mqttClient.on('connect', () => {
+    // console.log('✅ Connected to MQTT broker');
+    mqttClient.subscribe(topic);
+  });
+}
 
 // ADDED: Error handling for MQTT connection
-mqttClient.on('error', (err) => {
-  console.error('❌ MQTT connection error:', err);
-});
+if (ENABLE_MQTT && mqttClient) {
+  mqttClient.on('error', (err) => {
+    console.error('❌ MQTT connection error:', err);
+  });
+}
 
-mqttClient.on('message', async (topic, message) => {
-  const msg = message.toString();
-  try {
-    const data = JSON.parse(msg);
-    await handleSensorData(data);
-  } catch (err) {
-    // console.log('❌ Invalid JSON:', msg);
-  }
-});
+if (ENABLE_MQTT && mqttClient) {
+  mqttClient.on('message', async (topic, message) => {
+    const msg = message.toString();
+    try {
+      const data = JSON.parse(msg);
+      await handleSensorData(data);
+    } catch (err) {
+      // console.log('❌ Invalid JSON:', msg);
+    }
+  });
+}
 
 // ADDED: Enhanced connection event handler with fallback data
 io.on('connection', socket => {
