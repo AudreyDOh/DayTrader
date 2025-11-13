@@ -3,7 +3,7 @@ Received data from MQTT Broker and forwards data via Websocket to Frontend
 */
 
 require('dotenv').config();
-const { authorizeGoogleSheets, logToSheet } = require('./logToSheets');
+const { authorizeGoogleSheets, logToSheet, readRecentFromSheet } = require('./logToSheets');
 const { shouldSkipDay } = require('./solarStrategy');
 const TradeManager = require('./tradeManager');
 const mqtt = require('mqtt');
@@ -43,6 +43,24 @@ try {
 
 let lastReading = null;
 const sensorHistory = [];
+const HISTORY_STORE_LIMIT = Number(process.env.HISTORY_STORE_LIMIT || 500);
+const HISTORY_SEND_LIMIT = Number(process.env.HISTORY_SEND_LIMIT || 5);
+// Seed in-memory history from Google Sheets so it survives server restarts
+(async function seedHistory() {
+  try {
+    const recent = await readRecentFromSheet(HISTORY_STORE_LIMIT, 'DayTrader Log');
+    if (recent.length > 0) {
+      sensorHistory.splice(0, sensorHistory.length, ...recent); // replace in-place
+      lastReading = sensorHistory[0];
+      console.log(`🗂️ Seeded sensor history from Sheets: ${sensorHistory.length} entries`);
+    } else {
+      console.log('🗂️ No prior history found in Sheets (or read failed).');
+    }
+  } catch (e) {
+    console.error('Failed to seed history from Sheets:', e.message);
+  }
+})();
+
 let tradeMood = null;
 let marketOpen = false;
 let powerZeroCount = 0;
@@ -270,11 +288,11 @@ async function handleSensorData(data) {
 
   lastReading = formatted;
   sensorHistory.unshift(formatted);
-  if (sensorHistory.length > 5) sensorHistory.pop();
+  if (sensorHistory.length > HISTORY_STORE_LIMIT) sensorHistory.pop();
 
   io.emit('mqttData', {
     latest: lastReading,
-    history: sensorHistory
+    history: sensorHistory.slice(0, HISTORY_SEND_LIMIT)
   });
 
   try {
@@ -329,7 +347,7 @@ io.on('connection', socket => {
   if (lastReading || sensorHistory.length > 0) {
     socket.emit('mqttData', {
       latest: lastReading ?? sensorHistory[0],
-      history: sensorHistory
+      history: sensorHistory.slice(0, HISTORY_SEND_LIMIT)
     });
   } else {
     // ADDED: Provide fallback data if no real data is available

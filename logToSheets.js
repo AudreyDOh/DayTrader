@@ -48,7 +48,53 @@ async function logToSheet(values, sheetName = 'DayTrader Log') {
   }
 }
 
+// Read the most recent N rows from a sheet to seed history
+async function readRecentFromSheet(limit = 50, sheetName = 'DayTrader Log') {
+  if (!sheetsClient) {
+    console.error('❌ Sheets client not initialized. Call authorizeGoogleSheets() first.');
+    return [];
+  }
+  try {
+    const res = await sheetsClient.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${sheetName}!A:I`, // matches appended columns
+      majorDimension: 'ROWS'
+    });
+    const rows = res.data.values || [];
+    if (rows.length === 0) return [];
+    const recent = rows.slice(-limit).reverse(); // newest first
+    // Map to formatted objects expected by frontend
+    return recent.map(r => {
+      const [
+        time,      // A
+        lux,       // B
+        temperature, // C
+        humidity,  // D
+        current,   // E
+        power,     // F
+        battery,   // G
+        mood,      // H
+        // stocks // I (unused here)
+      ] = r;
+      return {
+        time: time || '—',
+        temperature: temperature ?? '—',
+        humidity: humidity ?? '—',
+        lux: lux ?? '—',
+        current: current ?? '—',
+        power: power ?? '—',
+        battery: battery ?? '—',
+        mood: mood ?? '—'
+      };
+    });
+  } catch (err) {
+    console.error('❌ Failed to read from Google Sheets:', err.message);
+    return [];
+  }
+}
+
 module.exports = {
   authorizeGoogleSheets,
   logToSheet,
+  readRecentFromSheet,
 };
