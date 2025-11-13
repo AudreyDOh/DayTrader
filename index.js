@@ -146,7 +146,8 @@ function normalizeTimestamp(input) {
 async function handleSensorData(data) {
   const now = Date.now();
   const msgTsMs = normalizeTimestamp(data.timeStamp);
-  const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
+  // Derive date strictly from the message timestamp in NY time
+  const today = new Date(msgTsMs).toLocaleDateString('en-US', { timeZone: 'America/New_York' });
 
   if (data.power === 0) {
     powerZeroCount++;
@@ -255,6 +256,7 @@ async function handleSensorData(data) {
     time: new Date(msgTsMs).toLocaleString('en-US', {
       timeZone: 'America/New_York'
     }),
+    date: new Date(msgTsMs).toLocaleDateString('en-US', { timeZone: 'America/New_York' }),
     // Include the normalized timestamp for debugging
     timeStamp: msgTsMs,
     temperature: data.temperature ?? '—',
@@ -371,6 +373,7 @@ app.get('/api/test', (req, res) => {
     message: 'API is working!',
     timestamp_utc: new Date().toISOString(),
     timestamp_ny: new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }),
+    date_ny: new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York' }),
     server_tz_hint: 'America/New_York formatting applied explicitly',
     alpaca_configured: alpacaConfigured,
     env_vars_set: {
