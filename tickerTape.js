@@ -74,8 +74,8 @@ function buildSunLine(sensor) {
   const temp = Math.round(clampNumber(sensor?.temperature) ?? 0);
   const hum = Math.round(clampNumber(sensor?.humidity) ?? 0);
   const cur = formatOneDecimal(sensor?.current);
-  const pwrKw = clampNumber(sensor?.power) != null ? `${formatThreeDecimals(sensor.power)}kW` : '—';
-  return `LUX ${lux} TEMP ${temp}C HUM ${hum}% CUR ${cur}A PWR ${pwrKw}`;
+  const pwrKw = clampNumber(sensor?.power) != null ? `${formatThreeDecimals(sensor.power)}` : '—';
+  return `LUX ${lux} TEMP ${temp} HUM ${hum} CUR ${cur} PWR ${pwrKw}`;
 }
 
 function formatThreeDecimals(n) {
@@ -87,7 +87,7 @@ function formatThreeDecimals(n) {
 // ---- Message builders ----
 
 // Decision (pre-trade): uses mood and suggested stocks; computes risk from sensor if not provided
-function formatDecision(sensor, mood, suggestedStocks = [], risk) {
+function formatDecision(sensor, mood, suggestedStocks = [], risk, account) {
   const line1 = buildSunLine(sensor);
   const primary = suggestedStocks[0];
   const secondary = suggestedStocks[1];
@@ -106,7 +106,9 @@ function formatDecision(sensor, mood, suggestedStocks = [], risk) {
     primary && secondary ? `${primary}, ${secondary}` :
     primary ? primary : '—';
 
-  const line2 = `MOOD ${mood?.toUpperCase() ?? '—'} → BUY ${picks} | SL ${sl} TP ${tp} HOLD ${hold}m`;
+  const cashStr = formatMoney(account?.cash);
+  const cashBlock = cashStr ? ` CASH ${cashStr}` : '';
+  const line2 = `MOOD ${mood?.toUpperCase() ?? '—'} BUY ${picks} SL ${sl} TP ${tp} HOLD ${hold}m${cashBlock}`;
   return `${line1}\n${line2}`;
 }
 
@@ -121,8 +123,8 @@ function formatOrder(sensor, order, risk, account) {
   const hold = order?.holdMinutesLeft != null
     ? Math.max(0, Math.round(order.holdMinutesLeft))
     : Math.round(risk?.holdMinutes ?? 0);
-  const moneyBlock = cashStr ? ` | CASH ${cashStr}` : '';
-  const line2 = `${verb} ${order?.symbol ?? '—'} @ MKT | SL ${sl} TP ${tp} SIZE ${size} HOLD ${hold}m${moneyBlock}`;
+  const moneyBlock = cashStr ? ` CASH ${cashStr}` : '';
+  const line2 = `${verb} ${order?.symbol ?? '—'} @ MKT SL ${sl} TP ${tp} SIZE ${size} HOLD ${hold}m${moneyBlock}`;
   return `${line1}\n${line2}`;
 }
 
@@ -132,13 +134,13 @@ function formatActivePosition(position) {
   const arrow = emojiForDelta(pl);
   const plStr = pl == null ? '—' : `${toPct(pl)}`;
   const price = position?.entryPrice != null ? formatTwoDecimals(position.entryPrice) : '—';
-  const line1 = `${position?.symbol ?? '—'} ${sideToLabel(position?.side)} @ ${price} | P/L ${plStr} ${arrow}`;
+  const line1 = `${position?.symbol ?? '—'} ${sideToLabel(position?.side)} @ ${price} P/L ${plStr} ${arrow}`;
 
   const sl = toPct(position?.slPct);
   const tp = toPct(position?.tpPct);
   const size = position?.size != null ? `${position.size}` : '—';
   const eqt = formatMoney(position?.equity);
-  const eqtBlock = eqt ? ` | EQT ${eqt}` : '';
+  const eqtBlock = eqt ? ` EQT ${eqt}` : '';
   const holdLeft = position?.holdMinutesLeft != null ? ` HOLD ${Math.max(0, Math.round(position.holdMinutesLeft))}m` : '';
   const line2 = `SL ${sl} TP ${tp} SIZE ${size}${holdLeft}${eqtBlock}`;
   return `${line1}\n${line2}`;
@@ -149,20 +151,20 @@ function formatExit(exit) {
   const entry = exit?.entryPrice != null ? formatTwoDecimals(exit.entryPrice) : '—';
   const out = exit?.exitPrice != null ? formatTwoDecimals(exit.exitPrice) : '—';
   const dir = emojiForDelta((exit?.exitPrice ?? 0) - (exit?.entryPrice ?? 0));
-  const line1 = `${exit?.symbol ?? '—'} ${sideToLabel(exit?.side)} @ ${entry} → EXIT ${out} ${dir}`;
+  const line1 = `${exit?.symbol ?? '—'} ${sideToLabel(exit?.side)} @ ${entry} EXIT ${out} ${dir}`;
 
   const cause = reasonLabel(exit?.reason);
   const held = exit?.heldMinutes != null ? `${Math.round(exit.heldMinutes)}m` : '—';
   const pl = clampNumber(exit?.pnlPct);
   const plStr = pl == null ? '—' : `${toPct(pl)}`;
-  const line2 = `${cause} ${plStr} | HELD ${held} | LOG→SHEETS`;
+  const line2 = `${cause} ${plStr} HELD ${held}`;
   return `${line1}\n${line2}`;
 }
 
 // Market closed fallback
 function formatMarketClosed(sensor, mood, suggestedStocks = [], market = {}, account = {}) {
   const line1 = buildSunLine(sensor);
-  const parts = ['MKT CLOSED'];
+  const parts = ['MARKET CLOSED'];
 
   if (market?.nextOpenMinutes != null) {
     const mins = Math.max(0, Math.round(market.nextOpenMinutes));
@@ -188,7 +190,7 @@ function formatMarketClosed(sensor, mood, suggestedStocks = [], market = {}, acc
   if (mood) parts.push(`MOOD ${mood.toUpperCase()}`);
   if (queue) parts.push(`QUEUE ${queue}`);
 
-  const line2 = parts.join(' | ');
+  const line2 = parts.join(' ');
   return `${line1}\n${line2}`;
 }
 
@@ -240,7 +242,7 @@ function createTickerMessages(context) {
   }
 
   // Decision message is always useful as the baseline
-  messages.push(formatDecision(sensor || {}, mood || 'Unknown', suggestedStocks || [], risk));
+  messages.push(formatDecision(sensor || {}, mood || 'Unknown', suggestedStocks || [], risk, account || {}));
 
   if (derivedOrder && derivedOrder.symbol && derivedOrder.side) {
     // Show order placement intent/state

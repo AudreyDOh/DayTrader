@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.venv/
+venv/
+env/
+ENV/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor/Tools
+.vscode/
+.idea/
+
+# Local data
+.env
+*.env
+font/cache/
+*.log
+
+archive
+__pycache__/
+animations/output_animation.gif
+*.bak
+font/cache

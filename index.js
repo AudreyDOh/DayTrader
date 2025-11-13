@@ -35,32 +35,39 @@ if (ENABLE_MQTT) {
   console.log('🔌 MQTT disabled (set ENABLE_MQTT=true to enable).');
 }
 
-// ADDED: Try-catch block around Google Sheets authorization
-try {
-  authorizeGoogleSheets();
-} catch (err) {
-  console.error('Error authorizing Google Sheets (continuing anyway):', err);
+// Conditionally enable Google Sheets only if credentials are provided
+const SHEETS_ENABLED = !!process.env.GOOGLE_CREDENTIALS;
+if (SHEETS_ENABLED) {
+  try {
+    authorizeGoogleSheets();
+  } catch (err) {
+    console.error('Error authorizing Google Sheets (continuing anyway):', err);
+  }
+} else {
+  console.log('📝 Google Sheets disabled (set GOOGLE_CREDENTIALS to enable).');
 }
 
 let lastReading = null;
 const sensorHistory = [];
 const HISTORY_STORE_LIMIT = Number(process.env.HISTORY_STORE_LIMIT || 500);
 const HISTORY_SEND_LIMIT = Number(process.env.HISTORY_SEND_LIMIT || 5);
-// Seed in-memory history from Google Sheets so it survives server restarts
-(async function seedHistory() {
-  try {
-    const recent = await readRecentFromSheet(HISTORY_STORE_LIMIT, 'DayTrader Log');
-    if (recent.length > 0) {
-      sensorHistory.splice(0, sensorHistory.length, ...recent); // replace in-place
-      lastReading = sensorHistory[0];
-      console.log(`🗂️ Seeded sensor history from Sheets: ${sensorHistory.length} entries`);
-    } else {
-      console.log('🗂️ No prior history found in Sheets (or read failed).');
+// Seed in-memory history from Google Sheets only when enabled
+if (SHEETS_ENABLED) {
+  (async function seedHistory() {
+    try {
+      const recent = await readRecentFromSheet(HISTORY_STORE_LIMIT, 'DayTrader Log');
+      if (recent.length > 0) {
+        sensorHistory.splice(0, sensorHistory.length, ...recent); // replace in-place
+        lastReading = sensorHistory[0];
+        console.log(`🗂️ Seeded sensor history from Sheets: ${sensorHistory.length} entries`);
+      } else {
+        console.log('🗂️ No prior history found in Sheets (or read failed).');
+      }
+    } catch (e) {
+      console.error('Failed to seed history from Sheets:', e.message);
     }
-  } catch (e) {
-    console.error('Failed to seed history from Sheets:', e.message);
-  }
-})();
+  })();
+}
 
 let tradeMood = null;
 let marketOpen = false;
@@ -383,25 +390,6 @@ io.on('connection', socket => {
 
 app.use(express.static('public'));
 
-// Test route to check if API is working
-app.get('/api/test', (req, res) => {
-  // ADDED: More detailed test endpoint response
-  const alpacaConfigured = !!(alpaca && alpaca.alpaca);
-  
-  res.json({
-    message: 'API is working!',
-    timestamp_utc: new Date().toISOString(),
-    timestamp_ny: new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }),
-    date_ny: new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York' }),
-    server_tz_hint: 'America/New_York formatting applied explicitly',
-    alpaca_configured: alpacaConfigured,
-    env_vars_set: {
-      ALPACA_API_KEY: !!process.env.ALPACA_API_KEY,
-      ALPACA_SECRET_KEY: !!process.env.ALPACA_SECRET_KEY
-    }
-  });
-});
-
 // Two-line ticker API for LED panel integration
 app.get('/api/ticker', async (req, res) => {
   try {
@@ -419,6 +407,17 @@ app.get('/api/ticker', async (req, res) => {
     const rp = getRiskProfile(sensor.lux);
     const hold = getMaxHoldMinutes(sensor.humidity);
     const risk = { takeProfitPct: rp.takeProfit, stopLossPct: rp.stopLoss, holdMinutes: hold };
+    
+    // Fetch minimal account info for cash display
+    let account = null;
+    try {
+      const acct = await alpaca.getAccountInfo();
+      if (acct && (acct.cash != null)) {
+        account = { cash: acct.cash };
+      }
+    } catch (err) {
+      // continue without account
+    }
     
     let position = null;
     if (tradeManager && tradeManager.openTrades && tradeManager.openTrades.length > 0) {
@@ -444,12 +443,31 @@ app.get('/api/ticker', async (req, res) => {
     }
     
     const market = { open: marketOpen };
-    const context = { sensor, mood, suggestedStocks, risk, position, market };
+    const context = { sensor, mood, suggestedStocks, risk, position, market, account };
     const messages = createTickerMessages(context);
     res.json({ messages });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+// Test route to check if API is working
+app.get('/api/test', (req, res) => {
+  // ADDED: More detailed test endpoint response
+  const alpacaConfigured = !!(alpaca && alpaca.alpaca);
+  
+  res.json({
+    message: 'API is working!',
+    timestamp_utc: new Date().toISOString(),
+    timestamp_ny: new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }),
+    date_ny: new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York' }),
+    server_tz_hint: 'America/New_York formatting applied explicitly',
+    alpaca_configured: alpacaConfigured,
+    env_vars_set: {
+      ALPACA_API_KEY: !!process.env.ALPACA_API_KEY,
+      ALPACA_SECRET_KEY: !!process.env.ALPACA_SECRET_KEY
+    }
+  });
 });
 
 // HTTP ingest endpoint for ESP32 to POST sensor readings (JSON)
