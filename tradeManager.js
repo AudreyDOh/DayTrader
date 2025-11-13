@@ -79,7 +79,7 @@ if (!signal) return { executed: false, reason: 'No valid entry signal (bars)' };
         stopLoss
       );
 
-      await this.openTrade({ // open a trade with the Alpaca API
+      const openResult = await this.openTrade({ // open a trade with the Alpaca API
         symbol, // stock symbol
         side: signal.side, // long or short
         entryPrice, // entry price
@@ -91,6 +91,9 @@ if (!signal) return { executed: false, reason: 'No valid entry signal (bars)' };
         mood // mood of the day (set with solar sensor data at initial market open )
       });
 
+      if (!openResult?.success) {
+        return { executed: false, reason: openResult?.error || 'Order placement failed' };
+      }
       return { executed: true };
     } catch (error) {
       console.error(`❌ Error evaluating trade entry for ${symbol}:`, error.message);
@@ -314,18 +317,48 @@ async openTrade(tradeConfig) {
     
     // Execute the trade via Alpaca
     const orderSide = side === 'long' ? 'buy' : 'sell';
-    const order = await alpaca.placeOrder(symbol, shares, orderSide);
-    
-    if (!order) {
-      throw new Error(`Failed to place ${orderSide} order for ${symbol}`);
+    let usedShares = shares;
+    let order = null;
+    try {
+      order = await alpaca.placeOrder(symbol, usedShares, orderSide);
+    } catch (placeErr) {
+      const errData = placeErr?.response?.data;
+      const insufficientQty =
+        errData && typeof errData.message === 'string' &&
+        errData.message.toLowerCase().includes('insufficient qty available');
+      
+      // Auto-resize only for short entries (sell to open)
+      if (orderSide === 'sell' && insufficientQty) {
+        // Alpaca error often includes available and existing_qty as strings
+        const availableStr = errData?.available ?? errData?.qty_available ?? errData?.shortable ?? null;
+        const available = Number(availableStr);
+        if (Number.isFinite(available) && available > 0 && available < usedShares) {
+          console.warn(`⚠️ Resizing short order for ${symbol} from ${usedShares} -> ${available} due to borrow availability`);
+          usedShares = available;
+          try {
+            order = await alpaca.placeOrder(symbol, usedShares, orderSide);
+          } catch (retryErr) {
+            // If retry also fails, bubble up the original Alpaca error details
+            throw retryErr;
+          }
+        } else {
+          // No usable available amount; rethrow original
+          throw placeErr;
+        }
+      } else {
+        // Not a short insufficiency case, rethrow
+        throw placeErr;
+      }
     }
+    
+    if (!order) throw new Error(`Failed to place ${orderSide} order for ${symbol}`);
     
     // Record the trade
     const tradeRecord = {
       symbol,
       side,
       entryPrice,
-      shares,
+      shares: usedShares,
       tpPrice,
       slPrice,
       entryTime,
@@ -344,7 +377,7 @@ async openTrade(tradeConfig) {
       side,
       entryPrice,
       'OPEN',
-      shares,
+      usedShares,
       '0',
       '0%',
       'ENTRY',
@@ -353,7 +386,7 @@ async openTrade(tradeConfig) {
     
     console.log(`🛒 Opened ${side} position in ${symbol}:
       - Price: $${entryPrice}
-      - Shares: ${shares}
+      - Shares: ${usedShares}
       - Take Profit: $${tpPrice}
       - Stop Loss: $${slPrice}
       - Max Hold: ${maxHoldMinutes} minutes`);
