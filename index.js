@@ -125,9 +125,27 @@ function isMarketHours() {
   return marketOpen && !marketClosed;
 }
 
+// Normalize incoming timestamps to epoch milliseconds
+function normalizeTimestamp(input) {
+  if (input == null) return Date.now();
+  // String date
+  if (typeof input === 'string') {
+    const parsed = Date.parse(input);
+    return isNaN(parsed) ? Date.now() : parsed;
+  }
+  // Numeric seconds vs milliseconds
+  if (typeof input === 'number') {
+    // If looks like seconds (<= 10^11 ~ year 5138 in ms threshold), scale to ms
+    if (input < 1e11) return input * 1000;
+    return input;
+  }
+  return Date.now();
+}
+
 // Unified handler for incoming sensor data (MQTT or HTTP POST)
 async function handleSensorData(data) {
   const now = Date.now();
+  const msgTsMs = normalizeTimestamp(data.timeStamp);
   const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' });
 
   if (data.power === 0) {
@@ -234,9 +252,11 @@ async function handleSensorData(data) {
   }
 
   const formatted = {
-    time: new Date(data.timeStamp ?? Date.now()).toLocaleString('en-US', {
+    time: new Date(msgTsMs).toLocaleString('en-US', {
       timeZone: 'America/New_York'
     }),
+    // Include the normalized timestamp for debugging
+    timeStamp: msgTsMs,
     temperature: data.temperature ?? '—',
     humidity: data.humidity ?? '—',
     lux: data.lux ?? '—',
@@ -349,7 +369,9 @@ app.get('/api/test', (req, res) => {
   
   res.json({
     message: 'API is working!',
-    timestamp: new Date().toISOString(),
+    timestamp_utc: new Date().toISOString(),
+    timestamp_ny: new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }),
+    server_tz_hint: 'America/New_York formatting applied explicitly',
     alpaca_configured: alpacaConfigured,
     env_vars_set: {
       ALPACA_API_KEY: !!process.env.ALPACA_API_KEY,
