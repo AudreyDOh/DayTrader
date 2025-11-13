@@ -4,13 +4,14 @@ Received data from MQTT Broker and forwards data via Websocket to Frontend
 
 require('dotenv').config();
 const { authorizeGoogleSheets, logToSheet, readRecentFromSheet } = require('./logToSheets');
-const { shouldSkipDay } = require('./solarStrategy');
+const { shouldSkipDay, getRiskProfile, getMaxHoldMinutes } = require('./solarStrategy');
 const TradeManager = require('./tradeManager');
 const mqtt = require('mqtt');
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const alpaca = require('./alpaca'); // Alpaca Module to fetch account infos
+const { createTickerMessages } = require('./tickerTape');
 
 const app = express();
 const server = http.createServer(app);
@@ -399,6 +400,56 @@ app.get('/api/test', (req, res) => {
       ALPACA_SECRET_KEY: !!process.env.ALPACA_SECRET_KEY
     }
   });
+});
+
+// Two-line ticker API for LED panel integration
+app.get('/api/ticker', async (req, res) => {
+  try {
+    const toNum = v => (typeof v === 'number' ? v : (Number(v) || 0));
+    const sensor = lastReading ? {
+      lux: toNum(lastReading.lux),
+      temperature: toNum(lastReading.temperature),
+      humidity: toNum(lastReading.humidity),
+      current: toNum(lastReading.current),
+      power: toNum(lastReading.power)
+    } : { lux: 0, temperature: 0, humidity: 0, current: 0, power: 0 };
+    
+    const mood = tradeMood;
+    const suggestedStocks = moodStockMap[tradeMood] || [];
+    const rp = getRiskProfile(sensor.lux);
+    const hold = getMaxHoldMinutes(sensor.humidity);
+    const risk = { takeProfitPct: rp.takeProfit, stopLossPct: rp.stopLoss, holdMinutes: hold };
+    
+    let position = null;
+    if (tradeManager && tradeManager.openTrades && tradeManager.openTrades.length > 0) {
+      const t = tradeManager.openTrades[0];
+      let tpPct, slPct;
+      if (t.side === 'long') {
+        tpPct = ((t.tpPrice / t.entryPrice) - 1) * 100;
+        slPct = (1 - (t.slPrice / t.entryPrice)) * 100;
+      } else {
+        tpPct = (1 - (t.tpPrice / t.entryPrice)) * 100;
+        slPct = ((t.slPrice / t.entryPrice) - 1) * 100;
+      }
+      position = {
+        symbol: t.symbol,
+        side: t.side,
+        entryPrice: t.entryPrice,
+        size: t.shares,
+        entryTime: t.entryTime,
+        maxHoldMinutes: t.maxHoldMinutes,
+        tpPct,
+        slPct
+      };
+    }
+    
+    const market = { open: marketOpen };
+    const context = { sensor, mood, suggestedStocks, risk, position, market };
+    const messages = createTickerMessages(context);
+    res.json({ messages });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // HTTP ingest endpoint for ESP32 to POST sensor readings (JSON)
