@@ -442,7 +442,13 @@ app.get('/api/ticker', async (req, res) => {
       };
     }
     
-    const market = { open: marketOpen };
+    // Consider market "open" if:
+    // - server state says open, OR
+    // - it's within market hours, OR
+    // - there is an active position
+    const hasActivePosition = !!(tradeManager && tradeManager.openTrades && tradeManager.openTrades.length > 0);
+    const inferredOpen = marketOpen || isMarketHours() || hasActivePosition;
+    const market = { open: inferredOpen };
     const context = { sensor, mood, suggestedStocks, risk, position, market, account };
     const messages = createTickerMessages(context);
     res.json({ messages });

@@ -73,9 +73,8 @@ function buildSunLine(sensor) {
   const lux = formatThousands(sensor?.lux);
   const temp = Math.round(clampNumber(sensor?.temperature) ?? 0);
   const hum = Math.round(clampNumber(sensor?.humidity) ?? 0);
-  const cur = formatOneDecimal(sensor?.current);
   const pwrKw = clampNumber(sensor?.power) != null ? `${formatThreeDecimals(sensor.power)}` : '—';
-  return `LUX ${lux} TEMP ${temp} HUM ${hum} CUR ${cur} PWR ${pwrKw}`;
+  return `LUX ${lux} TEMP ${temp} HUM ${hum} PWR ${pwrKw}`;
 }
 
 function formatThreeDecimals(n) {
@@ -106,9 +105,7 @@ function formatDecision(sensor, mood, suggestedStocks = [], risk, account) {
     primary && secondary ? `${primary}, ${secondary}` :
     primary ? primary : '—';
 
-  const cashStr = formatMoney(account?.cash);
-  const cashBlock = cashStr ? ` CASH ${cashStr}` : '';
-  const line2 = `MOOD ${mood?.toUpperCase() ?? '—'} BUY ${picks} SL ${sl} TP ${tp} HOLD ${hold}m${cashBlock}`;
+  const line2 = `MOOD ${mood?.toUpperCase() ?? '—'} BUY ${picks}`;
   return `${line1}\n${line2}`;
 }
 
