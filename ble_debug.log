@@ -1,0 +1,45 @@
+[2025-11-13 20:19:12] Starting BLE sender | url=https://daytrader.onrender.com/api/ticker mode=png scroll=False animate=True mac=410B2C35-FBEB-A20E-CB42-C690C2A28E2D
+[2025-11-13 20:19:12] Fetched message | line1='LUX 796 TEMP 23 HUM 26 CUR 1 PWR 0.004' line2='MARKET CLOSED NEXT 09:30ET CASH $111,275 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-13 20:19:12] Plain: MARKET CLOSED NEXT 09:30ET CASH $111,275 MOOD DRY & CLOUDY QUEUE PFE, ABT
+[2025-11-13 20:19:12] Sending PNG animate (gif)...
+[2025-11-13 20:19:23] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 796 TEMP 23 HUM 26 CUR 1 PWR 0.004', 'MARKET CLOSED NEXT 09:30ET CASH $111,275 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'animate=1', 'period_ms=1000', 'step=1', 'align=center']' returned non-zero exit status 1.
+[2025-11-13 20:19:33] Fetched message | line1='LUX 796 TEMP 23 HUM 26 CUR 1 PWR 0.004' line2='MARKET CLOSED NEXT 09:30ET CASH $111,275 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-13 20:19:33] Plain: MARKET CLOSED NEXT 09:30ET CASH $111,275 MOOD DRY & CLOUDY QUEUE PFE, ABT
+[2025-11-13 20:19:33] Sending PNG animate (gif)...
+[2025-11-13 20:19:43] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 796 TEMP 23 HUM 26 CUR 1 PWR 0.004', 'MARKET CLOSED NEXT 09:30ET CASH $111,275 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'animate=1', 'period_ms=1000', 'step=1', 'align=center']' returned non-zero exit status 1.
+[2025-11-13 20:19:53] Fetched message | line1='LUX 796 TEMP 23 HUM 26 CUR 1 PWR 0.004' line2='MARKET CLOSED NEXT 09:30ET CASH $111,275 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-13 20:19:53] Plain: MARKET CLOSED NEXT 09:30ET CASH $111,275 MOOD DRY & CLOUDY QUEUE PFE, ABT
+[2025-11-13 20:19:53] Sending PNG animate (gif)...
+[2025-11-13 20:20:03] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 796 TEMP 23 HUM 26 CUR 1 PWR 0.004', 'MARKET CLOSED NEXT 09:30ET CASH $111,275 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'animate=1', 'period_ms=1000', 'step=1', 'align=center']' returned non-zero exit status 1.
+[2025-11-13 20:20:14] Fetched message | line1='LUX 796 TEMP 23 HUM 26 CUR 1 PWR 0.004' line2='MARKET CLOSED NEXT 09:30ET CASH $111,275 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-13 20:20:14] Plain: MARKET CLOSED NEXT 09:30ET CASH $111,275 MOOD DRY & CLOUDY QUEUE PFE, ABT
+[2025-11-13 20:20:14] Sending PNG animate (gif)...
+[2025-11-14 14:24:31] Starting BLE sender | url=https://daytrader.onrender.com/api/ticker mode=png scroll=True animate=False mac=410B2C35-FBEB-A20E-CB42-C690C2A28E2D
+[2025-11-14 14:24:32] Fetched message[0] | line1='LUX 860 TEMP 18 HUM 39 CUR 1.9 PWR 0.006' line2='MOOD DRY & CLOUDY BUY PFE, ABT SL 2.0% TP 4.1% HOLD 20m CASH $114,135'
+[2025-11-14 14:24:32] Plain: MOOD DRY & CLOUDY BUY PFE, ABT SL 2.0% TP 4.1% HOLD 20m CASH $114,135
+[2025-11-14 14:24:32] Sending PNG manual scroll (one pass)...
+[2025-11-14 14:30:25] Starting BLE sender | url=https://daytrader.onrender.com/api/ticker mode=png scroll=True animate=False mac=410B2C35-FBEB-A20E-CB42-C690C2A28E2D
+[2025-11-14 14:30:25] Fetched message[0] | line1='LUX 756 TEMP 18 HUM 35 CUR 1.8 PWR 0.006' line2='MOOD DRY & CLOUDY BUY PFE, ABT SL 2.0% TP 4.1% HOLD 19m CASH $114,135'
+[2025-11-14 14:30:25] Plain: MOOD DRY & CLOUDY BUY PFE, ABT SL 2.0% TP 4.1% HOLD 19m CASH $114,135
+[2025-11-14 14:30:25] Sending PNG manual scroll (one pass)...
+[2025-11-14 14:38:08] Starting BLE sender | url=https://daytrader.onrender.com/api/ticker mode=png scroll=True animate=False mac=410B2C35-FBEB-A20E-CB42-C690C2A28E2D
+[2025-11-14 14:38:08] Fetched message[0] | line1='LUX 707 TEMP 18 HUM 38 CUR 1.7 PWR 0.006' line2='MOOD DRY & CLOUDY BUY PFE, ABT SL 2.0% TP 4.1% HOLD 20m CASH $114,135'
+[2025-11-14 14:38:08] Sending PNG manual scroll (one pass)...
+[2025-11-14 14:38:57] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 707 TEMP 18 HUM 38 CUR 1.7 PWR 0.006', 'MOOD DRY & CLOUDY BUY PFE, ABT SL 2.0% TP 4.1% HOLD 20m CASH $114,135', 'scroll=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 14:39:08] Fetched message[0] | line1='LUX 725 TEMP 18 HUM 38 CUR 1.9 PWR 0.006' line2='MOOD DRY & CLOUDY BUY PFE, ABT SL 2.0% TP 4.1% HOLD 20m CASH $114,135'
+[2025-11-14 14:39:08] Sending PNG manual scroll (one pass)...
+[2025-11-14 14:42:23] Starting BLE sender | url=https://daytrader.onrender.com/api/ticker mode=png scroll=True animate=False mac=410B2C35-FBEB-A20E-CB42-C690C2A28E2D
+[2025-11-14 14:42:24] Fetched message[0] | line1='LUX 724 TEMP 18 HUM 39 CUR 2 PWR 0.006' line2='MOOD DRY & CLOUDY BUY PFE, ABT SL 2.0% TP 4.1% HOLD 20m CASH $114,135'
+[2025-11-14 14:42:24] Sending PNG manual scroll (one pass)...
+[2025-11-14 14:45:24] Starting BLE sender | url=https://daytrader.onrender.com/api/ticker mode=png scroll=True animate=False mac=410B2C35-FBEB-A20E-CB42-C690C2A28E2D
+[2025-11-14 14:45:24] Fetched message[0] | line1='LUX 718 TEMP 18 HUM 39 CUR 2.1 PWR 0.006' line2='MOOD DRY & CLOUDY BUY PFE, ABT SL 2.0% TP 4.1% HOLD 20m CASH $114,134'
+[2025-11-14 14:45:24] Sending PNG manual scroll (one pass)...
+[2025-11-14 14:49:33] Starting BLE sender | url=https://daytrader.onrender.com/api/ticker mode=png scroll=True animate=False mac=410B2C35-FBEB-A20E-CB42-C690C2A28E2D
+[2025-11-14 14:49:33] Fetched message[0] | line1='LUX 737 TEMP 18 HUM 39 CUR 2 PWR 0.006' line2='MOOD DRY & CLOUDY BUY PFE, ABT SL 2.0% TP 4.1% HOLD 20m CASH $114,134'
+[2025-11-14 14:49:33] Sending PNG manual scroll (one pass)...
+[2025-11-14 14:51:40] Starting BLE sender | url=https://daytrader.onrender.com/api/ticker mode=png scroll=True animate=False mac=410B2C35-FBEB-A20E-CB42-C690C2A28E2D
+[2025-11-14 14:51:40] Fetched message[0] | line1='LUX 743 TEMP 18 HUM 39 CUR 1.8 PWR 0.006' line2='MOOD DRY & CLOUDY BUY PFE, ABT SL 2.0% TP 4.1% HOLD 20m CASH $114,134'
+[2025-11-14 14:51:40] Sending PNG manual scroll (one pass)...
+[2025-11-14 14:52:04] Starting BLE sender | url=https://daytrader.onrender.com/api/ticker mode=png scroll=True animate=False mac=410B2C35-FBEB-A20E-CB42-C690C2A28E2D
+[2025-11-14 14:52:04] Fetched message[0] | line1='LUX 743 TEMP 18 HUM 39 CUR 1.8 PWR 0.006' line2='MOOD DRY & CLOUDY BUY PFE, ABT SL 2.0% TP 4.1% HOLD 20m CASH $114,134'
+[2025-11-14 14:52:04] Sending PNG manual scroll (one pass)...

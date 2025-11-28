@@ -1,0 +1,4 @@
+
+> energy@1.0.0 ble:loop:remote
+> PNG_SCROLL=1 python3 ble_ticker.py --interval=10 --mode=png
+

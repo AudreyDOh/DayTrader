@@ -1,0 +1,252 @@
+
+> energy@1.0.0 start
+> node index.js
+
+🔌 MQTT disabled (set ENABLE_MQTT=true to enable).
+📝 Google Sheets disabled (set GOOGLE_CREDENTIALS to enable).
+🌐 Server running on port 3000
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $204711.55
+    - Buying Power: $492739.2
+    - Positions Value: $179961.32
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $204711.55
+    - Buying Power: $492739.2
+    - Positions Value: $179961.32
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $204725.09
+    - Buying Power: $492739.2
+    - Positions Value: $179961.32
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $204725.09
+    - Buying Power: $492739.2
+    - Positions Value: $179961.32
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $204725.09
+    - Buying Power: $492739.2
+    - Positions Value: $179961.32
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $204725.09
+    - Buying Power: $492739.2
+    - Positions Value: $179961.32
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $204725.09
+    - Buying Power: $492739.2
+    - Positions Value: $179961.32
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205425.51
+    - Buying Power: $492739.2
+    - Positions Value: $180629.05
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205425.63
+    - Buying Power: $492739.2
+    - Positions Value: $180629.17
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205425.63
+    - Buying Power: $492739.2
+    - Positions Value: $180629.17
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205406.62
+    - Buying Power: $492739.2
+    - Positions Value: $180629.17
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205406.62
+    - Buying Power: $492739.2
+    - Positions Value: $180629.17
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205406.62
+    - Buying Power: $492739.2
+    - Positions Value: $180629.17
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205406.62
+    - Buying Power: $492739.2
+    - Positions Value: $180629.17
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205406.62
+    - Buying Power: $492739.2
+    - Positions Value: $180629.17
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205406.62
+    - Buying Power: $492739.2
+    - Positions Value: $180629.17
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205406.62
+    - Buying Power: $492739.2
+    - Positions Value: $180629.17
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205406.62
+    - Buying Power: $492739.2
+    - Positions Value: $180629.17
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205406.62
+    - Buying Power: $492739.2
+    - Positions Value: $180629.17
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205406.62
+    - Buying Power: $492739.2
+    - Positions Value: $180629.17
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205406.62
+    - Buying Power: $492739.2
+    - Positions Value: $180629.17
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205421.84
+    - Buying Power: $492739.2
+    - Positions Value: $180629.07
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205421.84
+    - Buying Power: $492739.2
+    - Positions Value: $180629.07
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205421.84
+    - Buying Power: $492739.2
+    - Positions Value: $180629.07
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205421.84
+    - Buying Power: $492739.2
+    - Positions Value: $180629.07
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205421.94
+    - Buying Power: $492739.2
+    - Positions Value: $180629.17
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205421.94
+    - Buying Power: $492739.2
+    - Positions Value: $180629.17
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205421.94
+    - Buying Power: $492739.2
+    - Positions Value: $180629.17
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205421.94
+    - Buying Power: $492739.2
+    - Positions Value: $180629.17
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205421.94
+    - Buying Power: $492739.2
+    - Positions Value: $180629.17
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205421.94
+    - Buying Power: $492739.2
+    - Positions Value: $180629.17
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205421.94
+    - Buying Power: $492739.2
+    - Positions Value: $180629.17
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205421.94
+    - Buying Power: $492739.2
+    - Positions Value: $180629.17
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205421.94
+    - Buying Power: $492739.2
+    - Positions Value: $180629.17
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE
+💰 Account Info:
+    - Cash: $111263.68
+    - Equity: $205421.94
+    - Buying Power: $492739.2
+    - Positions Value: $180629.17
+    - Unrealized P/L: $undefined
+    - Status: ACTIVE

@@ -1,0 +1,2077 @@
+[2025-11-14 17:01:28] Starting BLE sender | url=http://localhost:3000/api/ticker mode=png scroll=True animate=False mac=410B2C35-FBEB-A20E-CB42-C690C2A28E2D
+[2025-11-14 17:01:28] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:01:28] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pai[2025-11-14 17:01:59] PNG scroll done
+[2025-11-14 17:02:09] Fetched message[0] | line1='LUX 408 TEMP 18 HUM 39 CUR -0.2 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:02:09] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:02:19] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 408 TEMP 18 HUM 39 CUR -0.2 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:02:29] Fetched message[0] | line1='LUX 313 TEMP 18 HUM 39 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:02:29] Sending PNG manual scroll...
+[2025-11-14 17:02:55] PNG scroll done
+[2025-11-14 17:03:05] Fetched message[0] | line1='LUX 313 TEMP 18 HUM 39 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:03:05] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:03:15] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 313 TEMP 18 HUM 39 CUR -0.1 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:03:25] Fetched message[0] | line1='LUX 440 TEMP 18 HUM 39 CUR -0.3 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:03:25] Sending PNG manual scroll...
+[2025-11-14 17:03:58] PNG scroll done
+[2025-11-14 17:04:08] Fetched message[0] | line1='LUX 440 TEMP 18 HUM 39 CUR -0.3 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:04:08] Sending PNG manual scroll...
+[2025-11-14 17:04:42] PNG scroll done
+[2025-11-14 17:04:52] Fetched message[0] | line1='LUX 429 TEMP 18 HUM 39 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:04:52] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:05:02] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 429 TEMP 18 HUM 39 CUR -0.1 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:05:12] Fetched message[0] | line1='LUX 429 TEMP 18 HUM 39 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:05:12] Sending PNG manual scroll...
+[2025-11-14 17:05:58] PNG scroll done
+[2025-11-14 17:06:08] Fetched message[0] | line1='LUX 426 TEMP 18 HUM 39 CUR 0.2 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:06:08] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:06:19] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 426 TEMP 18 HUM 39 CUR 0.2 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:06:29] Fetched message[0] | line1='LUX 426 TEMP 18 HUM 39 CUR 0.2 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:06:29] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:06:39] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 426 TEMP 18 HUM 39 CUR 0.2 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:06:49] Fetched message[0] | line1='LUX 440 TEMP 18 HUM 39 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:06:49] Sending PNG manual scroll...
+[2025-11-14 17:07:26] PNG scroll done
+[2025-11-14 17:07:36] Fetched message[0] | line1='LUX 440 TEMP 18 HUM 39 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:07:36] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:07:46] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 440 TEMP 18 HUM 39 CUR -0.1 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:07:56] Fetched message[0] | line1='LUX 431 TEMP 18 HUM 39 CUR 0 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:07:56] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:08:06] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 431 TEMP 18 HUM 39 CUR 0 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:08:16] Fetched message[0] | line1='LUX 431 TEMP 18 HUM 39 CUR 0 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:08:16] Sending PNG manual scroll...
+[2025-11-14 17:08:47] PNG scroll done
+[2025-11-14 17:08:57] Fetched message[0] | line1='LUX 442 TEMP 18 HUM 39 CUR -0.2 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:08:57] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:09:07] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 442 TEMP 18 HUM 39 CUR -0.2 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:09:17] Fetched message[0] | line1='LUX 442 TEMP 18 HUM 39 CUR -0.2 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:09:17] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:09:27] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 442 TEMP 18 HUM 39 CUR -0.2 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:09:37] Fetched message[0] | line1='LUX 442 TEMP 18 HUM 39 CUR -0.2 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:09:37] Sending PNG manual scroll...
+[2025-11-14 17:10:38] PNG scroll done
+[2025-11-14 17:10:48] Fetched message[0] | line1='LUX 437 TEMP 18 HUM 39 CUR 0.2 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:10:48] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:10:59] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 437 TEMP 18 HUM 39 CUR 0.2 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:11:09] Fetched message[0] | line1='LUX 432 TEMP 18 HUM 39 CUR 0 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:11:09] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:11:19] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 432 TEMP 18 HUM 39 CUR 0 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:11:29] Fetched message[0] | line1='LUX 432 TEMP 18 HUM 39 CUR 0 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:11:29] Sending PNG manual scroll...
+[2025-11-14 17:11:58] PNG scroll done
+[2025-11-14 17:12:08] Fetched message[0] | line1='LUX 421 TEMP 18 HUM 40 CUR 0 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:12:08] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:12:18] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 421 TEMP 18 HUM 40 CUR 0 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:12:29] Fetched message[0] | line1='LUX 421 TEMP 18 HUM 40 CUR 0 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:12:29] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:12:39] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 421 TEMP 18 HUM 40 CUR 0 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:12:49] Fetched message[0] | line1='LUX 421 TEMP 18 HUM 40 CUR 0 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:12:49] Sending PNG manual scroll...
+[2025-11-14 17:13:22] PNG scroll done
+[2025-11-14 17:13:32] Fetched message[0] | line1='LUX 430 TEMP 18 HUM 40 CUR 0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:13:32] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:13:42] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 430 TEMP 18 HUM 40 CUR 0.1 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:13:52] Fetched message[0] | line1='LUX 430 TEMP 18 HUM 40 CUR 0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:13:52] Sending PNG manual scroll...
+[2025-11-14 17:15:31] PNG scroll done
+[2025-11-14 17:15:41] Fetched message[0] | line1='LUX 423 TEMP 18 HUM 40 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:15:41] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:15:52] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 423 TEMP 18 HUM 40 CUR -0.1 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:16:02] Fetched message[0] | line1='LUX 423 TEMP 18 HUM 40 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:16:02] Sending PNG manual scroll...
+[2025-11-14 17:17:09] PNG scroll done
+[2025-11-14 17:17:19] Fetched message[0] | line1='LUX 408 TEMP 18 HUM 40 CUR 0 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:17:19] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:17:29] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 408 TEMP 18 HUM 40 CUR 0 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:17:39] Fetched message[0] | line1='LUX 435 TEMP 18 HUM 41 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:17:39] Sending PNG manual scroll...
+[2025-11-14 17:18:57] PNG scroll done
+[2025-11-14 17:19:07] Fetched message[0] | line1='LUX 427 TEMP 18 HUM 41 CUR -0.2 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:19:07] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:19:17] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 427 TEMP 18 HUM 41 CUR -0.2 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:19:27] Fetched message[0] | line1='LUX 427 TEMP 18 HUM 41 CUR -0.2 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:19:27] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:19:37] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 427 TEMP 18 HUM 41 CUR -0.2 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:19:48] Fetched message[0] | line1='LUX 421 TEMP 18 HUM 41 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:19:48] Sending PNG manual scroll...
+[2025-11-14 17:21:18] PNG scroll done
+[2025-11-14 17:21:28] Fetched message[0] | line1='LUX 400 TEMP 18 HUM 42 CUR 0 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:21:28] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:21:39] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 400 TEMP 18 HUM 42 CUR 0 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:21:49] Fetched message[0] | line1='LUX 397 TEMP 18 HUM 42 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:21:49] Sending PNG manual scroll...
+[2025-11-14 17:22:48] PNG scroll done
+[2025-11-14 17:22:58] Fetched message[0] | line1='LUX 425 TEMP 18 HUM 42 CUR -0.2 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:22:58] Sending PNG manual scroll...
+[2025-11-14 17:24:29] PNG scroll done
+[2025-11-14 17:24:39] Fetched message[0] | line1='LUX 431 TEMP 18 HUM 42 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:24:39] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:24:50] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 431 TEMP 18 HUM 42 CUR -0.1 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:25:00] Fetched message[0] | line1='LUX 395 TEMP 18 HUM 42 CUR -0.2 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:25:00] Sending PNG manual scroll...
+[2025-11-14 17:26:14] PNG scroll done
+[2025-11-14 17:26:24] Fetched message[0] | line1='LUX 416 TEMP 18 HUM 42 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:26:24] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:26:34] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 416 TEMP 18 HUM 42 CUR -0.1 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:26:44] Fetched message[0] | line1='LUX 416 TEMP 18 HUM 42 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:26:44] Sending PNG manual scroll...
+[2025-11-14 17:27:44] PNG scroll done
+[2025-11-14 17:27:54] Fetched message[0] | line1='LUX 407 TEMP 18 HUM 43 CUR -0.2 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:27:54] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:28:04] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 407 TEMP 18 HUM 43 CUR -0.2 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:28:14] Fetched message[0] | line1='LUX 405 TEMP 18 HUM 43 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:28:14] Sending PNG manual scroll...
+[2025-11-14 17:29:36] PNG scroll done
+[2025-11-14 17:29:46] Fetched message[0] | line1='LUX 413 TEMP 18 HUM 43 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:29:46] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:29:56] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 413 TEMP 18 HUM 43 CUR -0.1 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:30:06] Fetched message[0] | line1='LUX 413 TEMP 18 HUM 43 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:30:06] Sending PNG manual scroll...
+[2025-11-14 17:30:57] PNG scroll done
+[2025-11-14 17:31:07] Fetched message[0] | line1='LUX 414 TEMP 18 HUM 43 CUR 0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:31:07] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:31:17] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 414 TEMP 18 HUM 43 CUR 0.1 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:31:27] Fetched message[0] | line1='LUX 415 TEMP 18 HUM 43 CUR 0 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:31:27] Sending PNG manual scroll...
+[2025-11-14 17:32:23] PNG scroll done
+[2025-11-14 17:32:33] Fetched message[0] | line1='LUX 408 TEMP 18 HUM 43 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:32:33] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:32:43] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 408 TEMP 18 HUM 43 CUR -0.1 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:32:53] Fetched message[0] | line1='LUX 408 TEMP 18 HUM 43 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:32:53] Sending PNG manual scroll...
+[2025-11-14 17:33:41] PNG scroll done
+[2025-11-14 17:33:51] Fetched message[0] | line1='LUX 413 TEMP 18 HUM 43 CUR 0 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:33:51] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:34:02] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 413 TEMP 18 HUM 43 CUR 0 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:34:12] Fetched message[0] | line1='LUX 413 TEMP 18 HUM 43 CUR 0 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:34:12] Sending PNG manual scroll...
+[2025-11-14 17:35:59] PNG scroll done
+[2025-11-14 17:36:09] Fetched message[0] | line1='LUX 393 TEMP 18 HUM 44 CUR 0 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:36:09] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:36:19] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 393 TEMP 18 HUM 44 CUR 0 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:36:30] Fetched message[0] | line1='LUX 393 TEMP 18 HUM 44 CUR 0 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:36:30] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:36:40] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 393 TEMP 18 HUM 44 CUR 0 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:36:50] Fetched message[0] | line1='LUX 383 TEMP 18 HUM 45 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:36:50] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 157, in stream_scroll
+    await client.write_gatt_char("0000fa02-0000-1000-8000-00805f9b34fb", payload)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 737, in write_gatt_char
+    await self._backend.write_gatt_char(characteristic, data, response)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 332, in write_gatt_char
+    await self._delegate.write_characteristic(
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/PeripheralDelegate.py", line 221, in write_characteristic
+    await future
+bleak.exc.BleakError: disconnected
+[2025-11-14 17:36:57] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 383 TEMP 18 HUM 45 CUR -0.1 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:37:07] Fetched message[0] | line1='LUX 383 TEMP 18 HUM 45 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:37:07] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:37:18] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 383 TEMP 18 HUM 45 CUR -0.1 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:37:28] Fetched message[0] | line1='LUX 383 TEMP 18 HUM 45 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:37:28] Sending PNG manual scroll...
+[2025-11-14 17:38:37] PNG scroll done
+[2025-11-14 17:38:47] Fetched message[0] | line1='LUX 391 TEMP 18 HUM 45 CUR -0.2 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:38:47] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:38:58] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 391 TEMP 18 HUM 45 CUR -0.2 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:39:08] Fetched message[0] | line1='LUX 391 TEMP 18 HUM 45 CUR -0.2 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:39:08] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:39:18] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 391 TEMP 18 HUM 45 CUR -0.2 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:39:28] Fetched message[0] | line1='LUX 391 TEMP 18 HUM 45 CUR -0.2 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:39:28] Sending PNG manual scroll...
+[2025-11-14 17:39:59] PNG scroll done
+[2025-11-14 17:40:09] Fetched message[0] | line1='LUX 397 TEMP 18 HUM 45 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:40:09] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:40:19] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 397 TEMP 18 HUM 45 CUR -0.1 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:40:29] Fetched message[0] | line1='LUX 397 TEMP 18 HUM 45 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:40:29] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:40:39] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 397 TEMP 18 HUM 45 CUR -0.1 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:40:50] Fetched message[0] | line1='LUX 410 TEMP 18 HUM 45 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:40:50] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:41:00] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 410 TEMP 18 HUM 45 CUR -0.1 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:41:10] Fetched message[0] | line1='LUX 410 TEMP 18 HUM 45 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:41:10] Sending PNG manual scroll...
+[2025-11-14 17:42:29] PNG scroll done
+[2025-11-14 17:42:39] Fetched message[0] | line1='LUX 409 TEMP 18 HUM 45 CUR -0.2 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:42:39] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:42:49] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 409 TEMP 18 HUM 45 CUR -0.2 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:42:59] Fetched message[0] | line1='LUX 385 TEMP 18 HUM 45 CUR -0.3 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:42:59] Sending PNG manual scroll...
+[2025-11-14 17:44:04] PNG scroll done
+[2025-11-14 17:44:14] Fetched message[0] | line1='LUX 392 TEMP 18 HUM 46 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:44:14] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:44:24] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 392 TEMP 18 HUM 46 CUR -0.1 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:44:34] Fetched message[0] | line1='LUX 392 TEMP 18 HUM 46 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:44:34] Sending PNG manual scroll...
+[2025-11-14 17:45:41] PNG scroll done
+[2025-11-14 17:45:51] Fetched message[0] | line1='LUX 391 TEMP 18 HUM 47 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:45:51] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:46:01] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 391 TEMP 18 HUM 47 CUR -0.1 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:46:11] Fetched message[0] | line1='LUX 380 TEMP 18 HUM 47 CUR 0 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:46:11] Sending PNG manual scroll...
+[2025-11-14 17:47:05] PNG scroll done
+[2025-11-14 17:47:15] Fetched message[0] | line1='LUX 389 TEMP 18 HUM 47 CUR 0 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:47:15] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:47:25] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 389 TEMP 18 HUM 47 CUR 0 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:47:35] Fetched message[0] | line1='LUX 389 TEMP 18 HUM 47 CUR 0 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:47:35] Sending PNG manual scroll...
+[2025-11-14 17:48:22] PNG scroll done
+[2025-11-14 17:48:32] Fetched message[0] | line1='LUX 390 TEMP 18 HUM 48 CUR 0 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:48:32] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:48:43] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 390 TEMP 18 HUM 48 CUR 0 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:48:53] Fetched message[0] | line1='LUX 390 TEMP 18 HUM 48 CUR 0 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:48:53] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:49:03] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 390 TEMP 18 HUM 48 CUR 0 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:49:13] Fetched message[0] | line1='LUX 390 TEMP 18 HUM 48 CUR 0 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:49:13] Sending PNG manual scroll...
+[2025-11-14 17:50:26] PNG scroll done
+[2025-11-14 17:50:36] Fetched message[0] | line1='LUX 394 TEMP 18 HUM 49 CUR -0.3 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:50:36] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:50:46] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 394 TEMP 18 HUM 49 CUR -0.3 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:50:56] Fetched message[0] | line1='LUX 394 TEMP 18 HUM 49 CUR -0.3 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:50:56] Sending PNG manual scroll...
+[2025-11-14 17:52:09] PNG scroll done
+[2025-11-14 17:52:19] Fetched message[0] | line1='LUX 388 TEMP 18 HUM 49 CUR 0 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:52:19] Sending PNG manual scroll...
+[2025-11-14 17:53:55] PNG scroll done
+[2025-11-14 17:54:05] Fetched message[0] | line1='LUX 375 TEMP 18 HUM 50 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:54:05] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:54:16] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 375 TEMP 18 HUM 50 CUR -0.1 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:54:26] Fetched message[0] | line1='LUX 375 TEMP 18 HUM 50 CUR -0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:54:26] Sending PNG manual scroll...
+[2025-11-14 17:55:45] PNG scroll done
+[2025-11-14 17:55:55] Fetched message[0] | line1='LUX 391 TEMP 18 HUM 50 CUR -0.3 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:55:55] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:56:06] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 391 TEMP 18 HUM 50 CUR -0.3 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:56:16] Fetched message[0] | line1='LUX 391 TEMP 18 HUM 50 CUR -0.3 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:56:16] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:56:26] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 391 TEMP 18 HUM 50 CUR -0.3 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:56:36] Fetched message[0] | line1='LUX 391 TEMP 18 HUM 50 CUR -0.3 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:56:36] Sending PNG manual scroll...
+[2025-11-14 17:58:11] PNG scroll done
+[2025-11-14 17:58:21] Fetched message[0] | line1='LUX 395 TEMP 18 HUM 50 CUR 0 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 17:58:21] Sending PNG manual scroll...
+[2025-11-14 18:00:02] PNG scroll done
+[2025-11-14 18:00:12] Fetched message[0] | line1='LUX 386 TEMP 18 HUM 50 CUR -0.3 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 18:00:12] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 18:00:22] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 386 TEMP 18 HUM 50 CUR -0.3 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 18:00:32] Fetched message[0] | line1='LUX 386 TEMP 18 HUM 50 CUR -0.3 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 18:00:32] Sending PNG manual scroll...
+[2025-11-14 18:01:33] PNG scroll done
+[2025-11-14 18:01:43] Fetched message[0] | line1='LUX 376 TEMP 18 HUM 50 CUR 0.1 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 18:01:43] Sending PNG manual scroll...
+[2025-11-14 18:03:22] PNG scroll done
+[2025-11-14 18:03:32] Fetched message[0] | line1='LUX 384 TEMP 18 HUM 49 CUR -0.2 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 18:03:32] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 18:03:42] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', 'LUX 384 TEMP 18 HUM 49 CUR -0.2 PWR 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 18:03:52] Fetched message[0] | line1='LUX 384 TEMP 18 HUM 49 CUR -0.2 PWR 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD DRY & CLOUDY QUEUE PFE, ABT'
+[2025-11-14 18:03:52] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+s client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:39:41] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:39:51] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:39:51] Sending PNG manual scroll...
+[2025-11-14 17:40:27] PNG scroll done
+[2025-11-14 17:40:37] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:40:37] Sending PNG manual scroll...
+[2025-11-14 17:41:15] PNG scroll done
+[2025-11-14 17:41:25] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:41:25] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:41:35] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:41:45] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:41:45] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:41:56] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:42:06] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:42:06] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:42:16] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:42:26] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:42:26] Sending PNG manual scroll...
+[2025-11-14 17:42:51] PNG scroll done
+[2025-11-14 17:43:01] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:43:01] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:43:11] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:43:21] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:43:21] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:43:31] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:43:42] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:43:42] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:43:52] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:44:02] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:44:02] Sending PNG manual scroll...
+[2025-11-14 17:44:40] PNG scroll done
+[2025-11-14 17:44:50] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:44:50] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:45:00] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:45:10] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:45:10] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:45:20] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:45:30] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:45:30] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:45:41] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:45:51] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:45:51] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:46:01] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:46:11] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:46:11] Sending PNG manual scroll...
+[2025-11-14 17:47:01] PNG scroll done
+[2025-11-14 17:47:12] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:47:12] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:47:22] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:47:32] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:47:32] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:47:42] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:47:52] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:47:52] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:48:02] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:48:12] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:48:12] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:48:22] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:48:33] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:48:33] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:48:43] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:48:53] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:48:53] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:49:03] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:49:13] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:49:13] Sending PNG manual scroll...
+[2025-11-14 17:50:19] PNG scroll done
+[2025-11-14 17:50:29] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:50:29] Sending PNG manual scroll...
+[2025-11-14 17:50:52] PNG scroll done
+[2025-11-14 17:51:02] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:51:02] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:51:12] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:51:22] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:51:22] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:51:32] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:51:42] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:51:42] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:51:52] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:52:03] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:52:03] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:52:13] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:52:23] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:52:23] Sending PNG manual scroll...
+[2025-11-14 17:53:47] PNG scroll done
+[2025-11-14 17:53:57] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:53:57] Sending PNG manual scroll...
+[2025-11-14 17:54:33] PNG scroll done
+[2025-11-14 17:54:43] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:54:43] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:54:53] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:55:03] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:55:03] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:55:13] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:55:23] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:55:23] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:55:34] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:55:44] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:55:44] Sending PNG manual scroll...
+[2025-11-14 17:56:29] PNG scroll done
+[2025-11-14 17:56:39] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:56:39] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:56:49] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:56:59] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:56:59] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:57:09] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:57:19] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:57:19] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:57:29] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:57:39] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:57:39] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:57:50] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:58:00] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:58:00] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 17:58:10] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 17:58:20] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 17:58:20] Sending PNG manual scroll...
+[2025-11-14 17:59:55] PNG scroll done
+[2025-11-14 18:00:06] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 18:00:06] Sending PNG manual scroll...
+[2025-11-14 18:00:32] PNG scroll done
+[2025-11-14 18:00:43] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 18:00:43] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 18:00:53] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 18:01:03] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 18:01:03] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 18:01:13] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 18:01:23] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 18:01:23] Sending PNG manual scroll...
+Traceback (most recent call last):
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 164, in <module>
+    asyncio.run(stream_scroll(uuid, final, step_px, period_ms, loop_scroll))
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.11/3.11.14_1/Frameworks/Python.framework/Versions/3.11/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py", line 148, in stream_scroll
+    async with BleakClient(address) as client:
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 558, in __aenter__
+    await self.connect()
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/__init__.py", line 580, in connect
+    await self._backend.connect(self._pair_before_connect, **kwargs)
+  File "/Users/dahyung/Code Repo/Energy/.venv/lib/python3.11/site-packages/bleak/backends/corebluetooth/client.py", line 109, in connect
+    raise BleakDeviceNotFoundError(
+bleak.exc.BleakDeviceNotFoundError: Device with address 410B2C35-FBEB-A20E-CB42-C690C2A28E2D was not found
+[2025-11-14 18:01:33] Error: Command '['python3', '/Users/dahyung/Code Repo/Energy/vendor/iPixel-CLI/two_line_png.py', '410B2C35-FBEB-A20E-CB42-C690C2A28E2D', '          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000', 'MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN', 'scroll=1', 'scroll_once=1', 'period_ms=20', 'step=3', 'align=center']' returned non-zero exit status 1.
+[2025-11-14 18:01:43] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 18:01:43] Sending PNG manual scroll...
+[2025-11-14 18:03:18] PNG scroll done
+[2025-11-14 18:03:28] Fetched message[0] | line1='          Lux 0 Temperature 0 Humidity 0 Current 0 Power 0.000' line2='MARKET CLOSED NEXT 09:30ET CASH $111,264 MOOD UNKNOWN'
+[2025-11-14 18:03:28] Sending PNG manual scroll...
