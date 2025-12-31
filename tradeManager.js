@@ -7,6 +7,7 @@ After each trade, logs details to Google Sheets.
 // Access the required modules to handle trading operations and logging
 const { getTPandSL, getRiskProfile, getMaxHoldMinutes } = require('./solarStrategy'); // Import the solar strategy functions
 const { logToSheet } = require('./logToSheets'); // Import the Google Sheet logging function 
+const { appendJsonl } = require('./localLog');
 const alpaca = require('./alpaca'); // Access the Alpaca API (for trading operations)
 
 const TRADE_LOG_SHEET = 'Alpaca Trades'; // name of Google Sheet tab to log trades
@@ -258,9 +259,13 @@ async closeTrade(trade, exitPrice, reason) {
     
     // Log to Google sheets if you have that functionality
     const { logToSheet } = require('./logToSheets');
+    const tsMs = Date.now();
+    const nowIso = new Date(tsMs).toISOString();
     const now = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
     
     await logToSheet([
+      tsMs,
+      nowIso,
       now,
       trade.symbol,
       trade.side,
@@ -273,6 +278,21 @@ async closeTrade(trade, exitPrice, reason) {
       reason,
       (trade.exitTime - trade.entryTime) / (1000 * 60) // Hold time in minutes
     ], 'Alpaca Trades');
+    
+    appendJsonl(`trades-${nowIso.slice(0,10)}.jsonl`, {
+      tsMs,
+      tsIso: nowIso,
+      timeLocal: now,
+      symbol: trade.symbol,
+      side: trade.side,
+      entryPrice: trade.entryPrice,
+      exitPrice,
+      shares: trade.shares,
+      pnl: Number(pnl.toFixed(2)),
+      pnlPercent: Number(pnlPercent),
+      reason,
+      holdMinutes: (trade.exitTime - trade.entryTime) / (1000 * 60)
+    });
     
     return { closed: true }; 
   } catch (error) {

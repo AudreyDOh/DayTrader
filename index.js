@@ -3,7 +3,7 @@ Received data from MQTT Broker and forwards data via Websocket to Frontend
 */
 
 require('dotenv').config();
-const { authorizeGoogleSheets, logToSheet, readRecentFromSheet } = require('./logToSheets');
+const { authorizeGoogleSheets, logToSheet, readRecentFromSheet, readReplayFeed, readTradesFromSheet } = require('./logToSheets');
 const { shouldSkipDay, getRiskProfile, getMaxHoldMinutes } = require('./solarStrategy');
 const TradeManager = require('./tradeManager');
 const mqtt = require('mqtt');
@@ -12,6 +12,7 @@ const http = require('http');
 const socketIo = require('socket.io');
 const alpaca = require('./alpaca'); // Alpaca Module to fetch account infos
 const { createTickerMessages } = require('./tickerTape');
+const { appendJsonl } = require('./localLog');
 
 const app = express();
 const server = http.createServer(app);
@@ -37,25 +38,29 @@ if (ENABLE_MQTT) {
 
 // Conditionally enable Google Sheets only if credentials are provided
 const SHEETS_ENABLED = !!process.env.GOOGLE_CREDENTIALS;
-if (SHEETS_ENABLED) {
-  try {
-    authorizeGoogleSheets();
-  } catch (err) {
-    console.error('Error authorizing Google Sheets (continuing anyway):', err);
-  }
-} else {
-  console.log('📝 Google Sheets disabled (set GOOGLE_CREDENTIALS to enable).');
-}
 
 let lastReading = null;
 const sensorHistory = [];
 const HISTORY_STORE_LIMIT = Number(process.env.HISTORY_STORE_LIMIT || 500);
 // Send all collected history by default; override with HISTORY_SEND_LIMIT if needed
 const HISTORY_SEND_LIMIT = process.env.HISTORY_SEND_LIMIT ? Number(process.env.HISTORY_SEND_LIMIT) : Infinity;
-// Seed in-memory history from Google Sheets only when enabled
+const TIME_ZONE = process.env.TIME_ZONE || 'Asia/Seoul';
+const LOCALE = process.env.LOCALE || 'ko-KR';
+
+// Replay mode configuration
+const REPLAY_MODE = process.env.MODE === 'replay' || process.env.REPLAY_MODE === 'true';
+const REPLAY_SHEET = process.env.REPLAY_SHEET || 'Replay Feed';
+const REPLAY_FETCH_LIMIT = Number(process.env.REPLAY_FETCH_LIMIT || 500);
+const REPLAY_SPEED = Number(process.env.REPLAY_SPEED || 1);
+const REPLAY_LOOP = process.env.REPLAY_LOOP === 'true';
+const TRADE_REPLAY_LIMIT = Number(process.env.TRADE_REPLAY_LIMIT || 300);
+
+// Initialize Google Sheets and seed history (async)
 if (SHEETS_ENABLED) {
-  (async function seedHistory() {
+  (async function initSheets() {
     try {
+      await authorizeGoogleSheets();
+      // After authorization completes, seed history
       const recent = await readRecentFromSheet(HISTORY_STORE_LIMIT, 'DayTrader Log');
       if (recent.length > 0) {
         sensorHistory.splice(0, sensorHistory.length, ...recent); // replace in-place
@@ -64,10 +69,12 @@ if (SHEETS_ENABLED) {
       } else {
         console.log('🗂️ No prior history found in Sheets (or read failed).');
       }
-    } catch (e) {
-      console.error('Failed to seed history from Sheets:', e.message);
+    } catch (err) {
+      console.error('Error initializing Google Sheets:', err.message);
     }
   })();
+} else {
+  console.log('📝 Google Sheets disabled (set GOOGLE_CREDENTIALS to enable).');
 }
 
 let tradeMood = null;
@@ -152,27 +159,62 @@ function isMarketHours() {
   return marketOpen && !marketClosed;
 }
 
-// Normalize incoming timestamps to epoch milliseconds
+// Normalize incoming timestamps to epoch milliseconds (server-trusted clock, TZ aware)
 function normalizeTimestamp(input) {
-  if (input == null) return Date.now();
-  // String date
-  if (typeof input === 'string') {
-    const parsed = Date.parse(input);
-    return isNaN(parsed) ? Date.now() : parsed;
+  const nowMs = Date.now();
+  // Default: use server time
+  let tsMs = nowMs;
+
+  // Try to parse incoming, but clamp if unreasonable
+  if (input != null) {
+    let candidate;
+    if (typeof input === 'string') {
+      const parsed = Date.parse(input);
+      if (!isNaN(parsed)) candidate = parsed;
+    } else if (typeof input === 'number') {
+      // If looks like seconds (<= 1e11), scale to ms
+      candidate = input < 1e11 ? input * 1000 : input;
+    }
+
+    if (Number.isFinite(candidate)) {
+      tsMs = candidate;
+    }
   }
-  // Numeric seconds vs milliseconds
-  if (typeof input === 'number') {
-    // If looks like seconds (<= 10^11 ~ year 5138 in ms threshold), scale to ms
-    if (input < 1e11) return input * 1000;
-    return input;
+
+  // Reject obviously wrong years (too far past/future)
+  const year = new Date(tsMs).getFullYear();
+  const currentYear = new Date(nowMs).getFullYear();
+  if (year < 2015 || year > currentYear + 1) {
+    console.warn('⏱️ Invalid year in timestamp, falling back to server time', {
+      input,
+      parsed: tsMs,
+      year,
+      nowMs
+    });
+    tsMs = nowMs;
   }
-  return Date.now();
+
+  // If incoming timestamp is too far ( >24h drift ), trust server now
+  const ONE_DAY_MS = 24 * 60 * 60 * 1000;
+  if (!Number.isFinite(tsMs) || Math.abs(tsMs - nowMs) > ONE_DAY_MS) {
+    console.warn('⏱️ Timestamp drift >24h, using server time', {
+      input,
+      parsed: tsMs,
+      nowMs
+    });
+    tsMs = nowMs;
+  }
+
+  return tsMs;
 }
 
 // Unified handler for incoming sensor data (MQTT or HTTP POST)
 async function handleSensorData(data) {
+  console.log('📥 Received sensor data:', JSON.stringify(data));
   const now = Date.now();
-  const msgTsMs = normalizeTimestamp(data.timeStamp);
+  // Accept multiple timestamp keys from devices; fall back to server time if missing
+  const incomingTs = data.timeStamp ?? data.timestamp ?? data.ts ?? data.time;
+  const msgTsMs = normalizeTimestamp(incomingTs);
   // Derive date strictly from the message timestamp in NY time
   const today = new Date(msgTsMs).toLocaleDateString('en-US', { timeZone: 'America/New_York' });
 
@@ -238,7 +280,7 @@ async function handleSensorData(data) {
             const key = `${today}-${symbol}`;
             if (!loggedSkips.has(key)) {
               loggedSkips.add(key);
-              const timeNow = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
+              const timeNow = new Date().toLocaleString(LOCALE, { timeZone: TIME_ZONE });
               try {
                 await logToSheet([
                   timeNow,
@@ -280,10 +322,10 @@ async function handleSensorData(data) {
   }
 
   const formatted = {
-    time: new Date(msgTsMs).toLocaleString('en-US', {
-      timeZone: 'America/New_York'
+    time: new Date(msgTsMs).toLocaleString(LOCALE, {
+      timeZone: TIME_ZONE
     }),
-    date: new Date(msgTsMs).toLocaleDateString('en-US', { timeZone: 'America/New_York' }),
+    date: new Date(msgTsMs).toLocaleDateString(LOCALE, { timeZone: TIME_ZONE }),
     // Include the normalized timestamp for debugging
     timeStamp: msgTsMs,
     temperature: data.temperature ?? '—',
@@ -321,36 +363,79 @@ async function handleSensorData(data) {
       (moodStockMap[tradeMood] || []).join(', ')
     ];
 
-    logToSheet(values);
+    await logToSheet(values);
+    console.log('📝 Logged to DayTrader Log');
+
+    // Also log to Replay Feed with raw timestamp for replay
+    if (SHEETS_ENABLED) {
+      const tsIso = new Date(msgTsMs).toISOString();
+      const tsLocal = formatted.time;
+      await logToSheet([
+        msgTsMs,
+        tsIso,
+        tsLocal,
+        data.lux,
+        data.temperature,
+        data.humidity,
+        data.current,
+        data.power,
+        data.battery,
+        formatted.mood
+      ], REPLAY_SHEET);
+      console.log('📝 Logged to Replay Feed');
+    }
+
+    // Optional JSONL local backup
+    if (process.env.LOG_JSONL === 'true') {
+      const dateStr = new Date(msgTsMs).toISOString().split('T')[0];
+      appendJsonl(`replay-${dateStr}.jsonl`, {
+        tsMs: msgTsMs,
+        tsIso: new Date(msgTsMs).toISOString(),
+        tsLocal: formatted.time,
+        lux: data.lux,
+        temperature: data.temperature,
+        humidity: data.humidity,
+        current: data.current,
+        power: data.power,
+        battery: data.battery,
+        mood: formatted.mood
+      });
+    }
   } catch (err) {
-    console.error('Error logging to sheet:', err);
+    console.error('❌ Error logging to sheet:', err.message);
+    console.error('Stack:', err.stack);
   }
 }
 
-if (ENABLE_MQTT && mqttClient) {
-  mqttClient.on('connect', () => {
-    // console.log('✅ Connected to MQTT broker');
-    mqttClient.subscribe(topic);
-  });
-}
+// Replay mode: disable MQTT and HTTP ingest
+if (REPLAY_MODE) {
+  console.log('🎬 REPLAY MODE ENABLED - MQTT and HTTP ingest disabled');
+} else {
+  if (ENABLE_MQTT && mqttClient) {
+    mqttClient.on('connect', () => {
+      // console.log('✅ Connected to MQTT broker');
+      mqttClient.subscribe(topic);
+    });
+  }
 
-// ADDED: Error handling for MQTT connection
-if (ENABLE_MQTT && mqttClient) {
-  mqttClient.on('error', (err) => {
-    console.error('❌ MQTT connection error:', err);
-  });
-}
+  // ADDED: Error handling for MQTT connection
+  if (ENABLE_MQTT && mqttClient) {
+    mqttClient.on('error', (err) => {
+      console.error('❌ MQTT connection error:', err);
+    });
+  }
 
-if (ENABLE_MQTT && mqttClient) {
-  mqttClient.on('message', async (topic, message) => {
-    const msg = message.toString();
-    try {
-      const data = JSON.parse(msg);
-      await handleSensorData(data);
-    } catch (err) {
-      // console.log('❌ Invalid JSON:', msg);
-    }
-  });
+  if (ENABLE_MQTT && mqttClient) {
+    mqttClient.on('message', async (topic, message) => {
+      const msg = message.toString();
+      try {
+        const data = JSON.parse(msg);
+        await handleSensorData(data);
+      } catch (err) {
+        // console.log('❌ Invalid JSON:', msg);
+      }
+    });
+  }
 }
 
 // ADDED: Enhanced connection event handler with fallback data
@@ -370,7 +455,7 @@ io.on('connection', socket => {
     // ADDED: Provide fallback data if no real data is available
     console.log('No sensor data available, sending dummy data');
     const dummyData = {
-      time: new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }),
+      time: new Date().toLocaleString(LOCALE, { timeZone: TIME_ZONE }),
       temperature: 22,
       humidity: 45,
       lux: 15000,
@@ -396,6 +481,117 @@ io.on('connection', socket => {
 
   socket.emit('marketStatus', { open: marketOpen });
 });
+
+// Replay mode: read and replay sensor data + trades
+async function startReplayMode() {
+  if (!SHEETS_ENABLED) {
+    console.error('❌ Replay mode requires Google Sheets (set GOOGLE_CREDENTIALS)');
+    return;
+  }
+
+  console.log('🎬 Starting replay mode...');
+  const sensorData = await readReplayFeed(REPLAY_FETCH_LIMIT, REPLAY_SHEET);
+  const trades = await readTradesFromSheet(TRADE_REPLAY_LIMIT, 'Alpaca Trades');
+
+  if (sensorData.length === 0) {
+    console.warn('⚠️ No replay data found in sheet');
+    return;
+  }
+
+  // Sort by timestamp (oldest first for replay)
+  sensorData.sort((a, b) => a.tsMs - b.tsMs);
+  trades.sort((a, b) => (a.tsMs || 0) - (b.tsMs || 0));
+
+  console.log(`📊 Loaded ${sensorData.length} sensor readings and ${trades.length} trades`);
+
+  // Send all trades at once to new connections
+  if (trades.length > 0) {
+    io.emit('replayTrades', { trades });
+  }
+
+  let sensorIdx = 0;
+  let tradeIdx = 0;
+  let lastEmittedTs = null;
+
+  async function replayNext() {
+    if (sensorIdx >= sensorData.length) {
+      if (REPLAY_LOOP) {
+        console.log('🔄 Replay loop - restarting from beginning');
+        sensorIdx = 0;
+        tradeIdx = 0;
+        lastEmittedTs = null;
+      } else {
+        console.log('✅ Replay complete');
+        return;
+      }
+    }
+
+    const sensor = sensorData[sensorIdx];
+    if (!sensor || !sensor.tsMs) {
+      sensorIdx++;
+      return replayNext();
+    }
+
+    // Emit trades that occurred before this sensor reading
+    while (tradeIdx < trades.length && trades[tradeIdx].tsMs && trades[tradeIdx].tsMs <= sensor.tsMs) {
+      io.emit('replayTrade', trades[tradeIdx]);
+      tradeIdx++;
+    }
+
+    // Calculate delay based on actual time gaps (or use fixed interval)
+    let delay = 1000 / REPLAY_SPEED; // default 1 second per reading
+    if (lastEmittedTs && sensor.tsMs > lastEmittedTs) {
+      const actualGap = sensor.tsMs - lastEmittedTs;
+      delay = Math.max(100, actualGap / REPLAY_SPEED); // respect original timing, scaled by speed
+    }
+
+    // Format and emit sensor data
+    const formatted = {
+      time: sensor.tsLocal || new Date(sensor.tsMs).toLocaleString(LOCALE, { timeZone: TIME_ZONE }),
+      date: new Date(sensor.tsMs).toLocaleDateString(LOCALE, { timeZone: TIME_ZONE }),
+      timeStamp: sensor.tsMs,
+      temperature: sensor.temperature ?? '—',
+      humidity: sensor.humidity ?? '—',
+      lux: sensor.lux ?? '—',
+      current: sensor.current ?? '—',
+      power: sensor.power ?? '—',
+      battery: sensor.battery ?? '—',
+      mood: sensor.mood ?? '—'
+    };
+
+    lastReading = formatted;
+    sensorHistory.unshift(formatted);
+    if (sensorHistory.length > HISTORY_STORE_LIMIT) sensorHistory.pop();
+
+    const historyToSend = HISTORY_SEND_LIMIT === Infinity
+      ? [...sensorHistory]
+      : sensorHistory.slice(0, HISTORY_SEND_LIMIT);
+
+    io.emit('mqttData', {
+      latest: lastReading,
+      history: historyToSend
+    });
+
+    // Update mood if available
+    const moodKey = Object.keys(moodNameMap).find(k => moodNameMap[k] === sensor.mood);
+    if (moodKey) {
+      tradeMood = moodKey;
+      io.emit('weatherMood', { mood: sensor.mood });
+      io.emit('suggestedStocks', { stocks: moodStockMap[moodKey] || [] });
+    }
+
+    lastEmittedTs = sensor.tsMs;
+    sensorIdx++;
+
+    setTimeout(replayNext, delay);
+  }
+
+  replayNext();
+}
+
+if (REPLAY_MODE) {
+  startReplayMode();
+}
 
 app.use(express.static('public'));
 
@@ -474,9 +670,9 @@ app.get('/api/test', (req, res) => {
   res.json({
     message: 'API is working!',
     timestamp_utc: new Date().toISOString(),
-    timestamp_ny: new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }),
-    date_ny: new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York' }),
-    server_tz_hint: 'America/New_York formatting applied explicitly',
+    timestamp_local: new Date().toLocaleString(LOCALE, { timeZone: TIME_ZONE }),
+    date_local: new Date().toLocaleDateString(LOCALE, { timeZone: TIME_ZONE }),
+    server_tz_hint: TIME_ZONE,
     alpaca_configured: alpacaConfigured,
     env_vars_set: {
       ALPACA_API_KEY: !!process.env.ALPACA_API_KEY,
@@ -487,14 +683,21 @@ app.get('/api/test', (req, res) => {
 
 // HTTP ingest endpoint for ESP32 to POST sensor readings (JSON)
 app.post('/api/ingest', async (req, res) => {
+  console.log('📨 POST /api/ingest received');
+  if (REPLAY_MODE) {
+    console.log('⚠️ Replay mode active - rejecting ingest');
+    return res.status(403).json({ ok: false, error: 'Replay mode active - ingest disabled' });
+  }
   try {
     if (!req.body || typeof req.body !== 'object') {
+      console.error('❌ Invalid JSON body:', req.body);
       return res.status(400).json({ ok: false, error: 'Invalid JSON body' });
     }
+    console.log('✅ Processing sensor data...');
     await handleSensorData(req.body);
     res.json({ ok: true });
   } catch (err) {
-    console.error('Ingest error:', err);
+    console.error('❌ Ingest error:', err);
     res.status(500).json({ ok: false, error: err.message });
   }
 });

@@ -371,6 +371,11 @@
             display: none;
         }
 
+        /* Hide live/MQTT-only widgets when no live feed is present */
+        .mqtt-hidden [data-live-only] {
+            display: none !important;
+        }
+
         @media (max-width: 992px) {
             .solar-hero {
                 flex-direction: column;
@@ -401,7 +406,7 @@
 </head>
 <body>
 
-    <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-overlay" id="loadingOverlay" data-live-only>
         <div class="spinner-border" role="status">
             <span class="visually-hidden">로딩 중...</span>
         </div>
@@ -615,7 +620,7 @@
     </div>
 
     <!-- Debug controls -->
-    <div class="debug-controls" id="debugControls">
+    <div class="debug-controls" id="debugControls" data-live-only>
         <button class="btn btn-sm btn-danger" onclick="hideLoading()">강제로 로딩 숨기기</button>
         <button class="btn btn-sm btn-primary" onclick="refreshData()">데이터 새로고침</button>
         <button class="btn btn-sm btn-secondary" onclick="toggleTab()">탭 전환</button>
@@ -623,6 +628,12 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // If live MQTT feed is absent, hide live-only UI shell
+        const HIDE_MQTT_UI = true;
+        if (HIDE_MQTT_UI) {
+            document.body.classList.add('mqtt-hidden');
+        }
+
         // Debug functions
         function hideLoading() {
             document.getElementById('loadingOverlay').style.display = 'none';
