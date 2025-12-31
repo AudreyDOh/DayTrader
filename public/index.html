@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Day Trader - Solar Trading Dashboard</title>
+    <title>Day Trader - 태양광 트레이딩 대시보드</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cinzel+Decorative:wght@400;700&family=IBM+Plex+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -403,25 +403,25 @@
 
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner-border" role="status">
-            <span class="visually-hidden">Loading...</span>
+            <span class="visually-hidden">로딩 중...</span>
         </div>
     </div>
 
     <div class="dashboard-container ritual-shell">
         <div class="dashboard-header">
-            <h1 class="dashboard-title">Live dashboard</h1>
+            <h1 class="dashboard-title">실시간 대시보드</h1>
             <div>
-                <p class="last-updated">Last updated: <span id="headerLastUpdated">Loading...</span></p>
+                <p class="last-updated">마지막 업데이트: <span id="headerLastUpdated">로딩 중...</span></p>
             </div>
         </div>
 
         <!-- Tabs navigation -->
         <ul class="nav nav-tabs" id="dashboard-tabs" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="solar-tab" data-bs-toggle="tab" data-bs-target="#solar-content" type="button" role="tab" aria-controls="solar-content" aria-selected="true">Solar Sensor Data</button>
+                <button class="nav-link active" id="solar-tab" data-bs-toggle="tab" data-bs-target="#solar-content" type="button" role="tab" aria-controls="solar-content" aria-selected="true">태양광 센서 데이터</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="alpaca-tab" data-bs-toggle="tab" data-bs-target="#alpaca-content" type="button" role="tab" aria-controls="alpaca-content" aria-selected="false">Alpaca Portfolio</button>
+                <button class="nav-link" id="alpaca-tab" data-bs-toggle="tab" data-bs-target="#alpaca-content" type="button" role="tab" aria-controls="alpaca-content" aria-selected="false">Alpaca 포트폴리오</button>
             </li>
         </ul>
 
@@ -431,65 +431,65 @@
             <div class="tab-pane fade show active" id="solar-content" role="tabpanel" aria-labelledby="solar-tab">
                 <div class="solar-data">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div class="weather-mood" id="weatherMood">Loading sensor data...</div>
+                        <div class="weather-mood" id="weatherMood">센서 데이터 로딩 중...</div>
                         <div class="market-status">
                             <span class="status-indicator status-closed" id="marketStatusIndicator"></span>
-                            <span id="marketStatusText">Market Closed</span>
+                            <span id="marketStatusText">장 마감</span>
                         </div>
                     </div>
                     
                     <div class="sensor-readings">
                         <div class="sensor-item">
                             <div class="sensor-value" id="luxValue">—</div>
-                            <div class="sensor-label">Light (lux)</div>
+                            <div class="sensor-label">조도 (lux)</div>
                         </div>
                         <div class="sensor-item">
                             <div class="sensor-value" id="tempValue">—</div>
-                            <div class="sensor-label">Temperature (°C)</div>
+                            <div class="sensor-label">온도 (°C)</div>
                         </div>
                         <div class="sensor-item">
                             <div class="sensor-value" id="humidityValue">—</div>
-                            <div class="sensor-label">Humidity (%)</div>
+                            <div class="sensor-label">습도 (%)</div>
                         </div>
                         <div class="sensor-item">
                             <div class="sensor-value" id="currentValue">—</div>
-                            <div class="sensor-label">Current (mA)</div>
+                            <div class="sensor-label">전류 (mA)</div>
                         </div>
                         <div class="sensor-item">
                             <div class="sensor-value" id="powerValue">—</div>
-                            <div class="sensor-label">Power (mW)</div>
+                            <div class="sensor-label">전력 (mW)</div>
                         </div>
                         <div class="sensor-item">
                             <div class="sensor-value" id="batteryValue">—</div>
-                            <div class="sensor-label">Battery (%)</div>
+                            <div class="sensor-label">배터리 (%)</div>
                         </div>
                     </div>
                     
                     <div class="suggested-stocks">
-                        <h4>Suggested Stocks</h4>
+                        <h4>추천 종목</h4>
                         <div class="stocks-list" id="suggestedStocks">
-                            Loading...
+                            로딩 중...
                         </div>
                     </div>
                     
                     <div class="sensor-history mt-4">
-                        <h4>Recent Sensor History</h4>
+                        <h4>최근 센서 기록</h4>
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Time</th>
-                                        <th>Light</th>
-                                        <th>Temp</th>
-                                        <th>Humidity</th>
-                                        <th>Current</th>
-                                        <th>Power</th>
-                                        <th>Battery</th>
+                                        <th>시간</th>
+                                        <th>조도</th>
+                                        <th>온도</th>
+                                        <th>습도</th>
+                                        <th>전류</th>
+                                        <th>전력</th>
+                                        <th>배터리</th>
                                     </tr>
                                 </thead>
                                 <tbody id="sensorHistoryTable">
                                     <tr>
-                                        <td colspan="7" class="text-center">Loading history...</td>
+                                        <td colspan="7" class="text-center">기록을 불러오는 중...</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -502,17 +502,17 @@
             <div class="tab-pane fade" id="alpaca-content" role="tabpanel" aria-labelledby="alpaca-tab">
                 <div class="alpaca-dashboard">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h3>Alpaca Portfolio Dashboard</h3>
+                        <h3>Alpaca 포트폴리오 대시보드</h3>
                         <div>
                             <span id="paperBadge" class="badge bg-warning">PAPER</span>
-                            <span class="last-updated">Last updated: <span id="alpacaLastUpdated">Loading...</span></span>
+                            <span class="last-updated">마지막 업데이트: <span id="alpacaLastUpdated">로딩 중...</span></span>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-8">
                             <div class="card">
-                                <div class="card-header">Portfolio Value</div>
+                                <div class="card-header">포트폴리오 가치</div>
                                 <div class="card-body">
                                     <div class="portfolio-chart-container">
                                         <canvas id="portfolioChart"></canvas>
@@ -522,18 +522,18 @@
                         </div>
                         <div class="col-md-4">
                             <div class="card">
-                                <div class="card-header">Account Summary</div>
+                                <div class="card-header">계좌 요약</div>
                                 <div class="card-body">
                                     <div class="mb-4">
-                                        <div class="account-label">Equity</div>
+                                        <div class="account-label">순자산</div>
                                         <div class="account-value" id="equity">$0.00</div>
                                     </div>
                                     <div class="mb-4">
-                                        <div class="account-label">Buying Power</div>
+                                        <div class="account-label">매수 가능 금액</div>
                                         <div class="account-value" id="buyingPower">$0.00</div>
                                     </div>
                                     <div class="mb-4">
-                                        <div class="account-label">Cash</div>
+                                        <div class="account-label">현금</div>
                                         <div class="account-value" id="cash">$0.00</div>
                                     </div>
                                 </div>
@@ -544,20 +544,20 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="card">
-                                <div class="card-header">Top Positions</div>
+                                <div class="card-header">상위 보유 종목</div>
                                 <div class="card-body">
                                     <div id="positionsList">
-                                        <div class="text-center py-4">Loading positions...</div>
+                                        <div class="text-center py-4">포지션 불러오는 중...</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="card">
-                                <div class="card-header">Recent Orders</div>
+                                <div class="card-header">최근 주문</div>
                                 <div class="card-body">
                                     <div id="ordersList">
-                                        <div class="text-center py-4">Loading orders...</div>
+                                        <div class="text-center py-4">주문 불러오는 중...</div>
                                     </div>
                                 </div>
                             </div>
@@ -569,45 +569,45 @@
 
         <header class="solar-hero">
             <div class="solar-emblem" aria-hidden="true">
-                <img src="/assets/daytrader-sun.png" alt="Day Trader solar emblem">
+                <img src="/assets/daytrader-sun.png" alt="Day Trader 태양광 엠블럼">
             </div>
             <div class="hero-copy">
                 <h1>Day Trader</h1>
                 <p class="hero-description">
-                    Day Trader is a solar-powered, autonomous trading system in which real stock market orders are triggered by solar conditions—brightness, temperature, humidity, and power output.
-                    By delegating financial decisions to a natural, indifferent agent, the work reframes algorithmic trading as a ritual of sun worship, exposing both the mythological residue within technological systems and the absurdity of profit-driven human prediction.
+                    Day Trader는 태양빛, 온도, 습도, 발전량 같은 태양광 조건에 맞춰 실제 주식 주문을 내는 태양광 기반 자율 트레이딩 시스템입니다.
+                    무심한 자연에 의사결정을 맡김으로써 알고리즘 트레이딩을 태양 숭배 의식처럼 재해석하고, 기술 시스템에 남아 있는 신화적 잔재와 이익 추구 예측의 부조리를 드러냅니다.
                 </p>
             </div>
         </header>
 
         <section class="ritual-explainer" id="solar-soothsayer">
             <div class="section-heading">
-                <h2>Solar Trading Logic</h2>
-                <p>Each sensor value directly maps to one trading lever that draws a metaphorical connection between solar activity and trading decisions.</p>
+                <h2>태양 거래 로직</h2>
+                <p>각 센서 값은 하나의 트레이딩 레버에 직접 연결되어, 태양 활동과 매매 의사결정 사이에 은유적 연결을 만듭니다.</p>
             </div>
             <div class="element-grid">
                 <article class="element-card">
-                    <h3>Light (lux)</h3>
-                    <p>Current sunlight level measured at the sensor.</p>
-                    <p class="trade-note">Trading effect: Decides confidence level—the brighter the outlook, the bolder the entries.</p>
+                    <h3>조도 (lux)</h3>
+                    <p>센서가 측정한 현재 태양광 밝기입니다.</p>
+                    <p class="trade-note">트레이딩 영향: 확신 수준 결정 — 전망이 밝을수록 진입을 더 과감하게 합니다.</p>
                     <p class="live-reading"><span id="lightOmenValue">—</span></p>
                 </article>
                 <article class="element-card">
-                    <h3>Humidity (%)</h3>
-                    <p>Moisture in the air guides how patient trades can be.</p>
-                    <p class="trade-note">Trading effect: Sets the maximum holding time—sticky air means faster exits.</p>
+                    <h3>습도 (%)</h3>
+                    <p>공기 중 수분이 얼마나 느긋하게 보유할지를 결정합니다.</p>
+                    <p class="trade-note">트레이딩 영향: 최대 보유 시간 설정 — 끈적한 공기는 더 빠른 청산을 의미합니다.</p>
                     <p class="live-reading"><span id="humidityOmenValue">—</span></p>
                 </article>
                 <article class="element-card">
-                    <h3>Temperature (°C)</h3>
-                    <p>Ambient temperature nudges the sector mix.</p>
-                    <p class="trade-note">Trading effect: Chooses the watch list—cool readings tilt to infrastructure, heat summons speculative names.</p>
+                    <h3>온도 (°C)</h3>
+                    <p>주변 온도가 섹터 구성을 바꿉니다.</p>
+                    <p class="trade-note">트레이딩 영향: 관심 종목 결정 — 서늘하면 인프라, 뜨거우면 투기적 종목을 호출합니다.</p>
                     <p class="live-reading"><span id="temperatureOmenValue">—</span></p>
                 </article>
                 <article class="element-card">
-                    <h3>Power (mW)</h3>
-                    <p>Panel output and battery determine if orders can fire.</p>
-                    <p class="trade-note">Trading effect: Determines share count—higher output funds larger position sizes.</p>
+                    <h3>전력 (mW)</h3>
+                    <p>패널 출력과 배터리 상태가 주문 실행 가능 여부를 좌우합니다.</p>
+                    <p class="trade-note">트레이딩 영향: 매수 수량 결정 — 출력이 높을수록 더 큰 포지션을 집행합니다.</p>
                     <p class="live-reading"><span id="powerOmenValue">—</span></p>
                 </article>
             </div>
@@ -616,9 +616,9 @@
 
     <!-- Debug controls -->
     <div class="debug-controls" id="debugControls">
-        <button class="btn btn-sm btn-danger" onclick="hideLoading()">Force Hide Loading</button>
-        <button class="btn btn-sm btn-primary" onclick="refreshData()">Refresh Data</button>
-        <button class="btn btn-sm btn-secondary" onclick="toggleTab()">Switch Tab</button>
+        <button class="btn btn-sm btn-danger" onclick="hideLoading()">강제로 로딩 숨기기</button>
+        <button class="btn btn-sm btn-primary" onclick="refreshData()">데이터 새로고침</button>
+        <button class="btn btn-sm btn-secondary" onclick="toggleTab()">탭 전환</button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
@@ -659,7 +659,7 @@
         
         socket.on('connect_error', (error) => {
             console.error('❌ Socket.io connection error:', error);
-            document.getElementById('weatherMood').textContent = 'Error connecting to server';
+            document.getElementById('weatherMood').textContent = '서버 연결 오류';
             hideLoading();
             document.getElementById('debugControls').style.display = 'block';
         });
@@ -754,7 +754,7 @@
             const container = document.getElementById('suggestedStocks');
             
             if (!stocks || stocks.length === 0) {
-                container.innerHTML = '<div>No stocks suggested for current conditions</div>';
+                container.innerHTML = '<div>현재 조건에 제안할 종목이 없습니다</div>';
                 return;
             }
             
@@ -773,11 +773,12 @@
             
             if (data && data.open) {
                 indicator.className = 'status-indicator status-open';
-                text.textContent = 'Market Open';
+                text.textContent = '장 개시';
             } else {
                 indicator.className = 'status-indicator status-closed';
-                text.textContent = 'Market Closed';
+                text.textContent = '장 마감';
             }
+        }
 
         function updateHeroReadings(data) {
             if (!data) return;
@@ -794,8 +795,6 @@
                     el.textContent = item.value === '—' ? '—' : `${item.value}${item.unit}`;
                 }
             });
-        }
-
         }
         
         // Alpaca Portfolio Functions
@@ -821,7 +820,7 @@
                 data: {
                     labels: [],
                     datasets: [{
-                        label: 'Portfolio Value',
+                        label: '포트폴리오 가치',
                         data: [],
                         borderColor: '#1EC46B',
                         backgroundColor: 'rgba(30, 196, 107, 0.1)',
@@ -885,9 +884,9 @@
             } catch (error) {
                 console.error('Error fetching account info:', error);
                 // Show error message
-                document.getElementById('equity').textContent = 'Error loading data';
-                document.getElementById('buyingPower').textContent = 'Error loading data';
-                document.getElementById('cash').textContent = 'Error loading data';
+                document.getElementById('equity').textContent = '데이터 로딩 오류';
+                document.getElementById('buyingPower').textContent = '데이터 로딩 오류';
+                document.getElementById('cash').textContent = '데이터 로딩 오류';
             }
         }
         
@@ -900,7 +899,7 @@
                 positionsList.innerHTML = '';
                 
                 if (positions.length === 0) {
-                    positionsList.innerHTML = '<div class="text-center py-4">No positions</div>';
+                    positionsList.innerHTML = '<div class="text-center py-4">보유 포지션 없음</div>';
                     return;
                 }
                 
@@ -915,7 +914,7 @@
                     positionItem.innerHTML = `
                         <div>
                             <h5>${position.symbol}</h5>
-                            <div>${position.qty} shares @ ${formatCurrency(position.avg_entry_price)}</div>
+                            <div>${position.qty}주 @ ${formatCurrency(position.avg_entry_price)}</div>
                         </div>
                         <div class="text-end">
                             <h5>${formatCurrency(position.market_value)}</h5>
@@ -929,7 +928,7 @@
             } catch (error) {
                 console.error('Error fetching positions:', error);
                 // Show error message
-                document.getElementById('positionsList').innerHTML = '<div class="text-center py-4">Error loading positions</div>';
+                document.getElementById('positionsList').innerHTML = '<div class="text-center py-4">포지션 로딩 오류</div>';
             }
         }
         
@@ -942,7 +941,7 @@
                 ordersList.innerHTML = '';
                 
                 if (orders.length === 0) {
-                    ordersList.innerHTML = '<div class="text-center py-4">No recent orders</div>';
+                    ordersList.innerHTML = '<div class="text-center py-4">최근 주문 없음</div>';
                     return;
                 }
                 
@@ -964,20 +963,33 @@
                         statusClass = 'order-status-open';
                     }
                     
-                    // Determine side class
+                    // Determine side class and labels
                     const sideClass = order.side === 'buy' ? 'order-side-buy' : 'order-side-sell';
+                    const sideLabel = order.side === 'buy' ? '매수' : '매도';
+                    const statusLabelMap = {
+                        filled: '체결',
+                        new: '신규',
+                        accepted: '접수',
+                        partially_filled: '부분 체결',
+                        canceled: '취소',
+                        expired: '만료',
+                        rejected: '거절'
+                    };
+                    const statusLabel = statusLabelMap[order.status] || order.status.toUpperCase();
+                    const typeLabel = order.type === 'market' ? '시장가' : (order.type === 'limit' ? '지정가' : order.type.toUpperCase());
+                    const priceLabel = order.limit_price ? formatCurrency(order.limit_price) : '시장가';
                     
                     orderItem.innerHTML = `
                         <div>
                             <h5>${order.symbol}</h5>
                             <div>
-                                <span class="badge ${sideClass}">${order.side.toUpperCase()}</span>
-                                ${order.qty} ${order.type} @ ${order.limit_price ? formatCurrency(order.limit_price) : 'Market'}
+                                <span class="badge ${sideClass}">${sideLabel}</span>
+                                ${order.qty}주 ${typeLabel} @ ${priceLabel}
                             </div>
                             <div class="text-muted small">${orderTime}</div>
                         </div>
                         <div class="text-end">
-                            <h5 class="${statusClass}">${order.status.toUpperCase()}</h5>
+                            <h5 class="${statusClass}">${statusLabel}</h5>
                         </div>
                     `;
                     ordersList.appendChild(orderItem);
@@ -985,7 +997,7 @@
             } catch (error) {
                 console.error('Error fetching orders:', error);
                 // Show error message
-                document.getElementById('ordersList').innerHTML = '<div class="text-center py-4">Error loading orders</div>';
+                document.getElementById('ordersList').innerHTML = '<div class="text-center py-4">주문 로딩 오류</div>';
             }
         }
         

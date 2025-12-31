@@ -50,7 +50,8 @@ if (SHEETS_ENABLED) {
 let lastReading = null;
 const sensorHistory = [];
 const HISTORY_STORE_LIMIT = Number(process.env.HISTORY_STORE_LIMIT || 500);
-const HISTORY_SEND_LIMIT = Number(process.env.HISTORY_SEND_LIMIT || 5);
+// Send all collected history by default; override with HISTORY_SEND_LIMIT if needed
+const HISTORY_SEND_LIMIT = process.env.HISTORY_SEND_LIMIT ? Number(process.env.HISTORY_SEND_LIMIT) : Infinity;
 // Seed in-memory history from Google Sheets only when enabled
 if (SHEETS_ENABLED) {
   (async function seedHistory() {
@@ -298,9 +299,13 @@ async function handleSensorData(data) {
   sensorHistory.unshift(formatted);
   if (sensorHistory.length > HISTORY_STORE_LIMIT) sensorHistory.pop();
 
+  const historyToSend = HISTORY_SEND_LIMIT === Infinity
+    ? [...sensorHistory]
+    : sensorHistory.slice(0, HISTORY_SEND_LIMIT);
+
   io.emit('mqttData', {
     latest: lastReading,
-    history: sensorHistory.slice(0, HISTORY_SEND_LIMIT)
+    history: historyToSend
   });
 
   try {
@@ -353,9 +358,13 @@ io.on('connection', socket => {
   console.log('🔌 New client connected');
 
   if (lastReading || sensorHistory.length > 0) {
+    const historyToSend = HISTORY_SEND_LIMIT === Infinity
+      ? [...sensorHistory]
+      : sensorHistory.slice(0, HISTORY_SEND_LIMIT);
+
     socket.emit('mqttData', {
       latest: lastReading ?? sensorHistory[0],
-      history: sensorHistory.slice(0, HISTORY_SEND_LIMIT)
+      history: historyToSend
     });
   } else {
     // ADDED: Provide fallback data if no real data is available
