@@ -34,7 +34,7 @@ function normalize(value, min, max) {
     // get volatility factor based on mood
     const moodvolatilityFactor = getMoodVolatilityFactor(mood);
 
-    const maxRiskPerTrade = accountBalanceUSD * 0.03 * tempNorm; // 0–1% of capital
+    const maxRiskPerTrade = accountBalanceUSD * 0.015 * tempNorm; // 0–1.5% of capital (reduced from 3% to be more conservative)
     // Calculate the number of shares to buy based on entry price and stop loss percentage
     const perShareRisk = entryPrice * (stopLossPct / 100);
     // Calculate the number of shares to buy

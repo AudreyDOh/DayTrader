@@ -138,13 +138,11 @@ async function getPreviousBars(symbol, limit = 5) {
   async function getAccountInfo() {
     try {
       const account = await alpaca.getAccount();
-      console.log(`💰 Account Info:
-    - Cash: $${account.cash}
-    - Equity: $${account.equity}
-    - Buying Power: $${account.buying_power}
-    - Positions Value: $${account.long_market_value}
-    - Unrealized P/L: $${account.unrealized_pl}
-    - Status: ${account.status}`);
+      // Only log on first call or when explicitly needed
+      if (!global.accountInfoLogged) {
+        console.log(`💰 Account: Cash=$${account.cash}, Equity=$${account.equity}, Buying Power=$${account.buying_power}`);
+        global.accountInfoLogged = true;
+      }
       return account;
     } catch (err) {
       console.error('❌ Error fetching account info:', err.message);

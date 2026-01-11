@@ -335,9 +335,38 @@ async openTrade(tradeConfig) {
   try {
     const { symbol, side, entryPrice, shares, tpPrice, slPrice, entryTime, maxHoldMinutes, mood } = tradeConfig;
     
-    // Execute the trade via Alpaca
+    // Check buying power before placing order
+    let account = null;
+    try {
+      account = await alpaca.getAccountInfo();
+    } catch (err) {
+      console.warn(`⚠️ Could not fetch account info: ${err.message}`);
+    }
+    
+    // Calculate required capital for the order
     const orderSide = side === 'long' ? 'buy' : 'sell';
     let usedShares = shares;
+    
+    // Limit position size based on available buying power
+    if (account && orderSide === 'buy') {
+      const buyingPower = parseFloat(account.buying_power || account.daytrading_buying_power || 0);
+      const requiredCapital = entryPrice * usedShares;
+      
+      // Use 80% of buying power as safety margin
+      const maxCapital = buyingPower * 0.8;
+      
+      if (requiredCapital > maxCapital) {
+        const maxShares = Math.floor(maxCapital / entryPrice);
+        if (maxShares > 0 && maxShares < usedShares) {
+          console.warn(`⚠️ Reducing position size for ${symbol} from ${usedShares} -> ${maxShares} due to buying power limit ($${buyingPower.toFixed(2)})`);
+          usedShares = maxShares;
+        } else if (maxShares === 0) {
+          console.warn(`⚠️ Insufficient buying power for ${symbol}. Required: $${requiredCapital.toFixed(2)}, Available: $${buyingPower.toFixed(2)}`);
+          return { success: false, error: 'Insufficient buying power' };
+        }
+      }
+    }
+    
     let order = null;
     try {
       order = await alpaca.placeOrder(symbol, usedShares, orderSide);
@@ -346,8 +375,12 @@ async openTrade(tradeConfig) {
       const insufficientQty =
         errData && typeof errData.message === 'string' &&
         errData.message.toLowerCase().includes('insufficient qty available');
+      const insufficientBuyingPower =
+        errData && typeof errData.message === 'string' &&
+        (errData.message.toLowerCase().includes('insufficient') && 
+         errData.message.toLowerCase().includes('buying power'));
       
-      // Auto-resize only for short entries (sell to open)
+      // Auto-resize for short entries (sell to open) when insufficient qty
       if (orderSide === 'sell' && insufficientQty) {
         // Alpaca error often includes available and existing_qty as strings
         const availableStr = errData?.available ?? errData?.qty_available ?? errData?.shortable ?? null;
@@ -365,8 +398,22 @@ async openTrade(tradeConfig) {
           // No usable available amount; rethrow original
           throw placeErr;
         }
+      } else if (insufficientBuyingPower) {
+        // For buying power errors, try to reduce position size by 50%
+        if (orderSide === 'buy' && usedShares > 1) {
+          const reducedShares = Math.max(1, Math.floor(usedShares * 0.5));
+          console.warn(`⚠️ Reducing position size for ${symbol} from ${usedShares} -> ${reducedShares} due to buying power limit`);
+          usedShares = reducedShares;
+          try {
+            order = await alpaca.placeOrder(symbol, usedShares, orderSide);
+          } catch (retryErr) {
+            throw placeErr; // Return original error if retry fails
+          }
+        } else {
+          throw placeErr;
+        }
       } else {
-        // Not a short insufficiency case, rethrow
+        // Not a handled case, rethrow
         throw placeErr;
       }
     }
